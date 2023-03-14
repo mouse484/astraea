@@ -39,7 +39,7 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify/svelte": "^3.1.0",
-		"isomorphic-dompurify": "^1.1.0",
+		"isomorphic-dompurify": "^1.2.0",
 		"markdown-it": "^13.0.1",
 		"nostr-tools": "^1.7.4",
 		"svelte-lightbox": "^1.1.1",
