@@ -77,7 +77,7 @@ function RouteComponent() {
                   write: [],
                 },
               }, {
-                authors: [pubkey.hex],
+                authors: [pubkey.decoded],
               })
 
               queryClient.invalidateQueries(query)

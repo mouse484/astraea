@@ -14,7 +14,7 @@ export const TextNoteTagSchema = Schema.Union(
     )).annotations({
       title: 'marker',
     }),
-    PubkeySchema,
+    Schema.optionalElement(PubkeySchema),
   ),
   Schema.Tuple(
     Schema.Literal('q'),

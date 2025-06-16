@@ -1,6 +1,6 @@
 import { Outlet, redirect } from '@tanstack/react-router'
 import Sidebar, { SidebarProvider } from '@/components/layout/Sidebar'
-import { createPubkey, type Pubkey } from '@/lib/nostr/pubkey'
+import { createPubkey, type Pubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
 
 export interface AppRouteContext {
