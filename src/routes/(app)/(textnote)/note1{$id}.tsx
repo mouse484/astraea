@@ -9,8 +9,8 @@ export const Route = createFileRoute({
     const nevent = nip19.neventEncode({ id: noteID.decoded })
 
     throw redirect({
-      to: '/nevent{$id}',
-      params: { id: nevent },
+      to: '/nevent1{$id}',
+      params: { id: nevent.slice('nevent1'.length) },
     })
   },
 })
