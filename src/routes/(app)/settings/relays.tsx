@@ -72,10 +72,7 @@ function RouteComponent() {
             try {
               const query = relayListQuery({
                 pool,
-                relays: {
-                  read: relays.filter(r => r.read).map(r => r.url),
-                  write: [],
-                },
+                relays: relays.filter(r => r.read).map(r => r.url),
               }, {
                 authors: [pubkey.decoded],
               })
