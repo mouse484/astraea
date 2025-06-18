@@ -3,8 +3,8 @@ import { CloudDownload, CloudUpload } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { RelayForm } from '@/components/page/settings/relay/RelayForm'
 import { RelayTable } from '@/components/page/settings/relay/RelayTable'
-import useNostr from '@/hooks/nostr'
 import { RelayListEventSchema, relayListQuery } from '@/lib/nostr/kinds/10002'
+import useNostr from '@/lib/nostr/use-nostr'
 import { readStore, writeStore } from '@/lib/store'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
@@ -72,12 +72,9 @@ function RouteComponent() {
             try {
               const query = relayListQuery({
                 pool,
-                relays: {
-                  read: relays.filter(r => r.read).map(r => r.url),
-                  write: [],
-                },
+                relays: relays.filter(r => r.read).map(r => r.url),
               }, {
-                authors: [pubkey.hex],
+                authors: [pubkey.decoded],
               })
 
               queryClient.invalidateQueries(query)

@@ -1,4 +1,4 @@
-import type { Pubkey } from '@/lib/nostr/pubkey'
+import type { Pubkey } from '@/lib/nostr/nip19'
 import { Link, type LinkProps } from '@tanstack/react-router'
 import { Home, type LucideIcon, Network, User } from 'lucide-react'
 import {

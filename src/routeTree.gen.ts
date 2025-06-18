@@ -15,6 +15,8 @@ import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as appHomeRouteImport } from './routes/(app)/home'
 import { Route as appSettingsRelaysRouteImport } from './routes/(app)/settings/relays'
+import { Route as apptextnoteNote1Char123idChar125RouteImport } from './routes/(app)/(textnote)/note1{$id}'
+import { Route as apptextnoteNevent1Char123idChar125RouteImport } from './routes/(app)/(textnote)/nevent1{$id}'
 import { Route as appprofileNpub1Char123idChar125RouteImport } from './routes/(app)/(profile)/npub1{$id}'
 
 const appRouteRoute = appRouteRouteImport.update({
@@ -36,6 +38,18 @@ const appSettingsRelaysRoute = appSettingsRelaysRouteImport.update({
   path: '/settings/relays',
   getParentRoute: () => appRouteRoute,
 } as any)
+const apptextnoteNote1Char123idChar125Route =
+  apptextnoteNote1Char123idChar125RouteImport.update({
+    id: '/(textnote)/note1{$id}',
+    path: '/note1{$id}',
+    getParentRoute: () => appRouteRoute,
+  } as any)
+const apptextnoteNevent1Char123idChar125Route =
+  apptextnoteNevent1Char123idChar125RouteImport.update({
+    id: '/(textnote)/nevent1{$id}',
+    path: '/nevent1{$id}',
+    getParentRoute: () => appRouteRoute,
+  } as any)
 const appprofileNpub1Char123idChar125Route =
   appprofileNpub1Char123idChar125RouteImport.update({
     id: '/(profile)/npub1{$id}',
@@ -47,12 +61,16 @@ export interface FileRoutesByFullPath {
   '/': typeof appRouteRouteWithChildren
   '/home': typeof appHomeRoute
   '/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
+  '/nevent1{$id}': typeof apptextnoteNevent1Char123idChar125Route
+  '/note1{$id}': typeof apptextnoteNote1Char123idChar125Route
   '/settings/relays': typeof appSettingsRelaysRoute
 }
 export interface FileRoutesByTo {
   '/': typeof appRouteRouteWithChildren
   '/home': typeof appHomeRoute
   '/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
+  '/nevent1{$id}': typeof apptextnoteNevent1Char123idChar125Route
+  '/note1{$id}': typeof apptextnoteNote1Char123idChar125Route
   '/settings/relays': typeof appSettingsRelaysRoute
 }
 export interface FileRoutesById {
@@ -61,19 +79,35 @@ export interface FileRoutesById {
   '/(app)': typeof appRouteRouteWithChildren
   '/(app)/home': typeof appHomeRoute
   '/(app)/(profile)/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
+  '/(app)/(textnote)/nevent1{$id}': typeof apptextnoteNevent1Char123idChar125Route
+  '/(app)/(textnote)/note1{$id}': typeof apptextnoteNote1Char123idChar125Route
   '/(app)/settings/relays': typeof appSettingsRelaysRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/npub1{$id}' | '/settings/relays'
+  fullPaths:
+    | '/'
+    | '/home'
+    | '/npub1{$id}'
+    | '/nevent1{$id}'
+    | '/note1{$id}'
+    | '/settings/relays'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/npub1{$id}' | '/settings/relays'
+  to:
+    | '/'
+    | '/home'
+    | '/npub1{$id}'
+    | '/nevent1{$id}'
+    | '/note1{$id}'
+    | '/settings/relays'
   id:
     | '__root__'
     | '/'
     | '/(app)'
     | '/(app)/home'
     | '/(app)/(profile)/npub1{$id}'
+    | '/(app)/(textnote)/nevent1{$id}'
+    | '/(app)/(textnote)/note1{$id}'
     | '/(app)/settings/relays'
   fileRoutesById: FileRoutesById
 }
@@ -110,6 +144,20 @@ declare module '@tanstack/react-router' {
       path: '/npub1{$id}'
       fullPath: '/npub1{$id}'
       preLoaderRoute: typeof appprofileNpub1Char123idChar125RouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/(textnote)/nevent1{$id}': {
+      id: '/(app)/(textnote)/nevent1{$id}'
+      path: '/nevent1{$id}'
+      fullPath: '/nevent1{$id}'
+      preLoaderRoute: typeof apptextnoteNevent1Char123idChar125RouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/(textnote)/note1{$id}': {
+      id: '/(app)/(textnote)/note1{$id}'
+      path: '/note1{$id}'
+      fullPath: '/note1{$id}'
+      preLoaderRoute: typeof apptextnoteNote1Char123idChar125RouteImport
       parentRoute: typeof appRouteRoute
     }
     '/(app)/settings/relays': {
@@ -158,6 +206,24 @@ declare module './routes/(app)/(profile)/npub1{$id}' {
     FileRoutesByPath['/(app)/(profile)/npub1{$id}']['fullPath']
   >
 }
+declare module './routes/(app)/(textnote)/nevent1{$id}' {
+  const createFileRoute: CreateFileRoute<
+    '/(app)/(textnote)/nevent1{$id}',
+    FileRoutesByPath['/(app)/(textnote)/nevent1{$id}']['parentRoute'],
+    FileRoutesByPath['/(app)/(textnote)/nevent1{$id}']['id'],
+    FileRoutesByPath['/(app)/(textnote)/nevent1{$id}']['path'],
+    FileRoutesByPath['/(app)/(textnote)/nevent1{$id}']['fullPath']
+  >
+}
+declare module './routes/(app)/(textnote)/note1{$id}' {
+  const createFileRoute: CreateFileRoute<
+    '/(app)/(textnote)/note1{$id}',
+    FileRoutesByPath['/(app)/(textnote)/note1{$id}']['parentRoute'],
+    FileRoutesByPath['/(app)/(textnote)/note1{$id}']['id'],
+    FileRoutesByPath['/(app)/(textnote)/note1{$id}']['path'],
+    FileRoutesByPath['/(app)/(textnote)/note1{$id}']['fullPath']
+  >
+}
 declare module './routes/(app)/settings/relays' {
   const createFileRoute: CreateFileRoute<
     '/(app)/settings/relays',
@@ -171,12 +237,17 @@ declare module './routes/(app)/settings/relays' {
 interface appRouteRouteChildren {
   appHomeRoute: typeof appHomeRoute
   appprofileNpub1Char123idChar125Route: typeof appprofileNpub1Char123idChar125Route
+  apptextnoteNevent1Char123idChar125Route: typeof apptextnoteNevent1Char123idChar125Route
+  apptextnoteNote1Char123idChar125Route: typeof apptextnoteNote1Char123idChar125Route
   appSettingsRelaysRoute: typeof appSettingsRelaysRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
   appHomeRoute: appHomeRoute,
   appprofileNpub1Char123idChar125Route: appprofileNpub1Char123idChar125Route,
+  apptextnoteNevent1Char123idChar125Route:
+    apptextnoteNevent1Char123idChar125Route,
+  apptextnoteNote1Char123idChar125Route: apptextnoteNote1Char123idChar125Route,
   appSettingsRelaysRoute: appSettingsRelaysRoute,
 }
 

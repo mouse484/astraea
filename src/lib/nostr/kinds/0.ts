@@ -22,7 +22,7 @@ const MetadataEventSchema = Schema.Struct({
 export type MetadataEvent = typeof MetadataEventSchema.Type
 
 export const metadataQuery = createQuery({
-  name: 'User Metadata',
+  name: 'metadata',
   schema: MetadataEventSchema,
   kind: kinds.Metadata,
 })

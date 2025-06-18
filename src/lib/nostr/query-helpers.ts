@@ -1,13 +1,11 @@
 import type { Filter } from 'nostr-tools'
 import type { RouterContext } from '@/main'
-import type { AppRouteContext } from '@/routes/(app)/route'
 import { queryOptions } from '@tanstack/react-query'
 import { Schema } from 'effect'
 
-export interface NostrQueryContext extends
-  Pick<RouterContext, 'pool'>,
-  Pick<AppRouteContext, 'relays'>,
-  Record<string, unknown> {}
+export interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
+  relays: string[]
+}
 
 export interface QueryConfig<T, I = T> {
   name: string
@@ -22,7 +20,7 @@ export function createQuery<T, I = T>({ name, schema, kind }: QueryConfig<T, I>)
     return queryOptions({
       queryKey: [name, kind, filter],
       queryFn: async () => {
-        const event = await pool.get(relays.read, fullFilter)
+        const event = await pool.get(relays, fullFilter)
         if (!event) {
           throw new Error(`${name} event not found`)
         }

@@ -12,7 +12,7 @@ export const RelayListEventSchema = Schema.Struct({
 })
 
 export const relayListQuery = createQuery({
-  name: 'Relay List',
+  name: 'relaylist',
   schema: RelayListEventSchema,
   kind: kinds.RelayList,
 })
