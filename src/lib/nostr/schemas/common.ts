@@ -10,14 +10,24 @@ export const PubkeySchema = Hex32BytesSchema
 
 export const RelayUrlSchema = Schema.String.pipe(
   Schema.filter((s) => {
-    const url = new URL(s)
-    return url.protocol.startsWith('ws')
+    if (s === '') return true
+    try {
+      const url = new URL(s)
+      return url.protocol.startsWith('ws')
+    } catch {
+      return false
+    }
   }),
 )
 
 export const URLSchema = Schema.String.pipe(
   Schema.filter((s) => {
-    const url = new URL(s)
-    return url.protocol.startsWith('http')
+    if (s === '') return true
+    try {
+      const url = new URL(s)
+      return url.protocol.startsWith('http')
+    } catch {
+      return false
+    }
   }),
 )
