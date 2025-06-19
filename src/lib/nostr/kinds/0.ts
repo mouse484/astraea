@@ -25,4 +25,5 @@ export const metadataQuery = createQuery({
   name: 'metadata',
   schema: MetadataEventSchema,
   kind: kinds.Metadata,
+  filterKey: 'authors',
 })

@@ -1,5 +1,4 @@
-import { deleteStore } from '@/lib/store'
-import { Button } from '@/shadcn-ui/components/ui/button'
+import TimeLine from '@/components/timeline/TimeLine'
 
 export const Route = createFileRoute({
   component: RouteComponent,
@@ -7,13 +6,8 @@ export const Route = createFileRoute({
 
 function RouteComponent() {
   return (
-    <div>
-      <Button onClick={() => {
-        deleteStore('pubkey')
-      }}
-      >
-        Log out
-      </Button>
-    </div>
+    <>
+      <TimeLine />
+    </>
   )
 }

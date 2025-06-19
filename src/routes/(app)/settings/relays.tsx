@@ -73,9 +73,7 @@ function RouteComponent() {
               const query = relayListQuery({
                 pool,
                 relays: relays.filter(r => r.read).map(r => r.url),
-              }, {
-                authors: [pubkey.decoded],
-              })
+              }, pubkey.decoded)
 
               queryClient.invalidateQueries(query)
               const data = await queryClient.fetchQuery(query)

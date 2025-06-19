@@ -7,20 +7,26 @@ export interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
   relays: string[]
 }
 
+export type QueryKeyList = 'metadata' | 'textnote' | 'relaylist'
+
 export interface QueryConfig<T, I = T> {
-  name: string
+  name: QueryKeyList
   schema: Schema.Schema<T, I>
   kind: number
+  filterKey: keyof Pick<Filter, 'ids' | 'authors'>
 }
 
-export function createQuery<T, I = T>({ name, schema, kind }: QueryConfig<T, I>) {
-  return ({ pool, relays }: NostrQueryContext, filter: Omit<Filter, 'kinds'>) => {
-    const fullFilter = { ...filter, kinds: [kind] }
+export function createQuery<T, I = T>({ name, schema, kind, filterKey }: QueryConfig<T, I>) {
+  return ({ pool, relays }: NostrQueryContext, id: string) => {
+    const filter: Filter = {
+      kinds: [kind],
+    }
+    filter[filterKey] = [id]
 
     return queryOptions({
-      queryKey: [name, kind, filter],
+      queryKey: [name, id],
       queryFn: async () => {
-        const event = await pool.get(relays, fullFilter)
+        const event = await pool.get(relays, filter)
         if (!event) {
           throw new Error(`${name} event not found`)
         }

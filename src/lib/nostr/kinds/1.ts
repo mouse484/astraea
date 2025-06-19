@@ -15,4 +15,5 @@ export const TextNoteQuery = createQuery({
   name: 'textnote',
   schema: TextNoteEventSchema,
   kind: kinds.ShortTextNote,
+  filterKey: 'ids',
 })

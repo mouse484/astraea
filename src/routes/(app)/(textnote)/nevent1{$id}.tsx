@@ -8,9 +8,7 @@ export const Route = createFileRoute({
     return await queryClient.ensureQueryData(TextNoteQuery({
       pool,
       relays: nevent.decoded.relays ?? relays.read,
-    }, {
-      ids: [nevent.decoded.id],
-    }))
+    }, nevent.decoded.id))
   },
 })
 
