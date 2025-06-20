@@ -2,7 +2,18 @@ import type { Event } from 'nostr-tools'
 import { useQueryClient } from '@tanstack/react-query'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { format, fromUnixTime } from 'date-fns'
+import { Heart, MessageCircle, Repeat2, Share2, SmilePlus, Zap } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Avatar, AvatarFallback } from '@/shadcn-ui/components/ui/avatar'
+import { Button } from '@/shadcn-ui/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/shadcn-ui/components/ui/card'
 
 export default function TimeLine() {
   const parentReference = useRef<HTMLDivElement>(null)
@@ -61,17 +72,40 @@ export default function TimeLine() {
           {virtualizer.getVirtualItems().map((virtualItem) => {
             const item = items[virtualItem.index]
             return (
-              <div
+              <Card
                 key={virtualItem.key}
                 ref={virtualizer.measureElement}
                 data-index={virtualItem.index}
-                className="m-2 border p-2 break-all"
+                className="border p-2 break-all"
               >
-                <div>
-                  <p>{format(fromUnixTime(item.created_at), 'yyyy-MM-dd HH:mm')}</p>
-                  <p>{item.content}</p>
+                <div className="flex gap-3">
+                  <Avatar className="size-14 flex-shrink-0">
+                    <AvatarFallback>{item.pubkey.slice(0, 2)}</AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <CardHeader className="p-0">
+                      <CardTitle className="flex items-center justify-between">
+                        <span className="text-base">{item.pubkey.slice(0, 5)}</span>
+                        <CardDescription className="text-sm">
+                          {format(fromUnixTime(item.created_at), 'yyyy-MM-dd HH:mm')}
+                        </CardDescription>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0 pt-2">
+                      <p>{item.content}</p>
+                    </CardContent>
+                    <CardFooter className="flex justify-between p-0 pt-3">
+                      {[MessageCircle, Repeat2, Heart, SmilePlus, Zap, Share2].map(Icon =>
+                        (
+                          <Button key={Icon.displayName} variant="ghost" size="icon">
+                            <Icon />
+                          </Button>
+                        ),
+                      )}
+                    </CardFooter>
+                  </div>
                 </div>
-              </div>
+              </Card>
             )
           })}
         </div>
