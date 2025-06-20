@@ -20,11 +20,9 @@ import UserName from '../profile/UserName'
 
 interface TimelineCardProps {
   item: Event
-  index: number
-  ref: Virtualizer<HTMLDivElement, Element>['measureElement']
 }
 
-export default function TimelineCard({ ref: reference, item, index }: TimelineCardProps) {
+export default function TimelineCard({  item }: TimelineCardProps) {
   const { getQueryOption } = useNostr()
   const pubkey = createPubkey(item.pubkey)
   const { data: metadata } = useQuery(getQueryOption(metadataQuery, pubkey.decoded))
@@ -34,11 +32,7 @@ export default function TimelineCard({ ref: reference, item, index }: TimelineCa
     || pubkey.encoded.slice(0, 8)
 
   return (
-    <Card
-      ref={reference}
-      data-index={index}
-      className="border p-2 break-all"
-    >
+    <Card className="border p-2 break-all">
       <div className="flex gap-3">
         <ProfileIcon metadata={metadata} className="size-16 flex-shrink-0" />
         <div className="min-w-0 flex-1">

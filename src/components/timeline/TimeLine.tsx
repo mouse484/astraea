@@ -63,12 +63,20 @@ export default function TimeLine() {
           {virtualizer.getVirtualItems().map((virtualItem) => {
             const item = items[virtualItem.index]
             return (
-              <TimelineCard
-                key={item.id}
+              <div
+                key={virtualItem.key}
                 ref={virtualizer.measureElement}
-                item={item}
-                index={virtualItem.index}
-              />
+                data-index={virtualItem.index}
+                className="absolute top-0 left-0 w-full"
+                style={{
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                <TimelineCard
+                  key={item.id}
+                  item={item}
+                />
+              </div>
             )
           })}
         </div>
