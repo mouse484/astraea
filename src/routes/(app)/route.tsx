@@ -60,7 +60,7 @@ function RouteComponent() {
     <div className="max-w-svw overflow-hidden">
       <SidebarProvider>
         <Sidebar pubkey={pubkey} />
-        <main className="w-full space-y-8 p-8">
+        <main className="h-svh w-full space-y-8 p-8">
           <Outlet />
         </main>
       </SidebarProvider>

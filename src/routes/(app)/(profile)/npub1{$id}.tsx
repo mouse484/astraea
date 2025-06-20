@@ -1,4 +1,4 @@
-import Profile from '@/components/Profile'
+import Profile from '@/components/profile/Profile'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { setTitle } from '@/lib/set-title'
@@ -20,11 +20,11 @@ export const Route = createFileRoute({
 })
 
 function RouteComponent() {
-  const { content } = Route.useLoaderData()
+  const metadata = Route.useLoaderData()
 
   return (
     <div>
-      <Profile content={content} />
+      <Profile metadata={metadata} />
     </div>
   )
 }

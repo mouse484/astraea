@@ -1,14 +1,15 @@
 import type { MetadataEvent } from '@/lib/nostr/kinds/0'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shadcn-ui/components/ui/avatar'
 import { Button } from '@/shadcn-ui/components/ui/button'
+import ProfileIcon from './ProfileIcon'
+import UserName from './UserName'
 
 interface Props {
-  content?: MetadataEvent['content']
+  metadata?: MetadataEvent
 }
 
-export default function Profile({ content }: Props) {
+export default function Profile({ metadata }: Props) {
+  const content = metadata?.content || {}
   const displayName = content?.display_name || content?.name || ''
-  const name = content?.nip05?.replace('_@', '') || content?.name || ''
 
   return (
     <div>
@@ -23,22 +24,13 @@ export default function Profile({ content }: Props) {
           />
         )}
       </div>
-      <Avatar className="m-2 -mt-15 size-30">
-        <AvatarImage
-          src={content?.picture}
-          loading="lazy"
-          decoding="async"
-        />
-        <AvatarFallback>
-          {displayName.slice(0, 2).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
+      <ProfileIcon className="m-2 -mt-15 size-30" metadata={metadata} />
       <div className="p-4">
         <div className="flex justify-between">
           <div>
             <div className="text-2xl">{displayName}</div>
             <div className="text-muted-foreground">
-              {name}
+              <UserName metadata={metadata} />
             </div>
           </div>
           <Button disabled>Follow</Button>
