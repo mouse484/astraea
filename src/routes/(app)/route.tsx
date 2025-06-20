@@ -1,4 +1,7 @@
+import type { QueryKeyList } from '@/lib/nostr/query-helpers'
 import { Outlet, redirect } from '@tanstack/react-router'
+import { getUnixTime, subMinutes } from 'date-fns'
+import { useEffect } from 'react'
 import Sidebar, { SidebarProvider } from '@/components/layout/Sidebar'
 import { createPubkey, type Pubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
@@ -35,13 +38,32 @@ export const Route = createFileRoute({
 })
 
 function RouteComponent() {
-  const { pubkey } = Route.useRouteContext()
+  const { pubkey, relays, pool, queryClient } = Route.useRouteContext()
+
+  useEffect(() => {
+    const subscription = pool.subscribe(relays.read, {
+      kinds: [1],
+      since: getUnixTime(subMinutes(new Date(), 5)),
+    }, {
+      onevent(event) {
+        if (event.kind === 1) {
+          queryClient.setQueryData(['textnote' satisfies QueryKeyList, event.id], event)
+        }
+      },
+    })
+    return () => {
+      subscription.close()
+    }
+  })
+
   return (
-    <SidebarProvider>
-      <Sidebar pubkey={pubkey} />
-      <main className="w-full space-y-8 p-8">
-        <Outlet />
-      </main>
-    </SidebarProvider>
+    <div className="max-w-svw overflow-hidden">
+      <SidebarProvider>
+        <Sidebar pubkey={pubkey} />
+        <main className="w-full space-y-8 p-8">
+          <Outlet />
+        </main>
+      </SidebarProvider>
+    </div>
   )
 }

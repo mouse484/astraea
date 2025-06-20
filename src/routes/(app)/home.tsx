@@ -6,8 +6,8 @@ export const Route = createFileRoute({
 
 function RouteComponent() {
   return (
-    <>
+    <div className="w-full">
       <TimeLine />
-    </>
+    </div>
   )
 }
