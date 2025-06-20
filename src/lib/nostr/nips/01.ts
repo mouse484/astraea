@@ -2,10 +2,10 @@ import { Schema } from 'effect'
 import {
   Hex32BytesSchema,
   Hex64BytesSchema,
+  ImageURISchema,
   KindIntegerSchema,
   PubkeySchema,
   RelayUrlSchema,
-  URLSchema,
 } from '../schemas/common'
 
 export const TagSchema = Schema.Union(
@@ -33,6 +33,7 @@ export const TagSchema = Schema.Union(
     ),
     Schema.optionalElement(RelayUrlSchema),
   ),
+  Schema.Array(Schema.String).pipe(Schema.minItems(1)),
 )
 
 const TagsSchema = Schema.Array(TagSchema)
@@ -50,5 +51,5 @@ export const NostrEventSchema = Schema.Struct({
 export const UserMetadataSchema = Schema.Struct({
   name: Schema.String,
   about: Schema.String,
-  picture: URLSchema,
+  picture: ImageURISchema,
 })

@@ -30,7 +30,11 @@ export function createQuery<T, I = T>({ name, schema, kind, filterKey }: QueryCo
         if (!event) {
           throw new Error(`${name} event not found`)
         }
-        return Schema.decodeUnknownSync(schema)(event)
+        return await Schema.decodeUnknownPromise(schema)(event)
+          .catch((error) => {
+            console.error(error)
+            throw error
+          })
       },
     })
   }

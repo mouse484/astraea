@@ -1,16 +1,25 @@
 import { Schema } from 'effect'
-import { URLSchema } from '../schemas/common'
+import { ImageURISchema, URLSchema } from '../schemas/common'
 
 export const MetadataExtraFieldsSchema = Schema.Struct({
   display_name: Schema.String,
   website: URLSchema,
-  banner: URLSchema,
-  bot: Schema.Boolean,
+  banner: ImageURISchema,
+  bot: Schema.Union(
+    Schema.Boolean,
+    Schema.String.pipe(
+      Schema.filter(s => s === 'true' || s === 'false'),
+      Schema.transform(Schema.Boolean, {
+        decode: s => s === 'true',
+        encode: b => b ? 'true' : 'false',
+      }),
+    ),
+  ),
   birthday: Schema.Struct({
     year: Schema.Number,
     month: Schema.Number,
     day: Schema.Number,
-  }),
+  }).pipe(Schema.partial),
   /**
    * @deprecated use `display_name` instead
    */
