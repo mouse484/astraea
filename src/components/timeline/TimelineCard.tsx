@@ -1,6 +1,6 @@
-import type { Virtualizer } from '@tanstack/react-virtual'
 import type { Event } from 'nostr-tools'
 import { useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 import { format, fromUnixTime } from 'date-fns'
 import { Heart, MessageCircle, Repeat2, Share2, SmilePlus, Zap } from 'lucide-react'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
@@ -22,7 +22,7 @@ interface TimelineCardProps {
   item: Event
 }
 
-export default function TimelineCard({  item }: TimelineCardProps) {
+export default function TimelineCard({ item }: TimelineCardProps) {
   const { getQueryOption } = useNostr()
   const pubkey = createPubkey(item.pubkey)
   const { data: metadata } = useQuery(getQueryOption(metadataQuery, pubkey.decoded))
@@ -34,16 +34,20 @@ export default function TimelineCard({  item }: TimelineCardProps) {
   return (
     <Card className="border p-2 break-all">
       <div className="flex gap-3">
-        <ProfileIcon metadata={metadata} className="size-16 flex-shrink-0" />
+        <Link to="/npub1{$id}" params={{ id: pubkey.routeId }}>
+          <ProfileIcon metadata={metadata} className="size-16 flex-shrink-0" />
+        </Link>
         <div className="min-w-0 flex-1">
-          <CardHeader className="p-0">
+          <CardHeader className="p-0 pt-2">
             <CardTitle>
-              {displayName}
+              <Link to="/npub1{$id}" params={{ id: pubkey.routeId }}>
+                {displayName}
+              </Link>
             </CardTitle>
             <CardDescription className="flex justify-between text-sm">
-              <div>
+              <Link to="/npub1{$id}" params={{ id: pubkey.routeId }}>
                 <UserName metadata={metadata} />
-              </div>
+              </Link>
               <div>
                 {format(fromUnixTime(item.created_at), 'yyyy-MM-dd HH:mm')}
               </div>
