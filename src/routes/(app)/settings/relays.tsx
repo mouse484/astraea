@@ -17,7 +17,18 @@ function RouteComponent() {
   const { publishEvent } = useNostr()
 
   const [relays, setRelays] = useState<StoreValue<'relays'>>(() => {
-    return readStore('relays') ?? []
+    return readStore('relays') ?? [
+      {
+        url: 'wss://nos.lol',
+        read: true,
+        write: true,
+      },
+      {
+        url: 'wss://relay.damus.io',
+        read: true,
+        write: true,
+      },
+    ]
   })
   const [isLoading, setIsLoading] = useState(false)
   const isInitialized = useRef(false)

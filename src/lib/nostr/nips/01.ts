@@ -33,6 +33,10 @@ export const TagSchema = Schema.Union(
     ),
     Schema.optionalElement(RelayUrlSchema),
   ),
+  Schema.Tuple(
+    Schema.Literal('alt'),
+    Schema.String,
+  ),
   Schema.Array(Schema.String).pipe(Schema.minItems(1)),
 )
 

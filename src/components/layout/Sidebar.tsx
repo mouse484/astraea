@@ -1,7 +1,7 @@
 import type { LinkProps } from '@tanstack/react-router'
 import type { LucideIcon } from 'lucide-react'
 import { Link, useRouteContext } from '@tanstack/react-router'
-import { Globe, Home, Network, User } from 'lucide-react'
+import { Globe, Home, Network, Settings2, User } from 'lucide-react'
 import {
   Sidebar as ShadcnSidebar,
   SidebarContent,
@@ -38,6 +38,11 @@ export default function Sidebar() {
     {
       groupName: 'Settings',
       items: [
+        {
+          name: 'General',
+          to: '/settings/general',
+          icon: Settings2,
+        },
         {
           name: 'Relays',
           to: '/settings/relays',
