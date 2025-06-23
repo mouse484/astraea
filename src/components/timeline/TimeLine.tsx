@@ -2,8 +2,10 @@ import type { Event } from 'nostr-tools'
 import { useQueryClient } from '@tanstack/react-query'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { fromUnixTime } from 'date-fns'
+import { Schema } from 'effect'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import TimelineCard from './TimelineCard'
+import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
+import TextNote from '../text-note/TextNote'
 
 interface Props {
   pubkeys?: string[]
@@ -70,6 +72,7 @@ export default function TimeLine({ pubkeys }: Props) {
         >
           {virtualizer.getVirtualItems().map((virtualItem) => {
             const item = items[virtualItem.index]
+            const result = Schema.decodeUnknownSync(TextNoteEventSchema)(item)
             return (
               <div
                 key={virtualItem.key}
@@ -80,9 +83,9 @@ export default function TimeLine({ pubkeys }: Props) {
                   transform: `translateY(${virtualItem.start}px)`,
                 }}
               >
-                <TimelineCard
+                <TextNote
                   key={item.id}
-                  item={item}
+                  event={result}
                 />
               </div>
             )
