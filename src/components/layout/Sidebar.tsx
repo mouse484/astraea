@@ -1,7 +1,6 @@
 import type { LinkProps } from '@tanstack/react-router'
 import type { LucideIcon } from 'lucide-react'
-import type { Pubkey } from '@/lib/nostr/nip19'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouteContext } from '@tanstack/react-router'
 import { Globe, Home, Network, User } from 'lucide-react'
 import {
   Sidebar as ShadcnSidebar,
@@ -18,11 +17,8 @@ import {
 
 export { SidebarProvider } from '@/shadcn-ui/components/ui/sidebar'
 
-interface Props {
-  pubkey: Pubkey
-}
-
-export default function Sidebar({ pubkey }: Props) {
+export default function Sidebar() {
+  const pubkey = useRouteContext({ from: '/(app)', select: s => s.pubkey })
   const menuItems = [
     {
       groupName: 'General',

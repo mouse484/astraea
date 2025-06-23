@@ -2,10 +2,12 @@ import type { Pubkey } from '@/lib/nostr/nip19'
 import type { QueryKeyList } from '@/lib/nostr/query-helpers'
 import { Outlet, redirect } from '@tanstack/react-router'
 import { getUnixTime, subMinutes } from 'date-fns'
+import { AlertCircle } from 'lucide-react'
 import { useEffect } from 'react'
-import Sidebar, { SidebarProvider } from '@/components/layout/Sidebar'
+import { Layout } from '@/components/layout/Layout'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
+import { Alert, AlertDescription, AlertTitle } from '@/shadcn-ui/components/ui/alert'
 
 export interface AppRouteContext {
   pubkey: Pubkey
@@ -41,10 +43,28 @@ export const Route = createFileRoute({
       },
     }
   },
+  errorComponent: ({ error }) => {
+    return (
+      <Layout>
+        <Alert variant="destructive" className="mx-auto w-4/5">
+          <AlertCircle className="!mr-2 h-8 w-8 flex-shrink-0" />
+          <AlertTitle className="text-xl font-semibold">{error.name}</AlertTitle>
+          <AlertDescription>
+            <p>
+              {error.message || 'An unexpected error occurred.'}
+            </p>
+            {error.stack && (
+              <pre className="mt-2 text-sm text-wrap text-current/80">{error.stack}</pre>
+            )}
+          </AlertDescription>
+        </Alert>
+      </Layout>
+    )
+  },
 })
 
 function RouteComponent() {
-  const { pubkey, relays, pool, queryClient } = Route.useRouteContext()
+  const { relays, pool, queryClient } = Route.useRouteContext()
 
   useEffect(() => {
     const subscription = pool.subscribe(relays.read, {
@@ -63,13 +83,8 @@ function RouteComponent() {
   })
 
   return (
-    <div className="max-w-svw">
-      <SidebarProvider>
-        <Sidebar pubkey={pubkey} />
-        <main className="h-svh w-full space-y-8 p-8">
-          <Outlet />
-        </main>
-      </SidebarProvider>
-    </div>
+    <Layout>
+      <Outlet />
+    </Layout>
   )
 }
