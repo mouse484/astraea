@@ -4,28 +4,33 @@ import { RelayUrlSchema } from '../schemas/common'
 
 export const RelayListSchema = Schema.transform(
   Schema.Array(
-    Schema.Tuple(
-      Schema.Literal('r'),
-      RelayUrlSchema,
-      Schema.optionalElement(
-        Schema.Union(
-          Schema.Literal('read'),
-          Schema.Literal('write'),
+    Schema.Union(
+      Schema.Tuple(
+        Schema.Literal('r'),
+        RelayUrlSchema,
+        Schema.optionalElement(
+          Schema.Union(
+            Schema.Literal('read'),
+            Schema.Literal('write'),
+          ),
         ),
       ),
+      Schema.Array(Schema.String),
     ),
   ),
   StoreSchemas.relays,
   {
     strict: true,
     decode: (tags) => {
-      return tags.map(([_, url, permission]) => {
-        return {
-          url,
-          read: permission === 'read' || permission === undefined,
-          write: permission === 'write' || permission === undefined,
-        }
-      })
+      return tags
+        .filter(([tagName]) => tagName === 'r')
+        .map(([_, url, permission]) => {
+          return {
+            url,
+            read: permission === 'read' || permission === undefined,
+            write: permission === 'write' || permission === undefined,
+          }
+        })
     },
     encode: (relays) => {
       return relays
