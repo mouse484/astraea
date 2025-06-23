@@ -1,4 +1,5 @@
 import { Schema } from 'effect'
+import normalizeUrl from 'normalize-url'
 
 const HEX_REGEX = /^[0-9a-f]+$/i
 
@@ -19,7 +20,6 @@ export const RelayUrlSchema = Schema.String.pipe(
     }
   }),
 )
-import normalizeUrl from 'normalize-url'
 
 export const URLSchema = Schema.String.pipe(
   Schema.filter((s) => {

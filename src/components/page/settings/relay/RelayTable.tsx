@@ -1,8 +1,9 @@
 import type { CellContext, ColumnDef } from '@tanstack/react-table'
+import type { DataTableProps } from '@/components/DataTable'
 import type { StoreValue } from '@/lib/store/schema'
-import { Trash } from 'lucide-react'
 
-import { DataTable, type DataTableProps } from '@/components/DataTable'
+import { Trash } from 'lucide-react'
+import { DataTable } from '@/components/DataTable'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { Checkbox } from '@/shadcn-ui/components/ui/checkbox'
 
