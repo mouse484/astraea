@@ -17,6 +17,7 @@ export const RelayListSchema = Schema.transform(
   ),
   StoreSchemas.relays,
   {
+    strict: true,
     decode: (tags) => {
       return tags.map(([_, url, permission]) => {
         return {
@@ -36,6 +37,5 @@ export const RelayListSchema = Schema.transform(
           return ['r', relay.url, relay.read ? 'read' : 'write'] as const
         })
     },
-    strict: true,
   },
 )

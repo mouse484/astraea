@@ -8,7 +8,7 @@ import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import TextNote from '../text-note/TextNote'
 
 interface Props {
-  pubkeys?: string[]
+  pubkeys?: string[] | readonly string[]
 }
 
 export default function TimeLine({ pubkeys }: Props) {
