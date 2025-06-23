@@ -7,7 +7,9 @@ import { Textarea } from '@/shadcn-ui/components/ui/textarea'
 
 export default function TextNoteForm() {
   const [text, setText] = useState('')
+  const [isPosting, setIsPosting] = useState(false)
   const { publishEvent } = useNostr()
+
   return (
     <div>
       <Textarea
@@ -19,14 +21,16 @@ export default function TextNoteForm() {
       />
       <div className="mt-2 flex justify-end">
         <Button
-          disabled={text.length === 0}
+          disabled={text.length === 0 || isPosting}
           onClick={async () => {
+            setIsPosting(true)
             await publishEvent(TextNoteEventSchema, {
               content: text,
               kind: 1,
               tags: [],
             })
             setText('')
+            setIsPosting(false)
           }}
         >
           Post
