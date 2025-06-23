@@ -1,3 +1,4 @@
+import { useTheme } from 'next-themes'
 import { deleteStore } from '@/lib/store'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
@@ -7,8 +8,20 @@ export const Route = createFileRoute({
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
+  const { setTheme, theme, themes } = useTheme()
   return (
-    <div>
+    <div className="flex flex-col gap-8">
+      <div className="flex gap-4">
+        {themes.map(t => (
+          <Button
+            disabled={t === theme}
+            key={t}
+            onClick={() => setTheme(t)}
+          >
+            {t}
+          </Button>
+        ))}
+      </div>
       <Button onClick={() => {
         deleteStore('pubkey')
         navigate({
