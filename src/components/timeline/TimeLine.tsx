@@ -64,34 +64,32 @@ export default function TimeLine({ pubkeys }: Props) {
   }, [queryClient, getLatestItems, isTop])
 
   return (
-    <>
-      <div ref={parentReference} className="h-full w-full overflow-y-auto">
-        <div
-          className="relative w-full p-2"
-          style={{ height: `${virtualizer.getTotalSize()}px` }}
-        >
-          {virtualizer.getVirtualItems().map((virtualItem) => {
-            const item = items[virtualItem.index]
-            const result = Schema.decodeUnknownSync(TextNoteEventSchema)(item)
-            return (
-              <div
-                key={virtualItem.key}
-                ref={virtualizer.measureElement}
-                data-index={virtualItem.index}
-                className="absolute top-0 left-0 w-full"
-                style={{
-                  transform: `translateY(${virtualItem.start}px)`,
-                }}
-              >
-                <TextNote
-                  key={item.id}
-                  event={result}
-                />
-              </div>
-            )
-          })}
-        </div>
+    <div ref={parentReference} className="h-full w-full overflow-y-auto">
+      <div
+        className="relative w-full p-2"
+        style={{ height: `${virtualizer.getTotalSize()}px` }}
+      >
+        {virtualizer.getVirtualItems().map((virtualItem) => {
+          const item = items[virtualItem.index]
+          const result = Schema.decodeUnknownSync(TextNoteEventSchema)(item)
+          return (
+            <div
+              key={virtualItem.key}
+              ref={virtualizer.measureElement}
+              data-index={virtualItem.index}
+              className="absolute top-0 left-0 w-full"
+              style={{
+                transform: `translateY(${virtualItem.start}px)`,
+              }}
+            >
+              <TextNote
+                key={item.id}
+                event={result}
+              />
+            </div>
+          )
+        })}
       </div>
-    </>
+    </div>
   )
 }

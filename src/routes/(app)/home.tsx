@@ -1,3 +1,4 @@
+import TextNoteForm from '@/components/text-note/TextNoteForm'
 import TimeLine from '@/components/timeline/TimeLine'
 import { FollowListQuery } from '@/lib/nostr/kinds/3'
 
@@ -14,6 +15,9 @@ export const Route = createFileRoute({
 function RouteComponent() {
   const { tags: pubkeys } = Route.useLoaderData()
   return (
-    <TimeLine pubkeys={pubkeys} />
+    <div className="grid h-full grid-rows-[auto_1fr] gap-4">
+      <TextNoteForm />
+      <TimeLine pubkeys={pubkeys} />
+    </div>
   )
 }
