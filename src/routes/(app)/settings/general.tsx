@@ -23,7 +23,7 @@ function RouteComponent() {
         ))}
       </div>
       <Button onClick={() => {
-        deleteStore('pubkey')
+        localStorage.clear()
         navigate({
           to: '/',
         })
