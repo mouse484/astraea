@@ -14,6 +14,11 @@ export interface AppRouteContext {
   }
 }
 
+const defaultRelays = [
+  'wss://nos.lol',
+  'wss://relay.damus.io',
+]
+
 export const Route = createFileRoute({
   component: RouteComponent,
   beforeLoad: () => {
@@ -30,8 +35,8 @@ export const Route = createFileRoute({
     return {
       pubkey,
       relays: {
-        read: relays?.filter(r => r.read).map(r => r.url) ?? [],
-        write: relays?.filter(r => r.write).map(r => r.url) ?? [],
+        read: relays?.filter(r => r.read).map(r => r.url) ?? defaultRelays,
+        write: relays?.filter(r => r.write).map(r => r.url) ?? defaultRelays,
       },
     }
   },

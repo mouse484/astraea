@@ -31,7 +31,7 @@ function RouteComponent() {
           if (pubkey) {
             writeStore('pubkey', pubkey)
             navigate({
-              to: '/home',
+              to: '/settings/relays',
             })
             toast.success('Successfully signed in with NIP-07 extension')
           } else {
