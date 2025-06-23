@@ -1,6 +1,7 @@
+import type { DecodedResult } from 'nostr-tools/nip19'
 import {
   decode,
-  type DecodedResult,
+
   naddrEncode,
   neventEncode,
   noteEncode,

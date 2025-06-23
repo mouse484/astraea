@@ -1,5 +1,6 @@
+import type { StoreKey, StoreValue } from './schema'
 import { Schema } from 'effect'
-import { type StoreKey, StoreSchemas, type StoreValue } from './schema'
+import { StoreSchemas } from './schema'
 
 export function readStore<K extends StoreKey>(key: K): StoreValue<K> | undefined {
   const value = localStorage.getItem(key)

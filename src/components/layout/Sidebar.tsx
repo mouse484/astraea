@@ -1,6 +1,8 @@
+import type { LinkProps } from '@tanstack/react-router'
+import type { LucideIcon } from 'lucide-react'
 import type { Pubkey } from '@/lib/nostr/nip19'
-import { Link, type LinkProps } from '@tanstack/react-router'
-import { Globe, Home, type LucideIcon, Network, User } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { Globe, Home, Network, User } from 'lucide-react'
 import {
   Sidebar as ShadcnSidebar,
   SidebarContent,

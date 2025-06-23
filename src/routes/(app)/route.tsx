@@ -1,9 +1,10 @@
+import type { Pubkey } from '@/lib/nostr/nip19'
 import type { QueryKeyList } from '@/lib/nostr/query-helpers'
 import { Outlet, redirect } from '@tanstack/react-router'
 import { getUnixTime, subMinutes } from 'date-fns'
 import { useEffect } from 'react'
 import Sidebar, { SidebarProvider } from '@/components/layout/Sidebar'
-import { createPubkey, type Pubkey } from '@/lib/nostr/nip19'
+import { createPubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
 
 export interface AppRouteContext {
