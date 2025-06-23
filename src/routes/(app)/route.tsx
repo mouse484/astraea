@@ -57,7 +57,7 @@ function RouteComponent() {
   })
 
   return (
-    <div className="max-w-svw overflow-hidden">
+    <div className="max-w-svw">
       <SidebarProvider>
         <Sidebar pubkey={pubkey} />
         <main className="h-svh w-full space-y-8 p-8">

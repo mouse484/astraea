@@ -5,7 +5,11 @@ import { fromUnixTime } from 'date-fns'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import TimelineCard from './TimelineCard'
 
-export default function TimeLine() {
+interface Props {
+  pubkeys?: string[]
+}
+
+export default function TimeLine({ pubkeys }: Props) {
   const parentReference = useRef<HTMLDivElement>(null)
   const queryClient = useQueryClient()
 
@@ -14,15 +18,19 @@ export default function TimeLine() {
       .getQueryCache()
       .findAll({ queryKey: ['textnote'] })
       .map(query => query.state.data as Event)
-      .filter((event): event is Event =>
-        event !== undefined
-        && event !== null
-        && event.created_at !== undefined,
-      )
+      .filter((event): event is Event => {
+        if (event?.created_at === undefined) {
+          return false
+        } else {
+          return pubkeys && pubkeys.length > 0
+            ? pubkeys.includes(event.pubkey)
+            : true
+        }
+      })
       .sort((a, b) => {
         return fromUnixTime(b.created_at).getTime() - fromUnixTime(a.created_at).getTime()
       })
-  }, [queryClient])
+  }, [queryClient, pubkeys])
 
   const [items, setItems] = useState<Event[]>(() => getLatestItems())
 
