@@ -14,8 +14,6 @@ export const Route = createFileRoute({
 function RouteComponent() {
   const { tags: pubkeys } = Route.useLoaderData()
   return (
-    <div className="h-full w-full">
-      <TimeLine pubkeys={pubkeys} />
-    </div>
+    <TimeLine pubkeys={pubkeys} />
   )
 }

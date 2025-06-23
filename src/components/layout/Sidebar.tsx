@@ -1,6 +1,6 @@
 import type { Pubkey } from '@/lib/nostr/nip19'
 import { Link, type LinkProps } from '@tanstack/react-router'
-import { Home, type LucideIcon, Network, User } from 'lucide-react'
+import { Globe, Home, type LucideIcon, Network, User } from 'lucide-react'
 import {
   Sidebar as ShadcnSidebar,
   SidebarContent,
@@ -29,6 +29,11 @@ export default function Sidebar({ pubkey }: Props) {
           name: 'Home',
           to: '/home',
           icon: Home,
+        },
+        {
+          name: 'Global',
+          to: '/global',
+          icon: Globe,
         },
       ],
     },
