@@ -1,5 +1,4 @@
 import { Schema } from 'effect'
-import { normalizeURL } from 'nostr-tools/utils'
 
 const HEX_REGEX = /^[0-9a-f]+$/i
 
