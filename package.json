@@ -28,7 +28,7 @@
     "@tanstack/react-router": "^1.121.34",
     "@tanstack/react-router-devtools": "^1.121.34",
     "@tanstack/react-table": "^8.21.3",
-    "@tanstack/react-virtual": "^3.13.10",
+    "@tanstack/react-virtual": "^3.13.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
