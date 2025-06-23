@@ -46,7 +46,7 @@
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
-    "@mouse_484/eslint-config": "4.4.8",
+    "@mouse_484/eslint-config": "4.4.9",
     "@tanstack/router-plugin": "1.121.34",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
@@ -56,7 +56,7 @@
     "semantic-release": "24.2.5",
     "tw-animate-css": "1.3.4",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.34.1",
+    "typescript-eslint": "8.35.0",
     "vite": "6.3.5",
     "vite-tsconfig-paths": "5.1.4"
   }
