@@ -12,6 +12,7 @@ export default function TextNoteForm() {
     <div>
       <Textarea
         className="resize-none"
+        value={text}
         onChange={(event) => {
           setText(event.target.value)
         }}
