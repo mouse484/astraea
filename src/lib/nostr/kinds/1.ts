@@ -8,11 +8,11 @@ export const TextNoteEventSchema = Schema.Struct({
   ...NostrEventSchema.fields,
   kind: Schema.Literal(kinds.ShortTextNote),
   tags: Schema.Array(Schema.Union(...TagSchema.members, ...TextNoteTagSchema.members)),
-  content: Schema.String,
 })
 
 export const TextNoteQuery = createQuery({
   name: 'textnote',
   schema: TextNoteEventSchema,
   kind: kinds.ShortTextNote,
+  filterKey: 'ids',
 })

@@ -15,4 +15,5 @@ export const relayListQuery = createQuery({
   name: 'relaylist',
   schema: RelayListEventSchema,
   kind: kinds.RelayList,
+  filterKey: 'authors',
 })

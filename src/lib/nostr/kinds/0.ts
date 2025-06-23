@@ -5,13 +5,11 @@ import { MetadataWithKind05Schema } from '../nips/05'
 import { MetadataExtraFieldsSchema } from '../nips/24'
 import { createQuery } from '../query-helpers'
 
-const MetadataSchema = Schema.partial(
-  Schema.Struct({
-    ...UserMetadataSchema.fields,
-    ...MetadataWithKind05Schema.fields,
-    ...MetadataExtraFieldsSchema.fields,
-  }),
-)
+const MetadataSchema = Schema.Struct({
+  ...UserMetadataSchema.fields,
+  ...MetadataWithKind05Schema.fields,
+  ...MetadataExtraFieldsSchema.fields,
+}).pipe(Schema.partial)
 
 const MetadataEventSchema = Schema.Struct({
   ...NostrEventSchema.fields,
@@ -25,4 +23,5 @@ export const metadataQuery = createQuery({
   name: 'metadata',
   schema: MetadataEventSchema,
   kind: kinds.Metadata,
+  filterKey: 'authors',
 })

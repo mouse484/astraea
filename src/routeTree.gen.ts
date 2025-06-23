@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as appHomeRouteImport } from './routes/(app)/home'
+import { Route as appGlobalRouteImport } from './routes/(app)/global'
 import { Route as appSettingsRelaysRouteImport } from './routes/(app)/settings/relays'
 import { Route as apptextnoteNote1Char123idChar125RouteImport } from './routes/(app)/(textnote)/note1{$id}'
 import { Route as apptextnoteNevent1Char123idChar125RouteImport } from './routes/(app)/(textnote)/nevent1{$id}'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 const appHomeRoute = appHomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const appGlobalRoute = appGlobalRouteImport.update({
+  id: '/global',
+  path: '/global',
   getParentRoute: () => appRouteRoute,
 } as any)
 const appSettingsRelaysRoute = appSettingsRelaysRouteImport.update({
@@ -59,6 +65,7 @@ const appprofileNpub1Char123idChar125Route =
 
 export interface FileRoutesByFullPath {
   '/': typeof appRouteRouteWithChildren
+  '/global': typeof appGlobalRoute
   '/home': typeof appHomeRoute
   '/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
   '/nevent1{$id}': typeof apptextnoteNevent1Char123idChar125Route
@@ -67,6 +74,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof appRouteRouteWithChildren
+  '/global': typeof appGlobalRoute
   '/home': typeof appHomeRoute
   '/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
   '/nevent1{$id}': typeof apptextnoteNevent1Char123idChar125Route
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(app)': typeof appRouteRouteWithChildren
+  '/(app)/global': typeof appGlobalRoute
   '/(app)/home': typeof appHomeRoute
   '/(app)/(profile)/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
   '/(app)/(textnote)/nevent1{$id}': typeof apptextnoteNevent1Char123idChar125Route
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/global'
     | '/home'
     | '/npub1{$id}'
     | '/nevent1{$id}'
@@ -95,6 +105,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/global'
     | '/home'
     | '/npub1{$id}'
     | '/nevent1{$id}'
@@ -104,6 +115,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/(app)'
+    | '/(app)/global'
     | '/(app)/home'
     | '/(app)/(profile)/npub1{$id}'
     | '/(app)/(textnote)/nevent1{$id}'
@@ -131,6 +143,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof appRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(app)/global': {
+      id: '/(app)/global'
+      path: '/global'
+      fullPath: '/global'
+      preLoaderRoute: typeof appGlobalRouteImport
+      parentRoute: typeof appRouteRoute
     }
     '/(app)/home': {
       id: '/(app)/home'
@@ -188,6 +207,15 @@ declare module './routes/(app)/route' {
     FileRoutesByPath['/(app)']['fullPath']
   >
 }
+declare module './routes/(app)/global' {
+  const createFileRoute: CreateFileRoute<
+    '/(app)/global',
+    FileRoutesByPath['/(app)/global']['parentRoute'],
+    FileRoutesByPath['/(app)/global']['id'],
+    FileRoutesByPath['/(app)/global']['path'],
+    FileRoutesByPath['/(app)/global']['fullPath']
+  >
+}
 declare module './routes/(app)/home' {
   const createFileRoute: CreateFileRoute<
     '/(app)/home',
@@ -235,6 +263,7 @@ declare module './routes/(app)/settings/relays' {
 }
 
 interface appRouteRouteChildren {
+  appGlobalRoute: typeof appGlobalRoute
   appHomeRoute: typeof appHomeRoute
   appprofileNpub1Char123idChar125Route: typeof appprofileNpub1Char123idChar125Route
   apptextnoteNevent1Char123idChar125Route: typeof apptextnoteNevent1Char123idChar125Route
@@ -243,6 +272,7 @@ interface appRouteRouteChildren {
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
+  appGlobalRoute: appGlobalRoute,
   appHomeRoute: appHomeRoute,
   appprofileNpub1Char123idChar125Route: appprofileNpub1Char123idChar125Route,
   apptextnoteNevent1Char123idChar125Route:

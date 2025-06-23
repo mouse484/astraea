@@ -1,4 +1,5 @@
-import Profile from '@/components/Profile'
+import Profile from '@/components/profile/Profile'
+import TimeLine from '@/components/timeline/TimeLine'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { setTitle } from '@/lib/set-title'
@@ -8,9 +9,7 @@ export const Route = createFileRoute({
   loader: async ({ params: { id }, context: { queryClient, pool, relays } }) => {
     const pubkey = createPubkey(`npub1${id}`)
 
-    return queryClient.fetchQuery(metadataQuery({ pool, relays: relays.read }, {
-      authors: [pubkey.decoded],
-    }))
+    return queryClient.fetchQuery(metadataQuery({ pool, relays: relays.read }, pubkey.decoded))
   },
   head(context) {
     return {
@@ -22,11 +21,15 @@ export const Route = createFileRoute({
 })
 
 function RouteComponent() {
-  const { content } = Route.useLoaderData()
+  const metadata = Route.useLoaderData()
 
   return (
     <div>
-      <Profile content={content} />
+      <Profile metadata={metadata} />
+
+      <div className="h-screen">
+        <TimeLine pubkeys={[metadata.pubkey]} />
+      </div>
     </div>
   )
 }

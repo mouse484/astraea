@@ -1,3 +1,4 @@
+import type { createQuery } from './query-helpers'
 import { useRouteContext } from '@tanstack/react-router'
 import { getUnixTime } from 'date-fns'
 import { Schema } from 'effect'
@@ -33,6 +34,9 @@ export default function useNostr() {
         console.error('Failed to publish event:', { event, error })
         toast.error(messages?.error ?? `Failed to publish event. Kind: ${event.kind}`)
       }
+    },
+    getQueryOption: <T, I = T>(queryOption: ReturnType<typeof createQuery<T, I>>, id: string) => {
+      return queryOption({ pool, relays: relays.read }, id)
     },
   }
 }
