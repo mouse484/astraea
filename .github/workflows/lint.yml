@@ -1,5 +1,7 @@
 name: lint
 on: push
+permissions:
+  contents: read
 
 jobs:
   lint:
