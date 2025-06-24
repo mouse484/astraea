@@ -32,7 +32,7 @@ export const URLSchema = Schema.String.pipe(
     }
   }),
 )
-export const ImageURISchema = Schema.String.pipe(
+export const ImageURISchema = Schema.NullOr(Schema.String.pipe(
   Schema.filter((s) => {
     if (s === '') return true
     try {
@@ -42,4 +42,5 @@ export const ImageURISchema = Schema.String.pipe(
       return false
     }
   }),
+),
 )

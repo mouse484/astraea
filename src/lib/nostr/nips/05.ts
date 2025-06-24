@@ -4,15 +4,7 @@ export const MetadataWithKind05Schema = Schema.Struct({
   /**
    * NIP-05 internet identifier.
    */
-  nip05: Schema.Union(
-    Schema.Literal(''),
-    // Full identifier format: local@domain
-    Schema.String.pipe(Schema.pattern(/^[\w\-.]+@[\w\-.]+$/)),
-    // Root identifier format: _@domain
-    Schema.String.pipe(Schema.pattern(/^_@[\w\-.]+$/)),
-    // Domain only format: domain.tld (represents _@domain.tld)
-    Schema.String.pipe(Schema.pattern(/^[\w\-.]+\.[a-z]{2,}$/i)),
-  ).pipe(
+  nip05: Schema.String.pipe(
     Schema.transform(
       Schema.String,
       {
@@ -21,6 +13,17 @@ export const MetadataWithKind05Schema = Schema.Struct({
           if (value.startsWith('_@')) {
             return value.slice(2)
           }
+
+          const isValidNip05 = (
+            value === ''
+            || /^[\w\-.]+@[\w\-.]+$/.test(value)
+            || /^[\w\-.]+\.[a-z]{2,}$/i.test(value)
+          )
+
+          if (!isValidNip05) {
+            return ''
+          }
+
           return value
         },
         encode: (value) => {
