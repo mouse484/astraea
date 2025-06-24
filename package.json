@@ -32,7 +32,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "effect": "^3.16.8",
+    "effect": "^3.16.9",
     "enhanced-ms": "^4.1.0",
     "lucide-react": "^0.522.0",
     "next-themes": "^0.4.6",
