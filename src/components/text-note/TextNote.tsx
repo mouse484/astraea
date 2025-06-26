@@ -64,18 +64,18 @@ export default function TextNote({ event }: Props) {
       }}
     >
       <div className="flex gap-3">
-        <Link to="/npub1{$id}" params={{ id: pubkey.routeId }}>
+        <Link from="/" to="/npub1{$id}" params={{ id: pubkey.routeId }}>
           <ProfileIcon metadata={metadata} className="size-16 flex-shrink-0" />
         </Link>
         <div className="min-w-0 flex-1">
           <CardHeader className="p-0 pt-2">
             <CardTitle>
-              <Link to="/npub1{$id}" params={{ id: pubkey.routeId }}>
+              <Link from="/" to="/npub1{$id}" params={{ id: pubkey.routeId }}>
                 {displayName}
               </Link>
             </CardTitle>
             <CardDescription className="flex justify-between text-sm">
-              <Link to="/npub1{$id}" params={{ id: pubkey.routeId }}>
+              <Link from="/" to="/npub1{$id}" params={{ id: pubkey.routeId }}>
                 <UserName metadata={metadata} />
               </Link>
               <div>
