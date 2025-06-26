@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@mouse_484/eslint-config": "4.4.10",
-    "@tanstack/router-plugin": "1.121.34",
+    "@tanstack/router-plugin": "1.121.37",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "@vitejs/plugin-react-swc": "3.10.2",
