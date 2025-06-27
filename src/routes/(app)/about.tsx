@@ -35,7 +35,7 @@ function RouteComponent() {
 
       <div className="grid grid-cols-2 gap-2">
         <Button asChild variant="outline">
-          <a href="github.com/mouse484/astraea" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mouse484/astraea" target="_blank" rel="noopener noreferrer">
             <Code />
             {' '}
             Source Code
