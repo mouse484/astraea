@@ -15,6 +15,7 @@ import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as appHomeRouteImport } from './routes/(app)/home'
 import { Route as appGlobalRouteImport } from './routes/(app)/global'
+import { Route as appAboutRouteImport } from './routes/(app)/about'
 import { Route as appSettingsRelaysRouteImport } from './routes/(app)/settings/relays'
 import { Route as appSettingsGeneralRouteImport } from './routes/(app)/settings/general'
 import { Route as apptextnoteNote1Char123idChar125RouteImport } from './routes/(app)/(textnote)/note1{$id}'
@@ -38,6 +39,11 @@ const appHomeRoute = appHomeRouteImport.update({
 const appGlobalRoute = appGlobalRouteImport.update({
   id: '/global',
   path: '/global',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const appAboutRoute = appAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => appRouteRoute,
 } as any)
 const appSettingsRelaysRoute = appSettingsRelaysRouteImport.update({
@@ -71,6 +77,7 @@ const appprofileNpub1Char123idChar125Route =
 
 export interface FileRoutesByFullPath {
   '/': typeof appRouteRouteWithChildren
+  '/about': typeof appAboutRoute
   '/global': typeof appGlobalRoute
   '/home': typeof appHomeRoute
   '/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
@@ -81,6 +88,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof appRouteRouteWithChildren
+  '/about': typeof appAboutRoute
   '/global': typeof appGlobalRoute
   '/home': typeof appHomeRoute
   '/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(app)': typeof appRouteRouteWithChildren
+  '/(app)/about': typeof appAboutRoute
   '/(app)/global': typeof appGlobalRoute
   '/(app)/home': typeof appHomeRoute
   '/(app)/(profile)/npub1{$id}': typeof appprofileNpub1Char123idChar125Route
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/global'
     | '/home'
     | '/npub1{$id}'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/global'
     | '/home'
     | '/npub1{$id}'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/(app)'
+    | '/(app)/about'
     | '/(app)/global'
     | '/(app)/home'
     | '/(app)/(profile)/npub1{$id}'
@@ -155,6 +167,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof appRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(app)/about': {
+      id: '/(app)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof appAboutRouteImport
+      parentRoute: typeof appRouteRoute
     }
     '/(app)/global': {
       id: '/(app)/global'
@@ -226,6 +245,15 @@ declare module './routes/(app)/route' {
     FileRoutesByPath['/(app)']['fullPath']
   >
 }
+declare module './routes/(app)/about' {
+  const createFileRoute: CreateFileRoute<
+    '/(app)/about',
+    FileRoutesByPath['/(app)/about']['parentRoute'],
+    FileRoutesByPath['/(app)/about']['id'],
+    FileRoutesByPath['/(app)/about']['path'],
+    FileRoutesByPath['/(app)/about']['fullPath']
+  >
+}
 declare module './routes/(app)/global' {
   const createFileRoute: CreateFileRoute<
     '/(app)/global',
@@ -291,6 +319,7 @@ declare module './routes/(app)/settings/relays' {
 }
 
 interface appRouteRouteChildren {
+  appAboutRoute: typeof appAboutRoute
   appGlobalRoute: typeof appGlobalRoute
   appHomeRoute: typeof appHomeRoute
   appprofileNpub1Char123idChar125Route: typeof appprofileNpub1Char123idChar125Route
@@ -301,6 +330,7 @@ interface appRouteRouteChildren {
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
+  appAboutRoute: appAboutRoute,
   appGlobalRoute: appGlobalRoute,
   appHomeRoute: appHomeRoute,
   appprofileNpub1Char123idChar125Route: appprofileNpub1Char123idChar125Route,
