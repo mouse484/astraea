@@ -4,8 +4,8 @@
   "version": "5.0.0",
   "private": true,
   "scripts": {
-    "dev": "VITE_APP_VERSION=$(git describe --tags --abbrev=0) vite",
-    "build": "VITE_APP_VERSION=$(git describe --tags --abbrev=0) tsc -b && vite build",
+    "dev": "VITE_APP_VERSION=$(git tag --sort=-v:refname | head -n 1) vite",
+    "build": "git fetch --tags && tsc -b && VITE_APP_VERSION=$(git tag --sort=-v:refname | head -n 1) vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "lint:fix": "eslint --fix ."
