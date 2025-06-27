@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { CircleDot, Code } from 'lucide-react'
+import { Badge } from '@/shadcn-ui/components/ui/badge'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
 export const Route = createFileRoute({
@@ -8,8 +9,15 @@ export const Route = createFileRoute({
 
 function RouteComponent() {
   return (
-    <div className="mt-8 grid place-items-center gap-8">
-      <h1 className="text-3xl">Astraea</h1>
+    <div className="mt-10 grid place-items-center gap-8">
+      <div className="relative">
+        <h1 className="text-3xl">Astraea</h1>
+        {import.meta.env.VITE_APP_VERSION && (
+          <Badge className="absolute -top-4 -right-8">
+            {import.meta.env.VITE_APP_VERSION}
+          </Badge>
+        )}
+      </div>
 
       <div>
         made by
