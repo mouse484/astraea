@@ -50,7 +50,7 @@ export default function Like({ event }: Props) {
       )}
       size="icon"
       variant="ghost"
-      disabled={!isIdle && isSuccess}
+      disabled={!isIdle || isSuccess}
       onClick={() => mutate()}
     >
       <Heart />

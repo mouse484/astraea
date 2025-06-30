@@ -23,14 +23,14 @@ export function useNostrEvents(
 
   const [items, setItems] = useState<Event[]>(() => getLatestItems())
 
-  const unsbscribe = useRef<(() => void) | undefined>(undefined)
+  const unsubscribe = useRef<(() => void) | undefined>(undefined)
 
   useEffect(() => {
     if (!enabled) {
       return
     }
 
-    unsbscribe.current = queryClient.getQueryCache().subscribe((event) => {
+    unsubscribe.current = queryClient.getQueryCache().subscribe((event) => {
       if (event.query.queryKey[0] === queryKey[0]
         && (event.type === 'added' || event.type === 'updated')) {
         setItems(getLatestItems())
@@ -38,8 +38,8 @@ export function useNostrEvents(
     })
 
     return () => {
-      unsbscribe.current?.()
-      unsbscribe.current = undefined
+      unsubscribe.current?.()
+      unsubscribe.current = undefined
     }
   }, [queryClient, queryKey, eventFilter, enabled, getLatestItems])
 
