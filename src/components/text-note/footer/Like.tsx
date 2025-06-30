@@ -35,10 +35,9 @@ export default function Like({ event }: Props) {
     },
   })
 
-  const isSuccess = mutationSuccess
-    || reactionEvents.some(
-      event => event.pubkey === pubkey.decoded && event.content === '+',
-    ) !== undefined
+  const isSuccess = mutationSuccess || reactionEvents.some(
+    event => event.pubkey === pubkey.decoded && event.content === '+',
+  )
 
   return (
     <Button

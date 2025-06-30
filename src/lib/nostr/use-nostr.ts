@@ -29,7 +29,7 @@ export default function useNostr() {
         })
         await pool.publish(relays.write, signedEvent)
         toast.success(messages?.success ?? `Event published successfully. Kind: ${event.kind}`)
-        return eventData
+        return signedEvent
       } catch (error) {
         console.error('Failed to publish event:', { event, error })
         toast.error(messages?.error ?? `Failed to publish event. Kind: ${event.kind}`)
