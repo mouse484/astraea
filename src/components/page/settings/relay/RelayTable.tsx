@@ -54,8 +54,8 @@ export function RelayTable({
       cell: ({ row: { index } }: CellContext<Relay, unknown>) => {
         return (
           <Button
-            variant="outline"
             size="icon"
+            variant="outline"
             onClick={() => onDeleteRelay(index)}
           >
             <Trash className="size-4" />

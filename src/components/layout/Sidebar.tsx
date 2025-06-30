@@ -105,7 +105,7 @@ export default function Sidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link to="/npub1{$id}" params={{ id: pubkey.routeId }}>
+              <Link params={{ id: pubkey.routeId }} to="/npub1{$id}">
                 <User />
                 Profile
               </Link>

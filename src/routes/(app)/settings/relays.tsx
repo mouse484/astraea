@@ -70,14 +70,15 @@ function RouteComponent() {
       {relays.length > 0 && (
         <RelayTable
           relays={relays}
-          onUpdateRelay={handleUpdateRelay}
-          onDeleteRelay={handleDeleteRelay}
           isLoading={isLoading}
+          onDeleteRelay={handleDeleteRelay}
+          onUpdateRelay={handleUpdateRelay}
         />
       )}
 
       <div className="mt-4 flex justify-end gap-4">
         <Button
+          disabled={isLoading}
           onClick={async () => {
             setIsLoading(true)
             try {
@@ -95,12 +96,12 @@ function RouteComponent() {
               setIsLoading(false)
             }
           }}
-          disabled={isLoading}
         >
           <CloudDownload />
           Load Relays
         </Button>
         <Button
+          disabled={isLoading}
           onClick={async () => {
             setIsLoading(true)
             try {
@@ -120,7 +121,6 @@ function RouteComponent() {
               setIsLoading(false)
             }
           }}
-          disabled={isLoading}
         >
           <CloudUpload />
           Save Relays

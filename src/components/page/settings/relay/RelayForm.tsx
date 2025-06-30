@@ -36,7 +36,7 @@ export function RelayForm({ onAddRelay }: RelayFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="relay"
@@ -44,15 +44,15 @@ export function RelayForm({ onAddRelay }: RelayFormProps) {
             <FormItem>
               <FormLabel>Ralay</FormLabel>
               <FormControl>
-                <Input type="url" placeholder="wss://relay.example.com" {...field} />
+                <Input placeholder="wss://relay.example.com" type="url" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button
-          type="submit"
           className="ml-2"
+          type="submit"
           disabled={!form.formState.isValid || form.formState.isSubmitting}
         >
           Create

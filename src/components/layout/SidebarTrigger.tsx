@@ -11,11 +11,11 @@ export function SidebarTrigger({ className }: Props) {
   const { toggleSidebar } = useSidebar()
   return (
     <Button
+      aria-labelledby="sidebar toggle-button"
       className={cn(className)}
       size="icon"
       variant="ghost"
       onClick={toggleSidebar}
-      aria-labelledby="sidebar toggle-button"
     >
       <Menu />
     </Button>

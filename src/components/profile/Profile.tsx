@@ -16,11 +16,11 @@ export default function Profile({ metadata }: Props) {
       <div className="bg-muted-foreground z-0 h-60">
         {content?.banner && (
           <img
-            src={content.banner}
-            alt="Banner"
             className="h-full w-full object-cover"
-            loading="lazy"
+            alt="Banner"
             decoding="async"
+            loading="lazy"
+            src={content.banner}
           />
         )}
       </div>

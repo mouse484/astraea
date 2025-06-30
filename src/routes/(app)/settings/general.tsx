@@ -13,8 +13,8 @@ function RouteComponent() {
       <div className="flex gap-4">
         {themes.map(t => (
           <Button
-            disabled={t === theme}
             key={t}
+            disabled={t === theme}
             onClick={() => setTheme(t)}
           >
             {t}
