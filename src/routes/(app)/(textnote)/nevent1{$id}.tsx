@@ -6,10 +6,13 @@ export const Route = createFileRoute({
   component: RouteComponent,
   loader: async ({ params: { id }, context: { queryClient, pool, relays } }) => {
     const nevent = createEvent(`nevent1${id}`)
-    return await queryClient.ensureQueryData(TextNoteQuery({
+    const decodedRelays = nevent.decoded.relays
+    const result = await queryClient.ensureQueryData(TextNoteQuery({
       pool,
-      relays: nevent.decoded.relays ?? relays.read,
+      relays: decodedRelays && decodedRelays.length > 0 ? decodedRelays : relays.read,
     }, nevent.decoded.id))
+
+    return result
   },
 })
 

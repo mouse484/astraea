@@ -7,7 +7,7 @@ export interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
   relays: string[]
 }
 
-export type QueryKeyList = 'metadata' | 'textnote' | 'followlist' | 'relaylist'
+export type QueryKeyList = 'metadata' | 'textnote' | 'reaction' | 'followlist' | 'relaylist'
 
 export interface QueryConfig<T, I = T> {
   name: QueryKeyList
