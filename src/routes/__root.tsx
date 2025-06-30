@@ -25,7 +25,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     `}
     >
       <h1 className="text-4xl">404</h1>
-      <Button variant="outline" asChild>
+      <Button asChild variant="outline">
         <Link to="/">Back to Top</Link>
       </Button>
     </div>

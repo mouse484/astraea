@@ -64,18 +64,18 @@ export default function TextNote({ event }: Props) {
       }}
     >
       <div className="flex gap-3">
-        <Link from="/" to="/npub1{$id}" params={{ id: pubkey.routeId }}>
-          <ProfileIcon metadata={metadata} className="size-16 flex-shrink-0" />
+        <Link from="/" params={{ id: pubkey.routeId }} to="/npub1{$id}">
+          <ProfileIcon className="size-16 flex-shrink-0" metadata={metadata} />
         </Link>
         <div className="min-w-0 flex-1">
           <CardHeader className="p-0 pt-2">
             <CardTitle>
-              <Link from="/" to="/npub1{$id}" params={{ id: pubkey.routeId }}>
+              <Link from="/" params={{ id: pubkey.routeId }} to="/npub1{$id}">
                 {displayName}
               </Link>
             </CardTitle>
             <CardDescription className="flex justify-between text-sm">
-              <Link from="/" to="/npub1{$id}" params={{ id: pubkey.routeId }}>
+              <Link from="/" params={{ id: pubkey.routeId }} to="/npub1{$id}">
                 <UserName metadata={metadata} />
               </Link>
               <div>
@@ -85,7 +85,7 @@ export default function TextNote({ event }: Props) {
             <CardAction>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button size="icon" variant="ghost">
                     <Ellipsis />
                   </Button>
                 </DropdownMenuTrigger>
@@ -101,7 +101,7 @@ export default function TextNote({ event }: Props) {
           <CardFooter className="flex justify-between p-0 pt-3">
             {[MessageCircle, Repeat2, Heart, SmilePlus, Zap, Share2].map(Icon =>
               (
-                <Button key={Icon.displayName} variant="ghost" size="icon">
+                <Button key={Icon.displayName} size="icon" variant="ghost">
                   <Icon />
                 </Button>
               ),

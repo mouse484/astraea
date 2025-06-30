@@ -46,7 +46,7 @@ export const Route = createFileRoute({
   errorComponent: ({ error }) => {
     return (
       <Layout>
-        <Alert variant="destructive" className="mx-auto w-4/5">
+        <Alert className="mx-auto w-4/5" variant="destructive">
           <AlertCircle className="!mr-2 h-8 w-8 flex-shrink-0" />
           <AlertTitle className="text-xl font-semibold">{error.name}</AlertTitle>
           <AlertDescription>

@@ -11,9 +11,9 @@ export default function ProfileIcon({ metadata, className }: Props) {
   return (
     <Avatar className={className}>
       <AvatarImage
-        src={metadata?.content.picture ?? undefined}
-        loading="lazy"
         decoding="async"
+        loading="lazy"
+        src={metadata?.content.picture ?? undefined}
       />
       <AvatarFallback>
         {

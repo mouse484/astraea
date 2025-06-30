@@ -21,12 +21,12 @@ function RouteComponent() {
 
       <div>
         made by
-        <Button asChild variant="link" className="p-0 pl-1">
+        <Button className="p-0 pl-1" asChild variant="link">
           <Link
-            to="/npub1{$id}"
             params={{
               id: 'ecxns5jjwvaasnq7nnna0nd4wvacqgdmpvm5pjzdrpzcp06q863s0w23y6',
             }}
+            to="/npub1{$id}"
           >
             mouse484
           </Link>
@@ -35,14 +35,14 @@ function RouteComponent() {
 
       <div className="grid grid-cols-2 gap-2">
         <Button asChild variant="outline">
-          <a href="https://github.com/mouse484/astraea" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mouse484/astraea" rel="noopener noreferrer" target="_blank">
             <Code />
             {' '}
             Source Code
           </a>
         </Button>
         <Button asChild variant="outline">
-          <a href="https://github.com/mouse484/astraea/issues/new/choose" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mouse484/astraea/issues/new/choose" rel="noopener noreferrer" target="_blank">
             <CircleDot />
             {' '}
             Report an Issue
