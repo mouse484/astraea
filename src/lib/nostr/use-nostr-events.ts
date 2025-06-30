@@ -1,7 +1,7 @@
 import type { Event } from 'nostr-tools'
 import { useRouteContext } from '@tanstack/react-router'
 import { fromUnixTime } from 'date-fns'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function useNostrEvents(
   queryKey: string[],
@@ -10,37 +10,24 @@ export function useNostrEvents(
 ) {
   const { queryClient } = useRouteContext({ from: '/(app)' })
 
-  const [items, setItems] = useState<Event[]>(() => {
-    return queryClient
-      .getQueryCache()
-      .findAll({ queryKey })
-      .map(query => query.state.data as Event)
-      .filter((event) => {
-        return (eventFilter ? eventFilter(event) : true)
-      })
-      .sort((a, b) => {
-        return fromUnixTime(b.created_at ?? 0).getTime() - fromUnixTime(a.created_at ?? 0).getTime()
-      })
-  })
+  const getLatestItems = useCallback(() => queryClient
+    .getQueryCache()
+    .findAll({ queryKey })
+    .map(query => query.state.data as Event)
+    .filter((event) => {
+      return (eventFilter ? eventFilter(event) : true)
+    })
+    .sort((a, b) => {
+      return fromUnixTime(b.created_at ?? 0).getTime() - fromUnixTime(a.created_at ?? 0).getTime()
+    }), [eventFilter, queryClient, queryKey])
+
+  const [items, setItems] = useState<Event[]>(() => getLatestItems())
 
   const unsbscribe = useRef<(() => void) | undefined>(undefined)
 
   useEffect(() => {
     if (!enabled) {
       return
-    }
-
-    const getLatestItems = () => {
-      return queryClient
-        .getQueryCache()
-        .findAll({ queryKey })
-        .map(query => query.state.data as Event)
-        .filter((event): event is Event => {
-          return event?.created_at === undefined ? false : (eventFilter ? eventFilter(event) : true)
-        })
-        .sort((a, b) => {
-          return fromUnixTime(b.created_at).getTime() - fromUnixTime(a.created_at).getTime()
-        })
     }
 
     unsbscribe.current = queryClient.getQueryCache().subscribe((event) => {
@@ -54,7 +41,7 @@ export function useNostrEvents(
       unsbscribe.current?.()
       unsbscribe.current = undefined
     }
-  }, [queryClient, queryKey, eventFilter, enabled])
+  }, [queryClient, queryKey, eventFilter, enabled, getLatestItems])
 
   return items
 }
