@@ -1,4 +1,3 @@
-import { cons } from 'effect/List'
 import TextNote from '@/components/text-note/TextNote'
 import { TextNoteQuery } from '@/lib/nostr/kinds/1'
 import { createEvent } from '@/lib/nostr/nip19'

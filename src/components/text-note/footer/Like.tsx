@@ -2,9 +2,9 @@ import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
 import { Heart } from 'lucide-react'
-import { useState } from 'react'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import useNostr from '@/lib/nostr/use-nostr'
+import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { cn } from '@/shadcn-ui/utils'
 
@@ -13,11 +13,12 @@ interface Props {
 }
 
 export default function Like({ event }: Props) {
-  const { queryClient } = useRouteContext({ from: '/(app)' })
+  const { queryClient, pubkey } = useRouteContext({ from: '/(app)' })
   const { publishEvent } = useNostr()
-  const [count, setCount] = useState(0)
 
-  const { mutate, isIdle, isSuccess } = useMutation({
+  const reactionEvents = useNostrEvents(['reaction', event.id, '+'])
+
+  const { mutate, isIdle, isSuccess: mutationSuccess } = useMutation({
     mutationFn: async () => {
       const result = await publishEvent(ReactionEventSchema, {
         kind: 7,
@@ -27,13 +28,17 @@ export default function Like({ event }: Props) {
           ['p', event.pubkey],
         ],
       })
-      setCount(previous => previous + 1)
       return result
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(['reaction', event.id, '+'], () => data)
+      queryClient.setQueryData(['reaction', event.id, '+'], data)
     },
   })
+
+  const isSuccess = mutationSuccess
+    || reactionEvents.some(
+      event => event.pubkey === pubkey.decoded && event.content === '+',
+    ) !== undefined
 
   return (
     <Button
@@ -50,7 +55,7 @@ export default function Like({ event }: Props) {
       onClick={() => mutate()}
     >
       <Heart />
-      {count > 0 && <span className="ml-1 text-xs">{count}</span>}
+      {reactionEvents.length > 0 && <span className="ml-1 text-xs">{reactionEvents.length}</span>}
     </Button>
   )
 }

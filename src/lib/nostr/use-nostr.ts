@@ -27,9 +27,9 @@ export default function useNostr() {
           content: eventData.content,
           created_at: getUnixTime(new Date()),
         })
-        const result = await pool.publish(relays.write, signedEvent)
+        await pool.publish(relays.write, signedEvent)
         toast.success(messages?.success ?? `Event published successfully. Kind: ${event.kind}`)
-        return result
+        return eventData
       } catch (error) {
         console.error('Failed to publish event:', { event, error })
         toast.error(messages?.error ?? `Failed to publish event. Kind: ${event.kind}`)
