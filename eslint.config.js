@@ -4,7 +4,7 @@ export default mouse(
   {
     react: true,
     tailwind: {
-      entryPoint: 'src/index.css',
+      entryPoint: 'src/globals.css',
     },
     ignores: ['**/*.gen.ts', '**/src/shadcn-ui/**'],
   },
