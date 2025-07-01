@@ -28,14 +28,12 @@ export default function Footer({ event }: Props) {
         ],
       })
       if (!result) {
-        throw new Error('Failed to publish reaction event')
+        throw new Error(`Failed to publish reaction event for content: ${content}`)
       }
       return result
     },
     onSuccess: (data) => {
-      if (event.id) {
-        queryClient.setQueryData(['reaction', event.id, data.content], data)
-      }
+      queryClient.setQueryData(['reaction', event.id, data.content], data)
     },
   })
 
