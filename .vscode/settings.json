@@ -71,5 +71,9 @@
     "yaml",
     "toml",
     "xml"
-  ]
+  ],
+
+  "files.associations": {
+    "**/src/globals.css": "tailwindcss"
+  }
 }

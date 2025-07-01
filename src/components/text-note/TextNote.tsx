@@ -2,7 +2,7 @@ import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { format, fromUnixTime } from 'date-fns'
-import { Ellipsis, MessageCircle, Repeat2, Share2, SmilePlus, Zap } from 'lucide-react'
+import { Ellipsis } from 'lucide-react'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createEvent, createPubkey } from '@/lib/nostr/nip19'
 import useNostr from '@/lib/nostr/use-nostr'
@@ -24,7 +24,7 @@ import {
 } from '@/shadcn-ui/components/ui/dropdown-menu'
 import ProfileIcon from '../profile/ProfileIcon'
 import UserName from '../profile/UserName'
-import Like from './footer/Like'
+import Footer from './footer/Footer'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
@@ -99,13 +99,8 @@ export default function TextNote({ event }: Props) {
           <CardContent className="p-0 pt-2">
             <p className="inline cursor-text select-text">{event.content}</p>
           </CardContent>
-          <CardFooter className="flex justify-between p-0 pt-3">
-            <MessageCircle />
-            <Repeat2 />
-            <Like event={event} />
-            <SmilePlus />
-            <Zap />
-            <Share2 />
+          <CardFooter className="p-0 pt-3">
+            <Footer event={event} />
           </CardFooter>
         </div>
       </div>

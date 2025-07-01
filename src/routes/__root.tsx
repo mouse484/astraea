@@ -5,7 +5,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ThemeProvider } from 'next-themes'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { Toaster } from '@/shadcn-ui/components/ui/sonner'
-import '../index.css'
+import '../globals.css'
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
