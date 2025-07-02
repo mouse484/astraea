@@ -68,9 +68,14 @@ export default function Share({ event: _event }: Props) {
         icon: Share2,
         label: 'Share Link',
         onClick: () => {
-          navigator.share({
-            url: neventUrl,
-          })
+          try {
+            navigator.share({
+              url: neventUrl,
+            })
+          } catch (error) {
+            console.error('Share failed:', error)
+            copyToClipboard(neventUrl)
+          }
         },
       },
     ],
