@@ -1,12 +1,13 @@
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
-import { Heart, MessageCircle, Repeat2, Share2, Zap } from 'lucide-react'
+import { Heart, MessageCircle, Repeat2, Zap } from 'lucide-react'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import useNostr from '@/lib/nostr/use-nostr'
 import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
 import Emoji from './Emoji'
 import Reaction from './Reaction'
+import Share from './Share'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
@@ -68,7 +69,7 @@ export default function Footer({ event }: Props) {
         </Reaction>
         <Emoji mutation={reactionMutation} />
         <Zap />
-        <Share2 />
+        <Share event={event} />
       </div>
       <div className="flex flex-wrap gap-2">
         {[...otherReactions.entries()].map(([content, reactionList]) => (
