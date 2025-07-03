@@ -10,6 +10,26 @@ export default function TextNoteForm() {
   const [isPosting, setIsPosting] = useState(false)
   const { publishEvent } = useNostr()
 
+  const handleSubmit = async () => {
+    if (text.length <= 0 || isPosting) return
+
+    setIsPosting(true)
+    await publishEvent(TextNoteEventSchema, {
+      content: text,
+      kind: 1,
+      tags: [],
+    })
+    setText('')
+    setIsPosting(false)
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
+
   return (
     <div>
       <Textarea
@@ -18,20 +38,12 @@ export default function TextNoteForm() {
         onChange={(event) => {
           setText(event.target.value)
         }}
+        onKeyDown={handleKeyDown}
       />
       <div className="mt-2 flex justify-end">
         <Button
-          disabled={text.length === 0 || isPosting}
-          onClick={async () => {
-            setIsPosting(true)
-            await publishEvent(TextNoteEventSchema, {
-              content: text,
-              kind: 1,
-              tags: [],
-            })
-            setText('')
-            setIsPosting(false)
-          }}
+          disabled={text.length <= 0 || isPosting}
+          onClick={handleSubmit}
         >
           Post
           <SendHorizonal />
