@@ -33,7 +33,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "effect": "^3.16.11",
+    "effect": "^3.16.12",
     "enhanced-ms": "^4.1.0",
     "frimousse": "^0.2.0",
     "lucide-react": "^0.525.0",
