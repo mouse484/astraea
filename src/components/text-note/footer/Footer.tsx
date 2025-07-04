@@ -1,7 +1,7 @@
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
-import { Heart, MessageCircle, Repeat2, Zap } from 'lucide-react'
+import { Heart, Repeat2, Zap } from 'lucide-react'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import useNostr from '@/lib/nostr/use-nostr'
 import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
@@ -57,8 +57,8 @@ export default function Footer({ event }: Props) {
 
   return (
     <div className="w-full space-y-4">
-      <div className="flex w-full justify-between">
-        <Reply id={event.id} />
+      <div className="relative flex w-full justify-between">
+        <Reply event={event} />
         <Repeat2 />
         <Reaction
           activeClassName="text-red-400 [&>svg]:fill-red-400"

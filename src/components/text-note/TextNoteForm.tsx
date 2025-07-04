@@ -6,7 +6,14 @@ import useNostr from '@/lib/nostr/use-nostr'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { Textarea } from '@/shadcn-ui/components/ui/textarea'
 
-export default function TextNoteForm() {
+interface Props {
+  reply?: {
+    root: typeof TextNoteEventSchema.Type
+  }
+  onSuccess?: () => void
+}
+
+export default function TextNoteForm({ reply, onSuccess }: Props) {
   const [text, setText] = useState('')
   const { publishEvent } = useNostr()
 
@@ -15,11 +22,17 @@ export default function TextNoteForm() {
       return await publishEvent(TextNoteEventSchema, {
         content,
         kind: 1,
-        tags: [],
+        tags: reply?.root
+          ? [
+              ['e', reply.root.id, '', 'root'],
+              ['p', reply.root.pubkey],
+            ]
+          : [],
       })
     },
     onSuccess: () => {
       setText('')
+      onSuccess?.()
     },
   })
 
