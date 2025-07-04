@@ -9,8 +9,8 @@ export const TextNoteTagSchema = Schema.Union(
     NoteIDSchema,
     Schema.optionalElement(Tuple(Schema.Literal(''), RelayUrlSchema)),
     Schema.optionalElement(Schema.Union(
-      Schema.Literal('replay'),
       Schema.Literal('root'),
+      Schema.Literal('reply'),
     )).annotations({
       title: 'marker',
     }),

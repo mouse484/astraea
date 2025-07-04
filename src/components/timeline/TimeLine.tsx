@@ -19,7 +19,7 @@ export default function TimeLine({ pubkeys }: Props) {
     overscan: 3,
   })
 
-  const isTop = virtualizer.scrollOffset === 0
+  const isTop = (virtualizer.scrollOffset ?? 0) <= 100
   const items = useNostrEvents(
     ['textnote'],
     event => (pubkeys ? pubkeys.includes(event.pubkey) : true),
@@ -48,7 +48,6 @@ export default function TimeLine({ pubkeys }: Props) {
               }}
             >
               <TextNote
-                key={item.id}
                 event={result}
               />
             </div>
