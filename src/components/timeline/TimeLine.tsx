@@ -48,7 +48,6 @@ export default function TimeLine({ pubkeys }: Props) {
               }}
             >
               <TextNote
-                key={item.id}
                 event={result}
               />
             </div>

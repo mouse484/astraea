@@ -1,5 +1,4 @@
 import type { Pubkey } from '@/lib/nostr/nip19'
-import type { QueryKeyList } from '@/lib/nostr/query-helpers'
 import { Outlet, redirect } from '@tanstack/react-router'
 import { getUnixTime, subMinutes } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
@@ -73,7 +72,12 @@ function RouteComponent() {
     }, {
       onevent(event) {
         if (event.kind === 1) {
-          queryClient.setQueryData(['textnote' satisfies QueryKeyList, event.id], event)
+          const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
+          if (eventTag) {
+            queryClient.setQueryData(['reply', eventTag[1], event.id], event)
+          } else {
+            queryClient.setQueryData(['textnote', event.id], event)
+          }
         }
       },
     })
