@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query'
 import { SendHorizonal } from 'lucide-react'
 import { useState } from 'react'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
@@ -7,8 +8,32 @@ import { Textarea } from '@/shadcn-ui/components/ui/textarea'
 
 export default function TextNoteForm() {
   const [text, setText] = useState('')
-  const [isPosting, setIsPosting] = useState(false)
   const { publishEvent } = useNostr()
+
+  const mutation = useMutation({
+    mutationFn: async (content: string) => {
+      return await publishEvent(TextNoteEventSchema, {
+        content,
+        kind: 1,
+        tags: [],
+      })
+    },
+    onSuccess: () => {
+      setText('')
+    },
+  })
+
+  const handleSubmit = async () => {
+    if (text.length <= 0 || mutation.isPending) return
+    mutation.mutate(text)
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
 
   return (
     <div>
@@ -18,20 +43,12 @@ export default function TextNoteForm() {
         onChange={(event) => {
           setText(event.target.value)
         }}
+        onKeyDown={handleKeyDown}
       />
       <div className="mt-2 flex justify-end">
         <Button
-          disabled={text.length === 0 || isPosting}
-          onClick={async () => {
-            setIsPosting(true)
-            await publishEvent(TextNoteEventSchema, {
-              content: text,
-              kind: 1,
-              tags: [],
-            })
-            setText('')
-            setIsPosting(false)
-          }}
+          disabled={text.length <= 0 || mutation.isPending}
+          onClick={handleSubmit}
         >
           Post
           <SendHorizonal />
