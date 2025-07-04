@@ -29,10 +29,10 @@ import Replies from './Replies'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
-  whithReplies?: boolean
+  withReplies?: boolean
 }
 
-export default function TextNote({ event, whithReplies }: Props) {
+export default function TextNote({ event, withReplies }: Props) {
   const navigate = useNavigate()
   const { getQueryOption } = useNostr()
   const pubkey = createPubkey(event.pubkey)
@@ -108,7 +108,7 @@ export default function TextNote({ event, whithReplies }: Props) {
           </div>
         </div>
       </Card>
-      {whithReplies && (<Replies id={event.id} />)}
+      {withReplies && (<Replies id={event.id} />)}
     </>
   )
 }

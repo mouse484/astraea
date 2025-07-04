@@ -23,7 +23,7 @@ export default function Replies({ id }: Props) {
   return (
     <div className="border-l-4 pl-4">
       {replies.map(reply => (
-        <TextNote key={reply.id} event={reply} whithReplies={true} />
+        <TextNote key={reply.id} event={reply} withReplies={true} />
       ))}
     </div>
   )

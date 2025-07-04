@@ -51,7 +51,7 @@ function RouteComponent() {
 
         )
       })()}
-      <TextNote event={event} whithReplies={true} />
+      <TextNote event={event} withReplies={true} />
     </>
   )
 }
