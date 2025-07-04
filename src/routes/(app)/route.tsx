@@ -72,7 +72,8 @@ function RouteComponent() {
     }, {
       onevent(event) {
         if (event.kind === 1) {
-          const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
+          const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
+            || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
           if (eventTag) {
             queryClient.setQueryData(['reply', eventTag[1], event.id], event)
           } else {

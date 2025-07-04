@@ -31,7 +31,7 @@ export default function Reply({ event }: Props) {
       <CollapsibleContent className="h-30">
         <div className="absolute mt-4 w-full">
           <TextNoteForm
-            reply={{ root: event }}
+            reply={event}
             onSuccess={() => {
               setOpen(false)
             }}
