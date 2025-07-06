@@ -4,7 +4,7 @@ import { NostrEventSchema } from '../nips/01'
 import { FollowListTagSchema } from '../nips/02'
 import { createQuery } from '../query-helpers'
 
-export const FollowListEventSchema = Schema.Struct({
+const FollowListEventSchema = Schema.Struct({
   ...NostrEventSchema.fields,
   kind: Schema.Literal(kinds.Contacts),
   tags: FollowListTagSchema,

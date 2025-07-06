@@ -3,13 +3,13 @@ import type { RouterContext } from '@/main'
 import { queryOptions } from '@tanstack/react-query'
 import { Schema } from 'effect'
 
-export interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
+interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
   relays: string[]
 }
 
-export type QueryKeyList = 'metadata' | 'textnote' | 'reaction' | 'followlist' | 'relaylist'
+type QueryKeyList = 'metadata' | 'textnote' | 'reaction' | 'followlist' | 'relaylist'
 
-export interface QueryConfig<T, I = T> {
+interface QueryConfig<T, I = T> {
   name: QueryKeyList
   schema: Schema.Schema<T, I>
   kind: number
