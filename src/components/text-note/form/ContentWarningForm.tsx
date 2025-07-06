@@ -57,10 +57,10 @@ export default function ContentWarningForm({
           </DialogTitle>
         </DialogHeader>
         <div>
-          <Label htmlFor="content-warining-reason">Reason (optional)</Label>
+          <Label htmlFor="content-warning-reason">Reason (optional)</Label>
           <Input
-            id="content-warining-reason"
-            placeholder="senstive, violence..."
+            id="content-warning-reason"
+            placeholder="sensitive, violence..."
             value={reason}
             onChange={event => setReason(event.target.value)}
           />
