@@ -27,6 +27,6 @@ export function writeStore<K extends StoreKey>(key: K, value: StoreValue<K>): vo
   localStorage.setItem(key, JSON.stringify(result))
 }
 
-export function deleteStore<K extends StoreKey>(key: K): void {
-  localStorage.removeItem(key)
-}
+// function deleteStore<K extends StoreKey>(key: K): void {
+//   localStorage.removeItem(key)
+// }

@@ -1,4 +1,3 @@
-import type { Pubkey } from '@/lib/nostr/nip19'
 import { Outlet, redirect } from '@tanstack/react-router'
 import { getUnixTime, subMinutes } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
@@ -7,14 +6,6 @@ import { Layout } from '@/components/layout/Layout'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
 import { Alert, AlertDescription, AlertTitle } from '@/shadcn-ui/components/ui/alert'
-
-export interface AppRouteContext {
-  pubkey: Pubkey
-  relays: {
-    read: string[]
-    write: string[]
-  }
-}
 
 const defaultRelays = [
   'wss://nos.lol',

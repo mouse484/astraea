@@ -3,7 +3,7 @@ import normalizeUrl from 'normalize-url'
 
 const HEX_REGEX = /^[0-9a-f]+$/i
 
-export const HexSchema = Schema.String.pipe(Schema.pattern(HEX_REGEX))
+const HexSchema = Schema.String.pipe(Schema.pattern(HEX_REGEX))
 export const Hex32BytesSchema = HexSchema.pipe(Schema.length(64))
 export const Hex64BytesSchema = HexSchema.pipe(Schema.length(128))
 export const KindIntegerSchema = Schema.Number.pipe(Schema.between(0, 65_535))
