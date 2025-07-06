@@ -15,8 +15,6 @@ import {
   SidebarMenuItem,
 } from '@/shadcn-ui/components/ui/sidebar'
 
-
-
 export default function Sidebar() {
   const pubkey = useRouteContext({ from: '/(app)', select: s => s.pubkey })
   const menuItems = [
