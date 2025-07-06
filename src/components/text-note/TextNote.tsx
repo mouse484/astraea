@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { format, fromUnixTime } from 'date-fns'
 import { Ellipsis, Eye } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createEvent, createPubkey } from '@/lib/nostr/nip19'
 import useNostr from '@/lib/nostr/use-nostr'
@@ -44,9 +44,12 @@ export default function TextNote({ event, withReplies }: Props) {
     || metadata?.content.name
     || pubkey.encoded.slice(0, 8)
 
-  const [contentWarning, setContentWarning] = useState(
-    event.tags.find(tag => tag[0] === 'content-warning'),
+  const contentWarning = useMemo(
+    () => event.tags.find(tag => tag[0] === 'content-warning'),
+    [event.tags],
   )
+
+  const [showContentWarning, setShowContentWarning] = useState(!!contentWarning)
 
   return (
     <>
@@ -106,7 +109,7 @@ export default function TextNote({ event, withReplies }: Props) {
               </CardAction>
             </CardHeader>
             <CardContent className="p-0 pt-2">
-              {contentWarning
+              {contentWarning && showContentWarning
                 ? (
                     <div className="relative">
                       <Skeleton className="h-20" />
@@ -117,7 +120,7 @@ export default function TextNote({ event, withReplies }: Props) {
                         `}
                         variant="outline"
                         onClick={() => {
-                          setContentWarning(undefined)
+                          setShowContentWarning(false)
                         }}
                       >
                         <Eye />
