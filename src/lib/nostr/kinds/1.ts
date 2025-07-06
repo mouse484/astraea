@@ -2,7 +2,7 @@ import { Schema } from 'effect'
 import { kinds } from 'nostr-tools'
 import { NostrEventSchema, TagSchema } from '../nips/01'
 import { TextNoteTagSchema } from '../nips/10'
-import { ContentWarningTagScema } from '../nips/36'
+import { ContentWarningTagSchema } from '../nips/36'
 import { createQuery } from '../query-helpers'
 
 export const TextNoteEventSchema = Schema.Struct({
@@ -11,7 +11,7 @@ export const TextNoteEventSchema = Schema.Struct({
   tags: Schema.Array(Schema.Union(
     ...TagSchema.members,
     ...TextNoteTagSchema.members,
-    ContentWarningTagScema,
+    ContentWarningTagSchema,
   )),
 })
 
