@@ -27,28 +27,14 @@ export default function ContentWarningForm({
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState('')
 
-  const currentReason = typeof value === 'string' ? value : ''
-
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(newOpen) => {
-        setOpen(newOpen)
-        if (newOpen) {
-          setReason(currentReason)
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           className={cn(
             value !== false && 'bg-accent! text-accent-foreground!',
           )}
           variant="outline"
-          onClick={() => {
-            const newValue = value === false ? (currentReason || true) : false
-            onChange(newValue)
-          }}
         >
           <EyeOff />
           Content Warning
@@ -83,7 +69,7 @@ export default function ContentWarningForm({
             <Button
               variant="outline"
               onClick={() => {
-                setReason(currentReason)
+                onChange(false)
                 setOpen(false)
               }}
             >
@@ -91,7 +77,6 @@ export default function ContentWarningForm({
             </Button>
           </DialogClose>
           <Button
-            type="submit"
             onClick={() => {
               onChange(reason.length > 0 ? reason : true)
               setOpen(false)
