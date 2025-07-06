@@ -5,6 +5,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -12,7 +13,7 @@ import {
 } from '@/shadcn-ui/components/ui/dialog'
 import { Input } from '@/shadcn-ui/components/ui/input'
 import { Label } from '@/shadcn-ui/components/ui/label'
-import { Toggle } from '@/shadcn-ui/components/ui/toggle'
+import { cn } from '@/shadcn-ui/utils'
 
 interface Props {
   value: false | true | string
@@ -38,23 +39,35 @@ export default function ContentWarningForm({
         }
       }}
     >
-      <DialogTrigger>
-        <Toggle
+      <DialogTrigger asChild>
+        <Button
+          className={cn(
+            value !== false && 'bg-accent! text-accent-foreground!',
+          )}
           variant="outline"
-          pressed={value !== false}
-          onPressedChange={(pressed) => {
-            onChange(pressed ? (currentReason || true) : false)
+          onClick={() => {
+            const newValue = value === false ? (currentReason || true) : false
+            onChange(newValue)
           }}
         >
           <EyeOff />
           Content Warning
-        </Toggle>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
             Mark this content as warning?
           </DialogTitle>
+          <DialogDescription>
+            <a
+              href="https://github.com/nostr-protocol/nips/blob/master/36.md"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              NIP-36
+            </a>
+          </DialogDescription>
         </DialogHeader>
         <div>
           <Label htmlFor="content-warning-reason">Reason (optional)</Label>
