@@ -58,6 +58,7 @@
     "@vitejs/plugin-react-swc": "3.10.2",
     "eslint": "9.30.1",
     "knip": "5.61.3",
+    "lefthook": "^1.11.16",
     "semantic-release": "24.2.6",
     "tw-animate-css": "1.3.5",
     "typescript": "5.8.3",
