@@ -5,6 +5,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -12,7 +13,7 @@ import {
 } from '@/shadcn-ui/components/ui/dialog'
 import { Input } from '@/shadcn-ui/components/ui/input'
 import { Label } from '@/shadcn-ui/components/ui/label'
-import { Toggle } from '@/shadcn-ui/components/ui/toggle'
+import { cn } from '@/shadcn-ui/utils'
 
 interface Props {
   value: false | true | string
@@ -26,35 +27,33 @@ export default function ContentWarningForm({
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState('')
 
-  const currentReason = typeof value === 'string' ? value : ''
-
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(newOpen) => {
-        setOpen(newOpen)
-        if (newOpen) {
-          setReason(currentReason)
-        }
-      }}
-    >
-      <DialogTrigger>
-        <Toggle
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          className={cn(
+            value !== false && 'bg-accent! text-accent-foreground!',
+          )}
           variant="outline"
-          pressed={value !== false}
-          onPressedChange={(pressed) => {
-            onChange(pressed ? (currentReason || true) : false)
-          }}
         >
           <EyeOff />
           Content Warning
-        </Toggle>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
             Mark this content as warning?
           </DialogTitle>
+          <DialogDescription>
+            <a
+              href="https://github.com/nostr-protocol/nips/blob/master/36.md"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              NIP-36
+            </a>
+          </DialogDescription>
         </DialogHeader>
         <div>
           <Label htmlFor="content-warning-reason">Reason (optional)</Label>
@@ -70,7 +69,7 @@ export default function ContentWarningForm({
             <Button
               variant="outline"
               onClick={() => {
-                setReason(currentReason)
+                onChange(false)
                 setOpen(false)
               }}
             >
@@ -78,7 +77,6 @@ export default function ContentWarningForm({
             </Button>
           </DialogClose>
           <Button
-            type="submit"
             onClick={() => {
               onChange(reason.length > 0 ? reason : true)
               setOpen(false)
