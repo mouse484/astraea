@@ -5,22 +5,34 @@ import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import useNostr from '@/lib/nostr/use-nostr'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { Textarea } from '@/shadcn-ui/components/ui/textarea'
+import ContentWarningForm from './ContentWarningForm'
 
 interface Props {
   reply?: typeof TextNoteEventSchema.Type
   onSuccess?: () => void
 }
-    type Tag = typeof TextNoteEventSchema.Type['tags'][number]
+
+type Tag = typeof TextNoteEventSchema.Type['tags'][number]
 
 export default function TextNoteForm({ reply, onSuccess }: Props) {
   const [text, setText] = useState('')
+  const [contentWarning, setContentWarning] = useState<false | true | string>(false)
   const { publishEvent } = useNostr()
 
   const buildTags = () => {
-    if (!reply) return []
+    const tags: Tag[] = []
+
+    if (contentWarning !== false) {
+      if (typeof contentWarning === 'string' && contentWarning.length > 0) {
+        tags.push(['content-warning', contentWarning])
+      } else if (contentWarning === true) {
+        tags.push(['content-warning'])
+      }
+    }
+
+    if (!reply) return tags
 
     const replyTags = (reply.tags || []) as Tag[]
-    const tags: Tag[] = []
     const pubkeys = new Set([reply.pubkey])
 
     let rootTag: Tag | undefined
@@ -56,6 +68,7 @@ export default function TextNoteForm({ reply, onSuccess }: Props) {
     },
     onSuccess: () => {
       setText('')
+      setContentWarning(false)
       onSuccess?.()
     },
   })
@@ -82,7 +95,11 @@ export default function TextNoteForm({ reply, onSuccess }: Props) {
         }}
         onKeyDown={handleKeyDown}
       />
-      <div className="mt-2 flex justify-end">
+      <div className="mt-2 flex justify-between">
+        <ContentWarningForm
+          value={contentWarning}
+          onChange={setContentWarning}
+        />
         <Button
           disabled={text.length <= 0 || mutation.isPending}
           onClick={handleSubmit}

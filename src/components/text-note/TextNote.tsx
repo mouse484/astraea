@@ -2,7 +2,8 @@ import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { format, fromUnixTime } from 'date-fns'
-import { Ellipsis } from 'lucide-react'
+import { Ellipsis, Eye } from 'lucide-react'
+import { useState } from 'react'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createEvent, createPubkey } from '@/lib/nostr/nip19'
 import useNostr from '@/lib/nostr/use-nostr'
@@ -22,6 +23,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/shadcn-ui/components/ui/dropdown-menu'
+import { Skeleton } from '@/shadcn-ui/components/ui/skeleton'
 import ProfileIcon from '../profile/ProfileIcon'
 import UserName from '../profile/UserName'
 import Footer from './footer/Footer'
@@ -41,6 +43,10 @@ export default function TextNote({ event, withReplies }: Props) {
   const displayName = metadata?.content.display_name
     || metadata?.content.name
     || pubkey.encoded.slice(0, 8)
+
+  const [contentWarning, setContentWarning] = useState(
+    event.tags.find(tag => tag[0] === 'content-warning'),
+  )
 
   return (
     <>
@@ -100,7 +106,35 @@ export default function TextNote({ event, withReplies }: Props) {
               </CardAction>
             </CardHeader>
             <CardContent className="p-0 pt-2">
-              <p className="inline cursor-text select-text">{event.content}</p>
+              {contentWarning
+                ? (
+                    <div className="relative">
+                      <Skeleton className="h-20" />
+                      <Button
+                        className={`
+                          absolute top-1/2 left-1/2 -translate-x-1/2
+                          -translate-y-1/2
+                        `}
+                        variant="outline"
+                        onClick={() => {
+                          setContentWarning(undefined)
+                        }}
+                      >
+                        <Eye />
+                        Show
+                        {contentWarning[1] && (
+                          <span className="text-muted-foreground text-xs">
+                            (
+                            {contentWarning[1]}
+                            )
+                          </span>
+                        )}
+                      </Button>
+                    </div>
+                  )
+                : (
+                    <p className="inline cursor-text select-text">{event.content}</p>
+                  )}
             </CardContent>
             <CardFooter className="p-0 pt-3">
               <Footer event={event} />

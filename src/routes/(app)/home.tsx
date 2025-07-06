@@ -1,4 +1,4 @@
-import TextNoteForm from '@/components/text-note/TextNoteForm'
+import TextNoteForm from '@/components/text-note/form/TextNoteForm'
 import TimeLine from '@/components/timeline/TimeLine'
 import { FollowListQuery } from '@/lib/nostr/kinds/3'
 

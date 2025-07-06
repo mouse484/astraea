@@ -8,7 +8,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/shadcn-ui/components/ui/collapsible'
-import TextNoteForm from '../TextNoteForm'
+import TextNoteForm from '../form/TextNoteForm'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
