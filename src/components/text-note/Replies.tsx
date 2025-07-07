@@ -1,6 +1,5 @@
-import { useRouteContext } from '@tanstack/react-router'
-import { Schema } from 'effect'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
+import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
 import TextNote from './TextNote'
 
 interface Props {
@@ -8,17 +7,7 @@ interface Props {
 }
 
 export default function Replies({ id }: Props) {
-  const { queryClient } = useRouteContext({ from: '/(app)' })
-
-  const cacheReplies = queryClient
-    .getQueryCache()
-    .findAll({ queryKey: ['reply', id] })
-
-  const replies = cacheReplies.map((item) => {
-    return Schema.decodeUnknownSync(TextNoteEventSchema)(item.state.data)
-  }).sort((a, b) => {
-    return (b.created_at ?? 0) - (a.created_at ?? 0)
-  })
+  const replies = useNostrEvents(['reply', id], TextNoteEventSchema)
 
   return (
     <div className="border-l-4 pl-4">
