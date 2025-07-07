@@ -1,35 +1,44 @@
-import type { Event } from 'nostr-tools'
+import type { QueryKey } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
-import { fromUnixTime } from 'date-fns'
+import { Schema } from 'effect'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export function useNostrEvents(
-  queryKey: (string | undefined)[],
-  eventFilter?: (event: Event) => boolean,
+export function useNostrEvents<T extends { created_at: number }, I = T>(
+  queryKey: QueryKey,
+  schema: Schema.Schema<T, I>,
+  eventFilter?: (event: T) => boolean,
   enabled: boolean = true,
 ) {
   const { queryClient } = useRouteContext({ from: '/(app)' })
 
   const getLatestItems = useCallback(() => {
-    const validQueryKey = queryKey.filter((key): key is string => typeof key === 'string')
-    if (validQueryKey.length === 0) {
+    if (queryKey.length <= 0) {
       return []
     }
 
-    return queryClient
-      .getQueryCache()
-      .findAll({ queryKey: validQueryKey })
-      .map(query => query.state.data)
-      .filter((data): data is Event => data !== undefined && data !== null)
-      .filter((event) => {
-        return eventFilter ? eventFilter(event) : true
-      })
-      .sort((a, b) => {
-        return fromUnixTime(b.created_at ?? 0).getTime() - fromUnixTime(a.created_at ?? 0).getTime()
-      })
-  }, [eventFilter, queryClient, queryKey])
+    const events = new Set<T>()
+    const queries = queryClient.getQueryCache().findAll({ queryKey })
 
-  const [items, setItems] = useState<Event[]>(() => getLatestItems())
+    for (const query of queries) {
+      const data = query.state.data
+      if (data === undefined || data === null) continue
+
+      const decodedEvent = Schema.decodeUnknownEither(schema)(data)
+      if (decodedEvent._tag === 'Left') {
+        console.warn('Invalid event:', decodedEvent.left)
+        continue
+      }
+
+      const event = decodedEvent.right
+      if (eventFilter && !eventFilter(event)) continue
+
+      events.add(event)
+    }
+
+    return [...events].sort((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0))
+  }, [eventFilter, queryClient, queryKey, schema])
+
+  const [items, setItems] = useState<T[]>(() => getLatestItems())
 
   const unsubscribe = useRef<(() => void) | undefined>(undefined)
 

@@ -1,8 +1,8 @@
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { Schema } from 'effect'
 import { useRef } from 'react'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
+import queryKeys from '@/lib/query-keys'
 import TextNote from '../text-note/TextNote'
 
 interface Props {
@@ -21,7 +21,8 @@ export default function TimeLine({ pubkeys }: Props) {
 
   const isTop = (virtualizer.scrollOffset ?? 0) <= 100
   const items = useNostrEvents(
-    ['textnote'],
+    queryKeys.textnote(),
+    TextNoteEventSchema,
     event => (pubkeys ? pubkeys.includes(event.pubkey) : true),
     isTop,
   )
@@ -36,7 +37,6 @@ export default function TimeLine({ pubkeys }: Props) {
       >
         {virtualizer.getVirtualItems().map((virtualItem) => {
           const item = items[virtualItem.index]
-          const result = Schema.decodeUnknownSync(TextNoteEventSchema)(item)
           return (
             <div
               key={virtualItem.key}
@@ -48,7 +48,7 @@ export default function TimeLine({ pubkeys }: Props) {
               }}
             >
               <TextNote
-                event={result}
+                event={item}
               />
             </div>
           )
