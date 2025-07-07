@@ -59,8 +59,8 @@ function RouteComponent() {
 
   useEffect(() => {
     const subscription = pool.subscribe(relays.read, {
-      kinds: [1],
-      since: getUnixTime(subMinutes(new Date(), 5)),
+      kinds: [1, 7],
+      since: getUnixTime(subMinutes(new Date(), 10)),
     }, {
       onevent(event) {
         if (event.kind === 1) {
@@ -70,6 +70,14 @@ function RouteComponent() {
             queryClient.setQueryData(queryKeys.reply(eventTag[1], event.id), event)
           } else {
             queryClient.setQueryData(queryKeys.textnote(event.id), event)
+          }
+        } else if (event.kind === 7) {
+          const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
+          if (targetId) {
+            queryClient.setQueryData(
+              queryKeys.reaction(targetId, event.pubkey, event.content),
+              event,
+            )
           }
         }
       },
