@@ -1,13 +1,14 @@
 import type { UseMutationResult } from '@tanstack/react-query'
-import type { Event, VerifiedEvent } from 'nostr-tools'
+import type { VerifiedEvent } from 'nostr-tools'
 import type { PropsWithChildren } from 'react'
+import type { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import { useRouteContext } from '@tanstack/react-router'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { cn } from '@/shadcn-ui/utils'
 
 interface Props extends PropsWithChildren {
   content: string
-  reactions: Event[]
+  reactions: typeof ReactionEventSchema.Type[]
   mutation: UseMutationResult<VerifiedEvent, Error, string, unknown>
   activeClassName: string
 }

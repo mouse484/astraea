@@ -15,7 +15,10 @@ interface Props {
 }
 
 export default function Footer({ event }: Props) {
-  const reactions = useNostrEvents(['reaction', event?.id])
+  const reactions = useNostrEvents(
+    ['reaction', event?.id],
+    ReactionEventSchema,
+  )
   const { queryClient } = useRouteContext({ from: '/(app)' })
   const { publishEvent } = useNostr()
 
