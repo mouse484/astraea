@@ -1,5 +1,6 @@
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
+import queryKeys from '@/lib/query-keys'
 import TextNote from './TextNote'
 
 interface Props {
@@ -7,7 +8,10 @@ interface Props {
 }
 
 export default function Replies({ id }: Props) {
-  const replies = useNostrEvents(['reply', id], TextNoteEventSchema)
+  const replies = useNostrEvents(
+    queryKeys.reply(id),
+    TextNoteEventSchema,
+  )
 
   return (
     <div className="border-l-4 pl-4">

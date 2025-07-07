@@ -4,6 +4,7 @@ import { AlertCircle } from 'lucide-react'
 import { useEffect } from 'react'
 import { Layout } from '@/components/layout/Layout'
 import { createPubkey } from '@/lib/nostr/nip19'
+import queryKeys from '@/lib/query-keys'
 import { readStore } from '@/lib/store'
 import { Alert, AlertDescription, AlertTitle } from '@/shadcn-ui/components/ui/alert'
 
@@ -66,9 +67,9 @@ function RouteComponent() {
           const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
             || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
           if (eventTag) {
-            queryClient.setQueryData(['reply', eventTag[1], event.id], event)
+            queryClient.setQueryData(queryKeys.reply(eventTag[1], event.id), event)
           } else {
-            queryClient.setQueryData(['textnote', event.id], event)
+            queryClient.setQueryData(queryKeys.textnote(event.id), event)
           }
         }
       },

@@ -5,6 +5,7 @@ import { Heart, Repeat2, Zap } from 'lucide-react'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import useNostr from '@/lib/nostr/use-nostr'
 import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
+import queryKeys from '@/lib/query-keys'
 import Emoji from './Emoji'
 import Reaction from './Reaction'
 import Reply from './Reply'
@@ -16,7 +17,7 @@ interface Props {
 
 export default function Footer({ event }: Props) {
   const reactions = useNostrEvents(
-    ['reaction', event?.id],
+    queryKeys.reaction(event.id),
     ReactionEventSchema,
   )
   const { queryClient } = useRouteContext({ from: '/(app)' })
@@ -38,7 +39,10 @@ export default function Footer({ event }: Props) {
       return result
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(['reaction', event.id, data.content], data)
+      queryClient.setQueryData(
+        queryKeys.reaction(event.id, data.pubkey, data.content),
+        data,
+      )
     },
   })
 

@@ -1,9 +1,10 @@
+import type { QueryKey } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
 import { Schema } from 'effect'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function useNostrEvents<T extends { created_at: number }, I = T>(
-  queryKey: (string | undefined)[],
+  queryKey: QueryKey,
   schema: Schema.Schema<T, I>,
   eventFilter?: (event: T) => boolean,
   enabled: boolean = true,
@@ -11,13 +12,12 @@ export function useNostrEvents<T extends { created_at: number }, I = T>(
   const { queryClient } = useRouteContext({ from: '/(app)' })
 
   const getLatestItems = useCallback(() => {
-    const validQueryKey = queryKey.filter((key): key is string => typeof key === 'string')
-    if (validQueryKey.length === 0) {
+    if (queryKey.length <= 0) {
       return []
     }
 
     const events = new Set<T>()
-    const queries = queryClient.getQueryCache().findAll({ queryKey: validQueryKey })
+    const queries = queryClient.getQueryCache().findAll({ queryKey })
 
     for (const query of queries) {
       const data = query.state.data

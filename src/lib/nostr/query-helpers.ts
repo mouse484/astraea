@@ -1,4 +1,5 @@
 import type { Filter } from 'nostr-tools'
+import type { QueryKeyList } from '../query-keys'
 import type { RouterContext } from '@/main'
 import { queryOptions } from '@tanstack/react-query'
 import { Schema } from 'effect'
@@ -6,8 +7,6 @@ import { Schema } from 'effect'
 interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
   relays: string[]
 }
-
-type QueryKeyList = 'metadata' | 'textnote' | 'reaction' | 'followlist' | 'relaylist'
 
 interface QueryConfig<T, I = T> {
   name: QueryKeyList
