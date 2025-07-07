@@ -31,8 +31,8 @@ export default defineConfig({
           {
             src: 'icon.png',
             type: 'image/png',
-            purpose: 'any maskable',
-            sizes: '1080x1080',
+            purpose: 'any',
+            sizes: '144x144 1080x1080',
           },
         ],
       },
