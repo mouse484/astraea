@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { SendHorizonal } from 'lucide-react'
 import { useState } from 'react'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
+import { createEvent } from '@/lib/nostr/nip19'
 import useNostr from '@/lib/nostr/use-nostr'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { Textarea } from '@/shadcn-ui/components/ui/textarea'
@@ -9,12 +10,13 @@ import ContentWarningForm from './ContentWarningForm'
 
 interface Props {
   reply?: typeof TextNoteEventSchema.Type
+  repost?: typeof TextNoteEventSchema.Type
   onSuccess?: () => void
 }
 
 type Tag = typeof TextNoteEventSchema.Type['tags'][number]
 
-export default function TextNoteForm({ reply, onSuccess }: Props) {
+export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
   const [text, setText] = useState('')
   const [contentWarning, setContentWarning] = useState<false | true | string>(false)
   const { publishEvent } = useNostr()
@@ -28,6 +30,14 @@ export default function TextNoteForm({ reply, onSuccess }: Props) {
       } else if (contentWarning === true) {
         tags.push(['content-warning'])
       }
+    }
+
+    if (repost) {
+      tags.push(
+        ['q', repost.id, '', repost.pubkey],
+        ['p', repost.pubkey],
+      )
+      return tags
     }
 
     if (!reply) return tags
@@ -60,11 +70,25 @@ export default function TextNoteForm({ reply, onSuccess }: Props) {
 
   const mutation = useMutation({
     mutationFn: async (content: string) => {
-      return await publishEvent(TextNoteEventSchema, {
-        content,
-        kind: 1,
-        tags: buildTags(),
-      })
+      if (repost) {
+        const nevent = `nostr:${createEvent({
+          id: repost.id,
+          kind: repost.kind,
+          author: repost.pubkey,
+        }).encoded}`
+        const quotedContent = content.length > 0 ? `${content}\n\n${nevent}` : nevent
+        return await publishEvent(TextNoteEventSchema, {
+          content: quotedContent,
+          kind: 1,
+          tags: buildTags(),
+        })
+      } else {
+        return await publishEvent(TextNoteEventSchema, {
+          content,
+          kind: 1,
+          tags: buildTags(),
+        })
+      }
     },
     onSuccess: () => {
       setText('')
@@ -74,7 +98,7 @@ export default function TextNoteForm({ reply, onSuccess }: Props) {
   })
 
   const handleSubmit = async () => {
-    if (text.length <= 0 || mutation.isPending) return
+    if ((text.length <= 0 && !repost) || mutation.isPending) return
     mutation.mutate(text)
   }
 
@@ -88,7 +112,8 @@ export default function TextNoteForm({ reply, onSuccess }: Props) {
   return (
     <div>
       <Textarea
-        className="resize-none"
+        className="resize-none break-all"
+        name="text note form"
         value={text}
         onChange={(event) => {
           setText(event.target.value)
@@ -101,7 +126,7 @@ export default function TextNoteForm({ reply, onSuccess }: Props) {
           onChange={setContentWarning}
         />
         <Button
-          disabled={text.length <= 0 || mutation.isPending}
+          disabled={(text.length <= 0 && !repost) || mutation.isPending}
           onClick={handleSubmit}
         >
           Post
