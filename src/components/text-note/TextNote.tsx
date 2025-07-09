@@ -28,13 +28,15 @@ import ProfileIcon from '../profile/ProfileIcon'
 import UserName from '../profile/UserName'
 import Footer from './footer/Footer'
 import Replies from './Replies'
+import TextNoteContent from './TextNoteContent'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
   withReplies?: boolean
+  isDisplayFooter?: boolean
 }
 
-export default function TextNote({ event, withReplies }: Props) {
+export default function TextNote({ event, withReplies, isDisplayFooter = true }: Props) {
   const navigate = useNavigate()
   const { getQueryOption } = useNostr()
   const pubkey = createPubkey(event.pubkey)
@@ -135,13 +137,13 @@ export default function TextNote({ event, withReplies }: Props) {
                       </Button>
                     </div>
                   )
-                : (
-                    <p className="inline cursor-text select-text">{event.content}</p>
-                  )}
+                : <TextNoteContent content={event.content} />}
             </CardContent>
-            <CardFooter className="p-0 pt-3">
-              <Footer event={event} />
-            </CardFooter>
+            {isDisplayFooter && (
+              <CardFooter className="p-0 pt-3">
+                <Footer event={event} />
+              </CardFooter>
+            )}
           </div>
         </div>
       </Card>

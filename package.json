@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "lint:fix": "eslint --fix .",
-    "knip": "knip"
+    "knip": "knip",
+    "test": "vitest"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -64,6 +65,7 @@
     "tw-animate-css": "1.3.5",
     "typescript": "5.8.3",
     "vite": "7.0.3",
-    "vite-tsconfig-paths": "5.1.4"
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "^3.2.4"
   }
 }
