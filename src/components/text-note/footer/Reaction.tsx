@@ -31,7 +31,7 @@ export default function Reaction({
         'disabled:opacity-100',
         userReacted && (activeClassName),
       )}
-      size="sm"
+      size="icon"
       variant="ghost"
       disabled={!isIdle || userReacted}
       onClick={() => mutate(content)}
