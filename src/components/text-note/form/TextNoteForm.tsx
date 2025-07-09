@@ -98,7 +98,7 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
   })
 
   const handleSubmit = async () => {
-    if (text.length <= 0 || mutation.isPending) return
+    if ((text.length <= 0 && !repost) || mutation.isPending) return
     mutation.mutate(text)
   }
 
@@ -126,7 +126,7 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
           onChange={setContentWarning}
         />
         <Button
-          disabled={text.length <= 0 || mutation.isPending}
+          disabled={(text.length <= 0 && !repost) || mutation.isPending}
           onClick={handleSubmit}
         >
           Post
