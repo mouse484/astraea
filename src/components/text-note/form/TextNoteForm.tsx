@@ -88,7 +88,8 @@ export default function TextNoteForm({ reply, onSuccess }: Props) {
   return (
     <div>
       <Textarea
-        className="resize-none"
+        className="resize-none break-all"
+        name="text note form"
         value={text}
         onChange={(event) => {
           setText(event.target.value)
