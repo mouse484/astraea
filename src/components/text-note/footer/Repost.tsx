@@ -1,8 +1,6 @@
-import { MessageCircle } from 'lucide-react'
+import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
+import { Repeat2 } from 'lucide-react'
 import { useState } from 'react'
-import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
-import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
-import queryKeys from '@/lib/query-keys'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
 interface Props {
@@ -11,7 +9,7 @@ interface Props {
   onToggle?: (open: boolean) => void
 }
 
-export default function Reply({ event, isOpen = false, onToggle }: Props) {
+export default function Repost({ event: _event, isOpen = false, onToggle }: Props) {
   const [localOpen, setLocalOpen] = useState(false)
   const open = onToggle ? isOpen : localOpen
 
@@ -23,10 +21,6 @@ export default function Reply({ event, isOpen = false, onToggle }: Props) {
     }
   }
 
-  const items = useNostrEvents(
-    queryKeys.reply(event.id),
-    TextNoteEventSchema,
-  )
   return (
     <Button
       className={open ? 'text-primary' : ''}
@@ -34,10 +28,7 @@ export default function Reply({ event, isOpen = false, onToggle }: Props) {
       variant={open ? 'secondary' : 'ghost'}
       onClick={() => handleToggle(!open)}
     >
-      <MessageCircle />
-      {items.length > 0 && (
-        <span>{items.length}</span>
-      )}
+      <Repeat2 />
     </Button>
   )
 }
