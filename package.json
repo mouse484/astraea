@@ -52,7 +52,7 @@
     "vite-plugin-pwa": "^1.0.1"
   },
   "devDependencies": {
-    "@mouse_484/eslint-config": "5.0.5",
+    "@mouse_484/eslint-config": "5.0.6",
     "@tanstack/router-plugin": "1.127.5",
     "@types/node": "24.0.13",
     "@types/react": "19.1.8",
