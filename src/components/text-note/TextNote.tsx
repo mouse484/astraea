@@ -51,7 +51,12 @@ export default function TextNote({ event, withReplies, isDisplayFooter = true }:
     [event.tags],
   )
 
-  const [showContentWarning, setShowContentWarning] = useState(!!contentWarning)
+  const [isContentWarningOverridden, setIsContentWarningOverridden] = useState(false)
+
+  const shouldShowContentWarning = useMemo(() => {
+    if (isContentWarningOverridden) return false
+    return !!contentWarning
+  }, [contentWarning, isContentWarningOverridden])
 
   return (
     <>
@@ -111,7 +116,7 @@ export default function TextNote({ event, withReplies, isDisplayFooter = true }:
               </CardAction>
             </CardHeader>
             <CardContent className="p-0 pt-2">
-              {contentWarning && showContentWarning
+              {contentWarning && shouldShowContentWarning
                 ? (
                     <div className="relative">
                       <Skeleton className="h-20" />
@@ -122,7 +127,7 @@ export default function TextNote({ event, withReplies, isDisplayFooter = true }:
                         `}
                         variant="outline"
                         onClick={() => {
-                          setShowContentWarning(false)
+                          setIsContentWarningOverridden(true)
                         }}
                       >
                         <Eye />

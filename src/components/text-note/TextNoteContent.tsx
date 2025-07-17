@@ -10,16 +10,25 @@ interface Props {
 
 export default function TextNoteContent({ content }: Props) {
   const lines = parseTextNoteContent(content)
+
   return (
     <div className="space-y-2">
-      {lines.map(({ type, value }) => {
+      {lines.map(({ type, value }, index) => {
+        const key = `${type}-${value}-${Number(index)}`
+
         if (type === 'text') {
-          return <p key={value} className="break-words whitespace-pre-wrap">{value}</p>
-        }
-        if (type === 'nevent') {
+          return (
+            <p
+              key={key}
+              className="break-words whitespace-pre-wrap"
+            >
+              {value}
+            </p>
+          )
+        } else if (type === 'nevent') {
           return (
             <NostrEvent
-              key={value.decoded.id}
+              key={key}
               eventId={value.decoded.id}
               queryOptions={TextNoteQuery}
             >
@@ -29,7 +38,7 @@ export default function TextNoteContent({ content }: Props) {
             </NostrEvent>
           )
         }
-        return (<Fragment key={`${type}-${value}`} />)
+        return (<Fragment key={key} />)
       })}
     </div>
   )

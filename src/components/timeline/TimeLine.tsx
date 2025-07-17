@@ -39,7 +39,7 @@ export default function TimeLine({ pubkeys }: Props) {
           const item = items[virtualItem.index]
           return (
             <div
-              key={virtualItem.key}
+              key={`${item?.id || 'loading'}-${virtualItem.index}`}
               ref={virtualizer.measureElement}
               data-index={virtualItem.index}
               className="absolute top-0 left-0 w-full"
@@ -47,9 +47,7 @@ export default function TimeLine({ pubkeys }: Props) {
                 transform: `translateY(${virtualItem.start}px)`,
               }}
             >
-              <TextNote
-                event={item}
-              />
+              <TextNote event={item} />
             </div>
           )
         })}
