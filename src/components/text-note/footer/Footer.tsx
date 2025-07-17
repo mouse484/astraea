@@ -2,7 +2,7 @@ import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
 import { Heart, Zap } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import useNostr from '@/lib/nostr/use-nostr'
 import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
@@ -50,21 +50,25 @@ export default function Footer({ event }: Props) {
     },
   })
 
-  const likeReactions: typeof reactions = []
-  const otherReactions = new Map<string, typeof reactions>()
+  const { likeReactions, otherReactions } = useMemo(() => {
+    const likes: typeof reactions = []
+    const others = new Map<string, typeof reactions>()
 
-  for (const reaction of reactions) {
-    if (!reaction.content?.trim()) {
-      continue
+    for (const reaction of reactions) {
+      if (!reaction.content?.trim()) {
+        continue
+      }
+
+      if (reaction.content === '+') {
+        likes.push(reaction)
+      } else {
+        const existingReactions = others.get(reaction.content) ?? []
+        others.set(reaction.content, [...existingReactions, reaction])
+      }
     }
 
-    if (reaction.content === '+') {
-      likeReactions.push(reaction)
-    } else {
-      const existingReactions = otherReactions.get(reaction.content) ?? []
-      otherReactions.set(reaction.content, [...existingReactions, reaction])
-    }
-  }
+    return { likeReactions: likes, otherReactions: others }
+  }, [reactions])
 
   return (
     <div className="relative w-full space-y-4">
