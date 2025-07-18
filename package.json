@@ -57,7 +57,7 @@
     "@types/node": "24.0.14",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
-    "@vitejs/plugin-react-swc": "3.10.2",
+    "@vitejs/plugin-react-swc": "3.11.0",
     "eslint": "9.31.0",
     "knip": "5.61.3",
     "lefthook": "1.12.2",
