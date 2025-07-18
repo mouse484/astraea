@@ -1,7 +1,7 @@
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
-import { Heart, Zap } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import useNostr from '@/lib/nostr/use-nostr'
@@ -13,6 +13,7 @@ import Reaction from './Reaction'
 import Reply from './Reply'
 import Repost from './Repost'
 import Share from './Share'
+import Zap from './Zap'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
@@ -92,7 +93,7 @@ export default function Footer({ event }: Props) {
           <Heart />
         </Reaction>
         <Emoji mutation={reactionMutation} />
-        <Zap />
+        <Zap event={event} />
         <Share event={event} />
       </div>
       <div className="flex flex-wrap gap-2">
