@@ -105,13 +105,13 @@ export default function Zap({ event }: Props) {
             <FormField
               control={form.control}
               name="amount"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Amount (sats)</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      {...field}
+                      {...form.register('amount', { valueAsNumber: true })}
                     />
                   </FormControl>
                   <FormMessage />
