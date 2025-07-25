@@ -1,5 +1,16 @@
 import { bech32 } from '@scure/base'
 import { Schema } from 'effect'
+import { LnurlPayResponseSchema } from '../luds/06'
+
+const NIP57LnurlExtensionSchema = Schema.Struct({
+  allowsNostr: Schema.optional(Schema.Boolean),
+  nostrPubkey: Schema.optional(Schema.String),
+})
+
+export const LnurlPayResponseWithNIP57Schema = Schema.extend(
+  LnurlPayResponseSchema,
+  NIP57LnurlExtensionSchema,
+)
 
 export const LightningMetadataSchema = Schema.Struct({
   lud06: Schema.String,
@@ -30,7 +41,6 @@ export function getLightningPayEndpoint(metadata: {
       }
     }
   }
-
   if (metadata.lud06) {
     const decodedUrl = decodeLnurl(metadata.lud06)
     if (decodedUrl) {
@@ -41,6 +51,5 @@ export function getLightningPayEndpoint(metadata: {
       }
     }
   }
-
   return undefined
 }

@@ -3,11 +3,10 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { useQuery } from '@tanstack/react-query'
 import { Schema } from 'effect'
 import { Zap as ZapIcon } from 'lucide-react'
-import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
+import useZap from '@/lib/nostr/hooks/use-zap'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
-import { getLightningPayEndpoint } from '@/lib/nostr/nips/57'
 import useNostr from '@/lib/nostr/use-nostr'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import {
@@ -28,6 +27,7 @@ import {
 } from '@/shadcn-ui/components/ui/form'
 import { Input } from '@/shadcn-ui/components/ui/input'
 import { Textarea } from '@/shadcn-ui/components/ui/textarea'
+import { cn } from '@/shadcn-ui/utils'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
@@ -59,29 +59,7 @@ export default function Zap({ event }: Props) {
     },
   })
 
-  const { isEnabled, endpoint: _endpoint } = useMemo(() => {
-    if (!metadata?.content) {
-      return {
-        isEnabled: false,
-        endpoint: undefined,
-      }
-    }
-
-    const lightningEndpoint = getLightningPayEndpoint(metadata.content)
-    const hasLightningAddress = Boolean(metadata.content.lud16 || metadata.content.lud06)
-
-    if (!hasLightningAddress || !lightningEndpoint) {
-      return {
-        isEnabled: false,
-        endpoint: undefined,
-      }
-    }
-
-    return {
-      isEnabled: true,
-      endpoint: lightningEndpoint,
-    }
-  }, [metadata])
+  const zap = useZap(metadata?.content ?? {})
 
   const onSubmit = (data: ZapFormData) => {
     // TODO: Implement invoice generation
@@ -94,9 +72,13 @@ export default function Zap({ event }: Props) {
         <Button
           size="icon"
           variant="ghost"
-          disabled={!isEnabled}
+          disabled={zap.isLoading || !zap.data?.isEnabled}
         >
-          <ZapIcon />
+          <ZapIcon
+            className={cn(
+              zap.isLoading && 'bg-accent animate-pulse rounded-md',
+            )}
+          />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
