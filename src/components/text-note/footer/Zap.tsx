@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Schema } from 'effect'
 import { Zap as ZapIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import useZap from '@/lib/nostr/hooks/use-zap'
+import { useZap } from '@/lib/nostr/hooks/use-zap'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
 import useNostr from '@/lib/nostr/use-nostr'
@@ -62,8 +62,20 @@ export default function Zap({ event }: Props) {
   const zap = useZap(metadata?.content ?? {})
 
   const onSubmit = (data: ZapFormData) => {
-    // TODO: Implement invoice generation
-    console.warn('Generating invoice for:', data)
+    if (!zap.mutation) return
+    zap.mutation.mutate({
+      amount: data.amount,
+      message: data.message,
+      pubkey: pubkey.decoded,
+    }, {
+      onSuccess: (result: { pr: string }) => {
+        console.warn('Invoice generated:', result)
+        // 必要ならここでUI更新や通知
+      },
+      onError: (error: any) => {
+        console.error('Invoice generation failed:', error)
+      },
+    })
   }
 
   return (

@@ -7,3 +7,13 @@ export const LnurlPayResponseSchema = Schema.Struct({
   metadata: Schema.String,
   tag: Schema.String,
 })
+
+export const LnurlPayInvoiceResponseSchema = Schema.Struct({
+  pr: Schema.String,
+  routes: Schema.Array(Schema.Any),
+})
+
+export const LnurlPayInvoiceErrorResponseSchema = Schema.Struct({
+  status: Schema.Literal('ERROR'),
+  reason: Schema.String,
+})

@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Schema } from 'effect'
 import { useMemo } from 'react'
+import { LnurlPayInvoiceErrorResponseSchema, LnurlPayInvoiceResponseSchema } from '../luds/06'
 import { getLightningPayEndpoint, LnurlPayResponseWithNIP57Schema } from '../nips/57'
 
-export default function useZap(metadata: { lud06?: string, lud16?: string }) {
+export function useZap(metadata: { lud06?: string, lud16?: string }) {
   const endpoint = useMemo(() => getLightningPayEndpoint(metadata), [metadata])
 
   const query = useQuery({
@@ -24,5 +25,27 @@ export default function useZap(metadata: { lud06?: string, lud16?: string }) {
     retry: 1,
   })
 
-  return query
+  const mutation = useMutation({
+    mutationFn: async (
+      { amount, message, pubkey }: { amount: number, message?: string, pubkey?: string }) => {
+      if (!query.data?.lnurlResponse?.callback) throw new Error('No callback URL')
+      const callbackUrl = query.data.lnurlResponse.callback
+      const urlObject = new URL(callbackUrl)
+      urlObject.searchParams.set('amount', String(amount * 1000))
+      if (message) urlObject.searchParams.set('comment', message)
+      if (pubkey) urlObject.searchParams.set('nostrPubkey', pubkey)
+      const response = await fetch(urlObject)
+      if (!response.ok) throw new Error('Failed to fetch invoice')
+      const json = await response.json()
+      if (json.status === 'ERROR') {
+        const error = Schema.decodeUnknownSync(LnurlPayInvoiceErrorResponseSchema)(json)
+        throw new Error(error.reason)
+      }
+      const invoice = Schema.decodeUnknownSync(LnurlPayInvoiceResponseSchema)(json)
+      if (!invoice.pr) throw new Error('No invoice returned')
+      return invoice
+    },
+  })
+
+  return { ...query, mutation }
 }
