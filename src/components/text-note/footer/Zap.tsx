@@ -2,8 +2,10 @@ import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { useQuery } from '@tanstack/react-query'
 import { Schema } from 'effect'
-import { Zap as ZapIcon } from 'lucide-react'
+import { Copy as CopyIcon, Zap as ZapIcon } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { useZap } from '@/lib/nostr/hooks/use-zap'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
@@ -51,6 +53,8 @@ export default function Zap({ event }: Props) {
   const pubkey = createPubkey(event.pubkey)
   const { data: metadata } = useQuery(getQueryOption(metadataQuery, pubkey.decoded))
 
+  const [invoice, setInvoice] = useState<string>()
+
   const form = useForm<ZapFormData>({
     resolver: standardSchemaResolver(zapFormStandardSchema),
     defaultValues: {
@@ -69,10 +73,10 @@ export default function Zap({ event }: Props) {
       pubkey: pubkey.decoded,
     }, {
       onSuccess: (result: { pr: string }) => {
-        console.warn('Invoice generated:', result)
-        // 必要ならここでUI更新や通知
+        setInvoice(result.pr)
       },
       onError: (error: any) => {
+        setInvoice(undefined)
         console.error('Invoice generation failed:', error)
       },
     })
@@ -93,51 +97,80 @@ export default function Zap({ event }: Props) {
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Send Zap</DialogTitle>
           <DialogDescription className="sr-only">
             Custom amount and messages.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="amount"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Amount (sats)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...form.register('amount', { valueAsNumber: true })}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Message (optional)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button className="w-full" type="submit">
-              Generate Invoice
-            </Button>
-          </form>
-        </Form>
+        {invoice
+          ? (
+              <div className="relative flex items-center">
+                <Input
+                  aria-label="Lightning invoice"
+                  className="cursor-pointer truncate pr-10 text-xs select-all"
+                  readOnly
+                  title={invoice}
+                  type="text"
+                  value={invoice}
+
+                />
+                <Button
+                  aria-label="Copy"
+                  className="absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2"
+                  size="icon"
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    navigator.clipboard.writeText(invoice)
+                    toast.success('Invoice copied!')
+                  }}
+                >
+                  <CopyIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            )
+          : (
+              <Form {...form}>
+                <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+                  <FormField
+                    control={form.control}
+                    name="amount"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Amount (sats)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...form.register('amount', { valueAsNumber: true })}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Message (optional)</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button className="w-full" type="submit">
+                    Generate Invoice
+                  </Button>
+                </form>
+              </Form>
+            )}
       </DialogContent>
     </Dialog>
   )
