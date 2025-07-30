@@ -1,8 +1,8 @@
+import type { Schema } from 'effect'
 import type { createQuery } from '@/lib/nostr/query-helpers'
 import { useRouteContext } from '@tanstack/react-router'
-import { getUnixTime } from 'date-fns'
-import { Schema } from 'effect'
 import { toast } from 'sonner'
+import { signEvent } from '../utils/sign-event'
 
 export default function useNostr() {
   const { relays, pool } = useRouteContext({ from: '/(app)' })
@@ -17,16 +17,7 @@ export default function useNostr() {
       },
     ) => {
       try {
-        const pickedSchema = schema.pick('kind', 'tags', 'content')
-        const encodedEvent = Schema.encodeUnknownSync(pickedSchema as any)(event)
-
-        const eventData = encodedEvent as { kind: number, tags: unknown, content: string }
-        const signedEvent = await globalThis.nostr!.signEvent({
-          kind: eventData.kind,
-          tags: eventData.tags as string[][],
-          content: eventData.content,
-          created_at: getUnixTime(new Date()),
-        })
+        const signedEvent = await signEvent(schema, event)
         await pool.publish(relays.write, signedEvent)
         toast.success(messages?.success ?? `Event published successfully. Kind: ${event.kind}`)
         return signedEvent
