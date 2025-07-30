@@ -1,6 +1,6 @@
 import type { createQuery } from '@/lib/nostr/query-helpers'
 import { useQuery } from '@tanstack/react-query'
-import useNostr from '@/lib/nostr/use-nostr'
+import useNostr from '@/lib/nostr/hooks/use-nostr'
 
 interface Props<T, I = T> {
   queryOptions: ReturnType<typeof createQuery<T, I>>

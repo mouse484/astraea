@@ -1,4 +1,4 @@
-import type { createQuery } from './query-helpers'
+import type { createQuery } from '@/lib/nostr/query-helpers'
 import { useRouteContext } from '@tanstack/react-router'
 import { getUnixTime } from 'date-fns'
 import { Schema } from 'effect'

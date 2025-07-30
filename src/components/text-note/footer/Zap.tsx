@@ -7,10 +7,10 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import QRCode from 'react-qr-code'
 import { toast } from 'sonner'
+import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useZap } from '@/lib/nostr/hooks/use-zap'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
-import useNostr from '@/lib/nostr/use-nostr'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import {
   Dialog,

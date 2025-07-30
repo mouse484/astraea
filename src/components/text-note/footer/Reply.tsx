@@ -1,7 +1,7 @@
 import { MessageCircle } from 'lucide-react'
 import { useState } from 'react'
+import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
-import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
 import queryKeys from '@/lib/query-keys'
 import { Button } from '@/shadcn-ui/components/ui/button'
 

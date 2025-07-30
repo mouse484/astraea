@@ -4,9 +4,9 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { format, fromUnixTime } from 'date-fns'
 import { Ellipsis, Eye } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createEvent, createPubkey } from '@/lib/nostr/nip19'
-import useNostr from '@/lib/nostr/use-nostr'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import {
   Card,
