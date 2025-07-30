@@ -34,9 +34,10 @@ import { cn } from '@/shadcn-ui/utils'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
+  setTimelinePaused?: (paused: boolean) => void
 }
 
-export default function Zap({ event }: Props) {
+export default function Zap({ event, setTimelinePaused }: Props) {
   const { getQueryOption } = useNostr()
   const pubkey = createPubkey(event.pubkey)
   const { data: metadata } = useQuery(getQueryOption(metadataQuery, pubkey.decoded))
@@ -81,8 +82,15 @@ const onSubmit = (data: ZapFormData) => {
   })
 }
 
+const [open, setOpen] = useState(false)
 return (
-  <Dialog>
+  <Dialog
+    open={open}
+    onOpenChange={(nextOpen) => {
+      setOpen(nextOpen)
+      if (setTimelinePaused) setTimelinePaused(nextOpen)
+    }}
+  >
     <DialogTrigger asChild>
       <Button
         size="icon"

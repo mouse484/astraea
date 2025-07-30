@@ -1,5 +1,5 @@
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
 import queryKeys from '@/lib/query-keys'
@@ -11,6 +11,7 @@ interface Props {
 
 export default function TimeLine({ pubkeys }: Props) {
   const parentReference = useRef<HTMLDivElement>(null)
+  const [isPaused, setIsPaused] = useState(false)
 
   const virtualizer = useVirtualizer({
     count: 9999,
@@ -20,11 +21,12 @@ export default function TimeLine({ pubkeys }: Props) {
   })
 
   const isTop = (virtualizer.scrollOffset ?? 0) <= 100
+  // スクロールが上部かつダイアログが開いていないときだけ自動更新
   const items = useNostrEvents(
     queryKeys.textnote(),
     TextNoteEventSchema,
     event => (pubkeys ? pubkeys.includes(event.pubkey) : true),
-    isTop,
+    !isPaused && isTop,
   )
 
   virtualizer.options.count = items.length
@@ -47,7 +49,7 @@ export default function TimeLine({ pubkeys }: Props) {
                 transform: `translateY(${virtualItem.start}px)`,
               }}
             >
-              <TextNote event={item} />
+              <TextNote event={item} setTimelinePaused={setIsPaused} />
             </div>
           )
         })}

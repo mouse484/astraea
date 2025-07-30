@@ -9,13 +9,15 @@ interface Props {
   event: typeof TextNoteEventSchema.Type
   isOpen?: boolean
   onToggle?: (open: boolean) => void
+  setTimelinePaused?: (paused: boolean) => void
 }
 
-export default function Reply({ event, isOpen = false, onToggle }: Props) {
+export default function Reply({ event, isOpen = false, onToggle, setTimelinePaused }: Props) {
   const [localOpen, setLocalOpen] = useState(false)
   const open = onToggle ? isOpen : localOpen
 
   const handleToggle = (newOpen: boolean) => {
+    if (setTimelinePaused) setTimelinePaused(newOpen)
     if (onToggle) {
       onToggle(newOpen)
     } else {

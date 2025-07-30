@@ -17,9 +17,10 @@ import Zap from './Zap'
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
+  setTimelinePaused?: (paused: boolean) => void
 }
 
-export default function Footer({ event }: Props) {
+export default function Footer({ event, setTimelinePaused }: Props) {
   const [openForm, setOpenForm] = useState<'reply' | 'repost' | undefined>()
   const reactions = useNostrEvents(
     queryKeys.reaction(event.id),
@@ -77,11 +78,13 @@ export default function Footer({ event }: Props) {
         <Reply
           event={event}
           isOpen={openForm === 'reply'}
+          setTimelinePaused={setTimelinePaused}
           onToggle={(open: boolean) => setOpenForm(open ? 'reply' : undefined)}
         />
         <Repost
           event={event}
           isOpen={openForm === 'repost'}
+          setTimelinePaused={setTimelinePaused}
           onToggle={(open: boolean) => setOpenForm(open ? 'repost' : undefined)}
         />
         <Reaction
@@ -92,8 +95,8 @@ export default function Footer({ event }: Props) {
         >
           <Heart />
         </Reaction>
-        <Emoji mutation={reactionMutation} />
-        <Zap event={event} />
+        <Emoji mutation={reactionMutation} setTimelinePaused={setTimelinePaused} />
+        <Zap event={event} setTimelinePaused={setTimelinePaused} />
         <Share event={event} />
       </div>
       <div className="flex flex-wrap gap-2">
