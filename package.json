@@ -52,13 +52,13 @@
     "vite-plugin-pwa": "^1.0.1"
   },
   "devDependencies": {
-    "@mouse_484/eslint-config": "5.0.10",
+    "@mouse_484/eslint-config": "^5.1.1",
     "@tanstack/router-plugin": "1.129.8",
     "@types/node": "24.1.0",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "@vitejs/plugin-react-swc": "3.11.0",
-    "eslint": "9.31.0",
+    "eslint": "9.32.0",
     "knip": "5.62.0",
     "lefthook": "1.12.2",
     "semantic-release": "24.2.7",
