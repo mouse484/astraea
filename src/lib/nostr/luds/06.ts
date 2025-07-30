@@ -1,4 +1,5 @@
 import { Schema } from 'effect'
+import { Lud12CommentAllowedSchema } from './12'
 
 export const LnurlPayResponseSchema = Schema.Struct({
   callback: Schema.String,
@@ -6,6 +7,7 @@ export const LnurlPayResponseSchema = Schema.Struct({
   minSendable: Schema.Number,
   metadata: Schema.String,
   tag: Schema.String,
+  ...Lud12CommentAllowedSchema.fields,
 })
 
 export const LnurlPayInvoiceResponseSchema = Schema.Struct({

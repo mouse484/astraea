@@ -32,7 +32,10 @@ export function useZap(metadata: { lud06?: string, lud16?: string }) {
       const callbackUrl = query.data.lnurlResponse.callback
       const urlObject = new URL(callbackUrl)
       urlObject.searchParams.set('amount', String(amount * 1000))
-      if (message) urlObject.searchParams.set('comment', message)
+      const commentAllowed = query.data.lnurlResponse.commentAllowed ?? 0
+      if (message && commentAllowed > 0) {
+        urlObject.searchParams.set('comment', encodeURIComponent(message))
+      }
       if (pubkey) urlObject.searchParams.set('nostrPubkey', pubkey)
       const response = await fetch(urlObject)
       if (!response.ok) throw new Error('Failed to fetch invoice')
