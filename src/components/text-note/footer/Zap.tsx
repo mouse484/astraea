@@ -54,138 +54,144 @@ export default function Zap({ event, setTimelinePaused }: Props) {
     message: Schema.optional(Schema.String.pipe(Schema.maxLength(commentAllowed))),
   })
 
-type ZapFormData = typeof ZapFormSchema.Type
-const zapFormStandardSchema = Schema.standardSchemaV1(ZapFormSchema)
+  type ZapFormData = typeof ZapFormSchema.Type
+  const zapFormStandardSchema = Schema.standardSchemaV1(ZapFormSchema)
 
-const form = useForm<ZapFormData>({
-  resolver: standardSchemaResolver(zapFormStandardSchema),
-  defaultValues: {
-    amount: 39,
-    message: '',
-  },
-})
-
-const onSubmit = (data: ZapFormData) => {
-  if (!zap.mutation) return
-  zap.mutation.mutate({
-    amount: data.amount,
-    message: data.message,
-    pubkey: pubkey.decoded,
-  }, {
-    onSuccess: (result: { pr: string }) => {
-      setInvoice(result.pr)
-    },
-    onError: (error: any) => {
-      setInvoice(undefined)
-      console.error('Invoice generation failed:', error)
+  const form = useForm<ZapFormData>({
+    resolver: standardSchemaResolver(zapFormStandardSchema),
+    defaultValues: {
+      amount: 39,
+      message: '',
     },
   })
-}
 
-const [open, setOpen] = useState(false)
-return (
-  <Dialog
-    open={open}
-    onOpenChange={(nextOpen) => {
-      setOpen(nextOpen)
-      if (setTimelinePaused) setTimelinePaused(nextOpen)
-    }}
-  >
-    <DialogTrigger asChild>
-      <Button
-        size="icon"
-        variant="ghost"
-        disabled={zap.isLoading || !zap.data?.isEnabled}
-      >
-        <ZapIcon
-          className={cn(
-            zap.isLoading && 'bg-accent animate-pulse rounded-md',
-          )}
-        />
-      </Button>
-    </DialogTrigger>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Send Zap</DialogTitle>
-        <DialogDescription className="sr-only">
-          Custom amount and messages.
-        </DialogDescription>
-      </DialogHeader>
-      {invoice
-        ? (
-            <div className="grid w-full place-items-center gap-3">
-              <QRCode
-                className="rounded bg-white p-2"
-                value={invoice}
-              />
-              <div className="relative grid w-full max-w-full">
-                <Input
-                  aria-label="Lightning invoice"
-                  className="cursor-pointer truncate pr-10 text-xs select-all"
-                  readOnly
-                  title={invoice}
-                  type="text"
+  const onSubmit = (data: ZapFormData) => {
+    if (!zap.mutation) return
+    zap.mutation.mutate({
+      amount: data.amount,
+      message: data.message,
+      pubkey: pubkey.decoded,
+    }, {
+      onSuccess: (result: { pr: string }) => {
+        setInvoice(result.pr)
+      },
+      onError: (error) => {
+        setInvoice(undefined)
+        console.error('Invoice generation failed:', error)
+        toast.error(`Failed to generate invoice: ${error.message || 'Unknown error'}`)
+      },
+    })
+  }
+
+  const [open, setOpen] = useState(false)
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen)
+        if (setTimelinePaused) setTimelinePaused(nextOpen)
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button
+          size="icon"
+          variant="ghost"
+          disabled={zap.isLoading || !zap.data?.isEnabled}
+        >
+          <ZapIcon
+            className={cn(
+              zap.isLoading && 'bg-accent animate-pulse rounded-md',
+            )}
+          />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Send Zap</DialogTitle>
+          <DialogDescription className="sr-only">
+            Custom amount and messages.
+          </DialogDescription>
+        </DialogHeader>
+        {invoice
+          ? (
+              <div className="grid w-full place-items-center gap-3">
+                <QRCode
+                  className="rounded bg-white p-2"
                   value={invoice}
                 />
-                <Button
-                  aria-label="Copy"
-                  className="absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2"
-                  size="icon"
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    navigator.clipboard.writeText(invoice)
-                    toast.success('Invoice copied!')
-                  }}
-                >
-                  <CopyIcon className="h-4 w-4" />
-                </Button>
+                <div className="relative grid w-full max-w-full">
+                  <Input
+                    aria-label="Lightning invoice"
+                    className="cursor-pointer truncate pr-10 text-xs select-all"
+                    readOnly
+                    title={invoice}
+                    type="text"
+                    value={invoice}
+                  />
+                  <Button
+                    aria-label="Copy"
+                    className={`
+                      absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2
+                    `}
+                    size="icon"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      navigator.clipboard.writeText(invoice)
+                        .then(() => toast.success('Invoice copied!'))
+                        .catch(() => toast.error('Failed to copy invoice'))
+                    }}
+                  >
+                    <CopyIcon className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
-            </div>
-          )
-        : (
-            <Form {...form}>
-              <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-                <FormField
-                  control={form.control}
-                  name="amount"
-                  render={() => (
-                    <FormItem>
-                      <FormLabel>Amount (sats)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...form.register('amount', { valueAsNumber: true })}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {commentAllowed > 0 && (
+            )
+          : (
+              <Form {...form}>
+                <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
                   <FormField
                     control={form.control}
-                    name="message"
-                    render={({ field }) => (
+                    name="amount"
+                    render={() => (
                       <FormItem>
-                        <FormLabel>Message (optional)</FormLabel>
+                        <FormLabel>Amount (sats)</FormLabel>
                         <FormControl>
-                          <Textarea
-                            {...field}
+                          <Input
+                            type="number"
+                            {...form.register('amount', { valueAsNumber: true })}
+                            disabled={zap.mutation.isPending}
                           />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                )}
-                <Button className="w-full" type="submit">
-                  Generate Invoice
-                </Button>
-              </form>
-            </Form>
-          )}
-    </DialogContent>
-  </Dialog>
-)
+                  {commentAllowed > 0 && (
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Message (optional)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              disabled={zap.mutation.isPending}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  <Button className="w-full" type="submit" disabled={zap.mutation.isPending}>
+                    {zap.mutation.isPending ? 'Generating...' : 'Generate Invoice'}
+                  </Button>
+                </form>
+              </Form>
+            )}
+      </DialogContent>
+    </Dialog>
+  )
 }
