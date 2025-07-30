@@ -34,7 +34,7 @@ export function useZap(metadata: { lud06?: string, lud16?: string }) {
       urlObject.searchParams.set('amount', String(amount * 1000))
       const commentAllowed = query.data.lnurlResponse.commentAllowed ?? 0
       if (message && commentAllowed > 0) {
-        urlObject.searchParams.set('comment', encodeURIComponent(message))
+        urlObject.searchParams.set('comment', message)
       }
       if (pubkey) urlObject.searchParams.set('nostrPubkey', pubkey)
       const response = await fetch(urlObject)
