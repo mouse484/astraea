@@ -2,9 +2,10 @@ import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { useQuery } from '@tanstack/react-query'
 import { Schema } from 'effect'
-import { Copy as CopyIcon, Zap as ZapIcon } from 'lucide-react'
+import { CopyIcon, ZapIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import QRCode from 'react-qr-code'
 import { toast } from 'sonner'
 import { useZap } from '@/lib/nostr/hooks/use-zap'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
@@ -106,29 +107,36 @@ export default function Zap({ event }: Props) {
         </DialogHeader>
         {invoice
           ? (
-              <div className="relative flex items-center">
-                <Input
-                  aria-label="Lightning invoice"
-                  className="cursor-pointer truncate pr-10 text-xs select-all"
-                  readOnly
-                  title={invoice}
-                  type="text"
+              <div className="grid w-full place-items-center gap-3">
+                <QRCode
+                  className="rounded bg-white p-2"
                   value={invoice}
-
                 />
-                <Button
-                  aria-label="Copy"
-                  className="absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2"
-                  size="icon"
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    navigator.clipboard.writeText(invoice)
-                    toast.success('Invoice copied!')
-                  }}
-                >
-                  <CopyIcon className="h-4 w-4" />
-                </Button>
+                <div className="relative grid w-full max-w-full">
+                  <Input
+                    aria-label="Lightning invoice"
+                    className="cursor-pointer truncate pr-10 text-xs select-all"
+                    readOnly
+                    title={invoice}
+                    type="text"
+                    value={invoice}
+                  />
+                  <Button
+                    aria-label="Copy"
+                    className={`
+                      absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2
+                    `}
+                    size="icon"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      navigator.clipboard.writeText(invoice)
+                      toast.success('Invoice copied!')
+                    }}
+                  >
+                    <CopyIcon className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             )
           : (
