@@ -4,9 +4,9 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { format, fromUnixTime } from 'date-fns'
 import { Ellipsis, Eye } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
 import { createEvent, createPubkey } from '@/lib/nostr/nip19'
-import useNostr from '@/lib/nostr/use-nostr'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import {
   Card,
@@ -34,9 +34,15 @@ interface Props {
   event: typeof TextNoteEventSchema.Type
   withReplies?: boolean
   isDisplayFooter?: boolean
+  setTimelinePaused?: (paused: boolean) => void
 }
 
-export default function TextNote({ event, withReplies, isDisplayFooter = true }: Props) {
+export default function TextNote({
+  event,
+  withReplies,
+  isDisplayFooter = true,
+  setTimelinePaused,
+}: Props) {
   const navigate = useNavigate()
   const { getQueryOption } = useNostr()
   const pubkey = createPubkey(event.pubkey)
@@ -146,7 +152,7 @@ export default function TextNote({ event, withReplies, isDisplayFooter = true }:
             </CardContent>
             {isDisplayFooter && (
               <CardFooter className="p-0 pt-3">
-                <Footer event={event} />
+                <Footer event={event} setTimelinePaused={setTimelinePaused} />
               </CardFooter>
             )}
           </div>

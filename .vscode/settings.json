@@ -75,5 +75,6 @@
 
   "files.associations": {
     "**/src/globals.css": "tailwindcss"
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

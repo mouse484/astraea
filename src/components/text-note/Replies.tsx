@@ -1,5 +1,5 @@
+import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
-import { useNostrEvents } from '@/lib/nostr/use-nostr-events'
 import queryKeys from '@/lib/query-keys'
 import TextNote from './TextNote'
 
