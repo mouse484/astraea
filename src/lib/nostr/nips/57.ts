@@ -27,7 +27,7 @@ function decodeLnurl(lnurl: string): string | undefined {
   }
 }
 
-export function getLightningPayEndpoint(metadata: {
+export function getLightningLnurl(metadata: {
   lud06?: string
   lud16?: string
 }): URL | undefined {

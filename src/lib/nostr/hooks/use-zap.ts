@@ -1,17 +1,19 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Schema } from 'effect'
 import { useMemo } from 'react'
-import { LnurlPayInvoiceErrorResponseSchema, LnurlPayInvoiceResponseSchema } from '../luds/06'
-import { getLightningPayEndpoint, LnurlPayResponseWithNIP57Schema } from '../nips/57'
+import { ZapRequestEventSchema } from '../kinds/9734'
+import { LnurlPayInvoiceResponseSchema } from '../luds/06'
+import { getLightningLnurl, LnurlPayResponseWithNIP57Schema } from '../nips/57'
+import { signEvent } from '../utils/sign-event'
 
 export function useZap(metadata: { lud06?: string, lud16?: string }) {
-  const endpoint = useMemo(() => getLightningPayEndpoint(metadata), [metadata])
+  const lnurl = useMemo(() => getLightningLnurl(metadata), [metadata])
 
   const query = useQuery({
-    queryKey: ['lnurlPayment', endpoint],
+    queryKey: ['lnurlPayment', lnurl],
     queryFn: async () => {
-      if (!endpoint) return
-      const response = await fetch(endpoint)
+      if (!lnurl) return
+      const response = await fetch(lnurl)
       if (!response.ok) return
       const json = await response.json()
       try {
@@ -21,32 +23,58 @@ export function useZap(metadata: { lud06?: string, lud16?: string }) {
           : undefined
       } catch {}
     },
-    enabled: !!endpoint,
+    enabled: !!lnurl,
     retry: 1,
   })
 
   const mutation = useMutation({
     mutationFn: async (
-      { amount, message, pubkey }: { amount: number, message?: string, pubkey?: string }) => {
+      {
+        amount,
+        message,
+        pubkey,
+        relays = [],
+        targetEventId,
+      }:
+      {
+        amount: number
+        message?: string
+        pubkey: string
+        relays?: string[]
+        targetEventId: string
+      }) => {
       if (!query.data?.lnurlResponse?.callback) throw new Error('No callback URL')
-      const callbackUrl = query.data.lnurlResponse.callback
-      const urlObject = new URL(callbackUrl)
-      urlObject.searchParams.set('amount', String(amount * 1000))
-      const commentAllowed = query.data.lnurlResponse.commentAllowed ?? 0
-      if (message && commentAllowed > 0) {
-        urlObject.searchParams.set('comment', message)
-      }
-      if (pubkey) urlObject.searchParams.set('nostrPubkey', pubkey)
-      const response = await fetch(urlObject)
+      const url = new URL(query.data.lnurlResponse.callback)
+
+      const signedEvent = await signEvent(ZapRequestEventSchema, {
+        kind: 9734,
+        content: message ?? '',
+        tags: [
+          ['relays', ...relays],
+          ['amount', amount],
+          ['lnurl', url.href],
+          ['p', pubkey],
+          ['e', targetEventId],
+        ],
+      })
+
+      url.searchParams.set('amount', String(amount * 1000))
+      url.searchParams.set('nostr', JSON.stringify(signedEvent))
+      url.searchParams.set('lnurl', lnurl!.href)
+
+      const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch invoice')
+
       const json = await response.json()
-      if (json.status === 'ERROR') {
-        const error = Schema.decodeUnknownSync(LnurlPayInvoiceErrorResponseSchema)(json)
-        throw new Error(error.reason)
-      }
       const invoice = Schema.decodeUnknownSync(LnurlPayInvoiceResponseSchema)(json)
-      if (!invoice.pr) throw new Error('No invoice returned')
-      return invoice
+
+      if ('status' in invoice && invoice.status === 'ERROR') {
+        throw new Error(invoice.reason)
+      }
+      if ('pr' in invoice) {
+        return invoice
+      }
+      throw new Error('No invoice returned')
     },
   })
 

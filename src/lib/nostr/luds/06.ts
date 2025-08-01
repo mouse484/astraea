@@ -10,12 +10,13 @@ export const LnurlPayResponseSchema = Schema.Struct({
   ...Lud12CommentAllowedSchema.fields,
 })
 
-export const LnurlPayInvoiceResponseSchema = Schema.Struct({
-  pr: Schema.String,
-  routes: Schema.Array(Schema.Any),
-})
-
-export const LnurlPayInvoiceErrorResponseSchema = Schema.Struct({
-  status: Schema.Literal('ERROR'),
-  reason: Schema.String,
-})
+export const LnurlPayInvoiceResponseSchema = Schema.Union(
+  Schema.Struct({
+    pr: Schema.String,
+    routes: Schema.Array(Schema.Any),
+  }),
+  Schema.Struct({
+    status: Schema.Literal('ERROR'),
+    reason: Schema.String,
+  }),
+)

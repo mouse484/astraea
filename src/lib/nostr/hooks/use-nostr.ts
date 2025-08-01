@@ -29,5 +29,6 @@ export default function useNostr() {
     getQueryOption: <T, I = T>(queryOption: ReturnType<typeof createQuery<T, I>>, id: string) => {
       return queryOption({ pool, relays: relays.read }, id)
     },
+    relays,
   }
 }

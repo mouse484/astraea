@@ -1,12 +1,11 @@
 import { Schema } from 'effect'
 import { NostrEventSchema } from '../nips/01'
-import { PubkeySchema } from '../schemas/common'
+import { Hex32BytesSchema, PubkeySchema, RelayUrlSchema } from '../schemas/common'
 
 export const ZapRequestTagSchema = Schema.Union(
   Schema.Tuple(
-    Schema.Literal('relays'),
-    Schema.String,
-    Schema.Array(Schema.String).pipe(Schema.minItems(0)), // relay複数
+    [Schema.Literal('relays')],
+    RelayUrlSchema,
   ),
   Schema.Tuple(
     Schema.Literal('amount'),
@@ -22,7 +21,7 @@ export const ZapRequestTagSchema = Schema.Union(
   ),
   Schema.Tuple(
     Schema.Literal('e'),
-    PubkeySchema,
+    Hex32BytesSchema,
   ),
   Schema.Tuple(
     Schema.Literal('a'),

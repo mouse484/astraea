@@ -38,7 +38,7 @@ interface Props {
 }
 
 export default function Zap({ event, setTimelinePaused }: Props) {
-  const { getQueryOption } = useNostr()
+  const { getQueryOption, relays } = useNostr()
   const pubkey = createPubkey(event.pubkey)
   const { data: metadata } = useQuery(getQueryOption(metadataQuery, pubkey.decoded))
   const [invoice, setInvoice] = useState<string>()
@@ -71,8 +71,13 @@ export default function Zap({ event, setTimelinePaused }: Props) {
       amount: data.amount,
       message: data.message,
       pubkey: pubkey.decoded,
+      targetEventId: event.id,
+      relays: [...new Set([
+        ...relays.write,
+        ...relays.read,
+      ])],
     }, {
-      onSuccess: (result: { pr: string }) => {
+      onSuccess: (result) => {
         setInvoice(result.pr)
       },
       onError: (error) => {
