@@ -13,8 +13,8 @@ export const LnurlPayResponseWithNIP57Schema = Schema.extend(
 )
 
 export const LightningMetadataSchema = Schema.Struct({
-  lud06: Schema.String,
-  lud16: Schema.String,
+  lud06: Schema.NullOr(Schema.String),
+  lud16: Schema.NullOr(Schema.String),
 })
 
 function decodeLnurl(lnurl: string): string | undefined {
