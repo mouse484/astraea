@@ -6,7 +6,7 @@ import { LnurlPayInvoiceResponseSchema } from '../luds/06'
 import { getLightningLnurl, LnurlPayResponseWithNIP57Schema } from '../nips/57'
 import { signEvent } from '../utils/sign-event'
 
-export function useZap(metadata: { lud06?: string, lud16?: string }) {
+export function useZap(metadata: { lud06?: string | null, lud16?: string | null }) {
   const lnurl = useMemo(() => getLightningLnurl(metadata), [metadata])
 
   const query = useQuery({

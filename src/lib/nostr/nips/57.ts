@@ -13,8 +13,8 @@ export const LnurlPayResponseWithNIP57Schema = Schema.extend(
 )
 
 export const LightningMetadataSchema = Schema.Struct({
-  lud06: Schema.String,
-  lud16: Schema.String,
+  lud06: Schema.NullOr(Schema.String),
+  lud16: Schema.NullOr(Schema.String),
 })
 
 function decodeLnurl(lnurl: string): string | undefined {
@@ -28,8 +28,8 @@ function decodeLnurl(lnurl: string): string | undefined {
 }
 
 export function getLightningLnurl(metadata: {
-  lud06?: string
-  lud16?: string
+  lud06?: string | null
+  lud16?: string | null
 }): URL | undefined {
   if (metadata.lud16) {
     const [username, domain] = metadata.lud16.split('@')
