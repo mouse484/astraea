@@ -28,8 +28,8 @@ function decodeLnurl(lnurl: string): string | undefined {
 }
 
 export function getLightningLnurl(metadata: {
-  lud06?: string
-  lud16?: string
+  lud06?: string | null
+  lud16?: string | null
 }): URL | undefined {
   if (metadata.lud16) {
     const [username, domain] = metadata.lud16.split('@')
