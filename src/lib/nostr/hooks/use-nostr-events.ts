@@ -35,7 +35,7 @@ export function useNostrEvents<T extends { created_at: number }, I = T>(
       events.add(event)
     }
 
-    return [...events].sort((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0))
+    return [...events].toSorted((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0))
   }, [eventFilter, queryClient, queryKey, schema])
 
   const [items, setItems] = useState<T[]>(() => getLatestItems())
