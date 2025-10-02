@@ -62,7 +62,7 @@
     "@vitejs/plugin-react-swc": "4.1.0",
     "eslint": "9.36.0",
     "eslint-plugin-react-hooks": "5.2.0",
-    "eslint-plugin-react-refresh": "0.4.21",
+    "eslint-plugin-react-refresh": "0.4.22",
     "knip": "5.64.0",
     "lefthook": "1.13.4",
     "semantic-release": "24.2.9",
