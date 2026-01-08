@@ -61,7 +61,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react-swc": "4.2.2",
     "eslint": "9.39.2",
-    "eslint-plugin-react-hooks": "5.2.0",
+    "eslint-plugin-react-hooks": "7.0.1",
     "eslint-plugin-react-refresh": "0.4.26",
     "knip": "5.79.0",
     "lefthook": "2.0.13",
