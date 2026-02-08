@@ -57,7 +57,7 @@
     "@mouse_484/eslint-config": "5.3.1",
     "@tanstack/router-plugin": "1.158.1",
     "@types/node": "24.10.10",
-    "@types/react": "19.2.11",
+    "@types/react": "19.2.13",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react-swc": "4.2.3",
     "eslint": "9.39.2",
