@@ -11,8 +11,8 @@ interface Props {
 export default function UserName({ metadata }: Props) {
   const { data: profile } = useQuery({
     queryKey: queryKeys.nip05(metadata?.content.nip05),
-    queryFn: async () => queryProfile(metadata?.content.nip05 ?? ''),
-    enabled: metadata?.content.nip05 !== undefined,
+    queryFn: async () => queryProfile(metadata!.content.nip05!),
+    enabled: metadata?.content.nip05 !== undefined && metadata?.content.nip05.length > 0,
   })
 
   if (profile) {
