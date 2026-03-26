@@ -66,7 +66,7 @@ export default function Zap({ event, setTimelinePaused }: Props) {
   })
 
   const onSubmit = (data: ZapFormData) => {
-    if (!zap.mutation) return
+    if (zap.mutation === undefined) return
     zap.mutation.mutate({
       amount: data.amount,
       message: data.message,
@@ -105,7 +105,7 @@ export default function Zap({ event, setTimelinePaused }: Props) {
         >
           <ZapIcon
             className={cn(
-              zap.isLoading && 'bg-accent animate-pulse rounded-md',
+              zap.isLoading && 'animate-pulse rounded-md bg-accent',
             )}
           />
         </Button>
@@ -117,44 +117,10 @@ export default function Zap({ event, setTimelinePaused }: Props) {
             Custom amount and messages.
           </DialogDescription>
         </DialogHeader>
-        {invoice
+        {invoice === undefined
           ? (
-              <div className="grid w-full place-items-center gap-3">
-                <QRCode
-                  className="rounded bg-white p-2"
-                  value={invoice}
-                />
-                <div className="relative grid w-full max-w-full">
-                  <Input
-                    aria-label="Lightning invoice"
-                    className="cursor-pointer truncate pr-10 text-xs select-all"
-                    readOnly
-                    title={invoice}
-                    type="text"
-                    value={invoice}
-                  />
-                  <Button
-                    aria-label="Copy"
-                    className={`
-                      absolute top-1/2 right-1 h-7 w-7 -translate-y-1/2
-                    `}
-                    size="icon"
-                    type="button"
-                    variant="ghost"
-                    onClick={() => {
-                      navigator.clipboard.writeText(invoice)
-                        .then(() => toast.success('Invoice copied!'))
-                        .catch(() => toast.error('Failed to copy invoice'))
-                    }}
-                  >
-                    <CopyIcon className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            )
-          : (
               <Form {...form}>
-                <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+                <form className="space-y-4" onSubmit={() => form.handleSubmit(onSubmit)}>
                   <FormField
                     control={form.control}
                     name="amount"
@@ -195,6 +161,40 @@ export default function Zap({ event, setTimelinePaused }: Props) {
                   </Button>
                 </form>
               </Form>
+            )
+          : (
+              <div className="grid w-full place-items-center gap-3">
+                <QRCode
+                  className="rounded-sm bg-white p-2"
+                  value={invoice}
+                />
+                <div className="relative grid w-full max-w-full">
+                  <Input
+                    aria-label="Lightning invoice"
+                    className="cursor-pointer truncate pr-10 text-xs select-all"
+                    readOnly
+                    title={invoice}
+                    type="text"
+                    value={invoice}
+                  />
+                  <Button
+                    aria-label="Copy"
+                    className={`
+                      absolute top-1/2 right-1 size-7 -translate-y-1/2
+                    `}
+                    size="icon"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      navigator.clipboard.writeText(invoice)
+                        .then(() => toast.success('Invoice copied!'))
+                        .catch(() => toast.error('Failed to copy invoice'))
+                    }}
+                  >
+                    <CopyIcon className="size-4" />
+                  </Button>
+                </div>
+              </div>
             )}
       </DialogContent>
     </Dialog>

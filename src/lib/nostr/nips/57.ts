@@ -31,7 +31,7 @@ export function getLightningLnurl(metadata: {
   lud06?: string | null
   lud16?: string | null
 }): URL | undefined {
-  if (metadata.lud16) {
+  if (metadata.lud16 !== undefined && metadata.lud16 !== null) {
     const [username, domain] = metadata.lud16.split('@')
     if (username && domain) {
       try {
@@ -41,9 +41,9 @@ export function getLightningLnurl(metadata: {
       }
     }
   }
-  if (metadata.lud06) {
+  if (metadata.lud06 !== undefined && metadata.lud06 !== null) {
     const decodedUrl = decodeLnurl(metadata.lud06)
-    if (decodedUrl) {
+    if (decodedUrl !== undefined) {
       try {
         return new URL(decodedUrl)
       } catch {

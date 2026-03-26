@@ -100,7 +100,7 @@ export default function Footer({ event, setTimelinePaused }: Props) {
         <Share event={event} />
       </div>
       <div className="flex flex-wrap gap-2">
-        {[...otherReactions.entries()].map(([content, reactionList]) => (
+        {Array.from(otherReactions.entries(), ([content, reactionList]) => (
           <Reaction
             key={content}
             activeClassName="bg-primary/10"
@@ -114,9 +114,9 @@ export default function Footer({ event, setTimelinePaused }: Props) {
       </div>
       {openForm && (
         <div
-          className="bg-card border-border rounded-lg border p-4 shadow-lg"
+          className="rounded-lg border border-border bg-card p-4 shadow-lg"
         >
-          <div className="text-muted-foreground mb-3 text-sm font-medium">
+          <div className="mb-3 text-sm font-medium text-muted-foreground">
             {openForm === 'reply' ? 'Reply' : 'Repost'}
           </div>
           <TextNoteForm

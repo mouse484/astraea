@@ -18,12 +18,12 @@ export default function useNostr() {
     ) => {
       try {
         const signedEvent = await signEvent(schema, event)
-        await pool.publish(relays.write, signedEvent)
-        toast.success(messages?.success ?? `Event published successfully. Kind: ${event.kind}`)
+        await Promise.all(pool.publish(relays.write, signedEvent))
+        toast.success(messages?.success ?? `Event published successfully. Kind: ${String(event.kind)}`)
         return signedEvent
       } catch (error) {
         console.error('Failed to publish event:', { event, error })
-        toast.error(messages?.error ?? `Failed to publish event. Kind: ${event.kind}`)
+        toast.error(messages?.error ?? `Failed to publish event. Kind: ${String(event.kind)}`)
       }
     },
     getQueryOption: <T, I = T>(queryOption: ReturnType<typeof createQuery<T, I>>, id: string) => {

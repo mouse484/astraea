@@ -31,11 +31,11 @@ function RouteComponent() {
     ]
   })
   const [isLoading, setIsLoading] = useState(false)
-  const isInitialized = useRef(false)
+  const isInitializedRef = useRef(false)
 
   useEffect(() => {
-    if (!isInitialized.current) {
-      isInitialized.current = true
+    if (!isInitializedRef.current) {
+      isInitializedRef.current = true
       return
     }
     writeStore('relays', relays)
@@ -79,22 +79,22 @@ function RouteComponent() {
       <div className="mt-4 flex justify-end gap-4">
         <Button
           disabled={isLoading}
-          onClick={async () => {
-            setIsLoading(true)
-            try {
-              const query = relayListQuery({
-                pool,
-                relays: relays.filter(r => r.read).map(r => r.url),
-              }, pubkey.decoded)
+          onClick={() => {
+            void (async () => {
+              setIsLoading(true)
+              try {
+                const query = relayListQuery({
+                  pool,
+                  relays: relays.filter(r => r.read).map(r => r.url),
+                }, pubkey.decoded)
 
-              queryClient.invalidateQueries(query)
-              const data = await queryClient.fetchQuery(query)
-              if (data) {
+                await queryClient.invalidateQueries(query)
+                const data = await queryClient.fetchQuery(query)
                 setRelays(data.tags)
+              } finally {
+                setIsLoading(false)
               }
-            } finally {
-              setIsLoading(false)
-            }
+            })()
           }}
         >
           <CloudDownload />
@@ -102,24 +102,26 @@ function RouteComponent() {
         </Button>
         <Button
           disabled={isLoading}
-          onClick={async () => {
-            setIsLoading(true)
-            try {
-              await publishEvent(
-                RelayListEventSchema,
-                {
-                  kind: 10_002,
-                  tags: relays,
-                  content: '',
-                },
-                {
-                  success: 'Relays saved successfully.',
-                  error: 'Failed to save relays.',
-                },
-              )
-            } finally {
-              setIsLoading(false)
-            }
+          onClick={() => {
+            void (async () => {
+              setIsLoading(true)
+              try {
+                await publishEvent(
+                  RelayListEventSchema,
+                  {
+                    kind: 10_002,
+                    tags: relays,
+                    content: '',
+                  },
+                  {
+                    success: 'Relays saved successfully.',
+                    error: 'Failed to save relays.',
+                  },
+                )
+              } finally {
+                setIsLoading(false)
+              }
+            })()
           }}
         >
           <CloudUpload />

@@ -15,9 +15,8 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
       if (!lnurl) return
       const response = await fetch(lnurl)
       if (!response.ok) return
-      const json = await response.json()
       try {
-        const lnurl = Schema.decodeUnknownSync(LnurlPayResponseWithNIP57Schema)(json)
+        const lnurl = Schema.decodeUnknownSync(LnurlPayResponseWithNIP57Schema)(await response.json())
         return lnurl.allowsNostr === true && typeof lnurl.callback === 'string'
           ? { isEnabled: true, lnurlResponse: lnurl }
           : undefined
@@ -43,7 +42,7 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
         relays?: string[]
         targetEventId: string
       }) => {
-      if (!query.data?.lnurlResponse?.callback) throw new Error('No callback URL')
+      if (query.data?.lnurlResponse?.callback === undefined) throw new Error('No callback URL')
       const url = new URL(query.data.lnurlResponse.callback)
 
       const signedEvent = await signEvent(ZapRequestEventSchema, {
@@ -65,8 +64,7 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
       const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch invoice')
 
-      const json = await response.json()
-      const invoice = Schema.decodeUnknownSync(LnurlPayInvoiceResponseSchema)(json)
+      const invoice = Schema.decodeUnknownSync(LnurlPayInvoiceResponseSchema)(await response.json())
 
       if ('status' in invoice && invoice.status === 'ERROR') {
         throw new Error(invoice.reason)

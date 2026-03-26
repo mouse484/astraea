@@ -8,7 +8,7 @@ interface Props<T, I = T> {
   children?: (event: T) => React.ReactNode
 }
 
-export default function NostrEvent<T, I = T>({ queryOptions, eventId, children }: Props<T, I>) {
+export default function NostrEvent<T, I = T>({ queryOptions, eventId, children }: Props<T, I>): React.ReactNode {
   const { getQueryOption } = useNostr()
   const { data } = useQuery(
     getQueryOption(queryOptions, eventId),

@@ -1,5 +1,5 @@
 export function setTitle(title?: string) {
   return {
-    title: title ? `${title} - Astraea` : 'Astraea',
+    title: title === undefined ? 'Astraea' : `${title} - Astraea`,
   }
 }

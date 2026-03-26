@@ -19,8 +19,8 @@ export function createQuery<T, I = T>({ name, schema, kind, filterKey }: QueryCo
   return ({ pool, relays }: NostrQueryContext, id: string) => {
     const filter: Filter = {
       kinds: [kind],
+      [filterKey]: [id],
     }
-    filter[filterKey] = [id]
 
     return queryOptions({
       queryKey: [name, id],
@@ -29,7 +29,7 @@ export function createQuery<T, I = T>({ name, schema, kind, filterKey }: QueryCo
         if (!event) {
           throw new Error(`${name} event not found`)
         }
-        return await Schema.decodeUnknownPromise(schema)(event)
+        return Schema.decodeUnknownPromise(schema)(event)
           .catch((error) => {
             console.error(error)
             throw error

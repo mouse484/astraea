@@ -1,5 +1,8 @@
 import { Schema } from 'effect'
 
+const NIP05_WITH_DOMAIN = /^[\w\-.]+@[\w\-.]+$/
+const NIP05_WITHOUT_DOMAIN = /^[\w\-.]+\.[a-z]{2,}$/i
+
 export const MetadataWithKind05Schema = Schema.Struct({
   /**
    * NIP-05 internet identifier.
@@ -16,8 +19,8 @@ export const MetadataWithKind05Schema = Schema.Struct({
 
           const isValidNip05 = (
             value === ''
-            || /^[\w\-.]+@[\w\-.]+$/.test(value)
-            || /^[\w\-.]+\.[a-z]{2,}$/i.test(value)
+            || NIP05_WITH_DOMAIN.test(value)
+            || NIP05_WITHOUT_DOMAIN.test(value)
           )
 
           if (!isValidNip05) {

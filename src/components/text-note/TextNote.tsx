@@ -49,8 +49,8 @@ export default function TextNote({
   const { data: metadata } = useQuery(getQueryOption(metadataQuery, pubkey.decoded))
 
   const displayName = metadata?.content.display_name
-    || metadata?.content.name
-    || pubkey.encoded.slice(0, 8)
+    ?? metadata?.content.name
+    ?? pubkey.encoded.slice(0, 8)
 
   const contentWarning = useMemo(
     () => event.tags.find(tag => tag[0] === 'content-warning'),
@@ -86,12 +86,12 @@ export default function TextNote({
             id: event.id,
             author: pubkey.decoded,
           })
-          navigate({ to: '/nevent1{$id}', params: { id: nevent.routeId } })
+          void navigate({ to: '/nevent1{$id}', params: { id: nevent.routeId } })
         }}
       >
         <div className="flex gap-3">
           <Link from="/" params={{ id: pubkey.routeId }} to="/npub1{$id}">
-            <ProfileIcon className="size-16 flex-shrink-0" metadata={metadata} />
+            <ProfileIcon className="size-16 shrink-0" metadata={metadata} />
           </Link>
           <div className="min-w-0 flex-1">
             <CardHeader className="p-0 pt-2">
@@ -127,10 +127,7 @@ export default function TextNote({
                     <div className="relative">
                       <Skeleton className="h-20" />
                       <Button
-                        className={`
-                          absolute top-1/2 left-1/2 -translate-x-1/2
-                          -translate-y-1/2
-                        `}
+                        className="absolute top-1/2 left-1/2 -translate-1/2"
                         variant="outline"
                         onClick={() => {
                           setIsContentWarningOverridden(true)
@@ -138,8 +135,8 @@ export default function TextNote({
                       >
                         <Eye />
                         Show
-                        {contentWarning[1] && (
-                          <span className="text-muted-foreground text-xs">
+                        {contentWarning[1] !== undefined && (
+                          <span className="text-xs text-muted-foreground">
                             (
                             {contentWarning[1]}
                             )

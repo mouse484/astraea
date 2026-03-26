@@ -9,12 +9,13 @@ export async function signEvent<S extends Schema.Struct<any>>(
     throw new Error('nostr extension is not available')
   }
   const pickedSchema = schema.pick('kind', 'tags', 'content')
+  // eslint-disable-next-line ts/no-unsafe-argument
   const encodedEvent = Schema.encodeUnknownSync(pickedSchema as any)(event) as {
     kind: number
     tags: string[][]
     content: string
   }
-  return await globalThis.nostr.signEvent({
+  return globalThis.nostr.signEvent({
     kind: encodedEvent.kind,
     tags: encodedEvent.tags,
     content: encodedEvent.content,

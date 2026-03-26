@@ -23,7 +23,7 @@ function RouteComponent() {
       </div>
       <Button onClick={() => {
         localStorage.clear()
-        navigate({
+        void navigate({
           to: '/',
         })
       }}

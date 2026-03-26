@@ -36,7 +36,7 @@ export function RelayForm({ onAddRelay }: RelayFormProps) {
 
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-4" onSubmit={() => form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="relay"

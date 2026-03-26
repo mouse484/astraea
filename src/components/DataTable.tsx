@@ -27,7 +27,7 @@ export function DataTable<TData, TValue>({
   isLoading = false,
 }: DataTableProps<TData, TValue>) {
   const tableData = useMemo(
-    () => (isLoading ? Array.from({ length: data.length }, () => ({} as TData)) : data),
+    () => (isLoading ? Array.from({ length: data.length }).fill({} as TData) : data),
     [isLoading, data],
   )
 

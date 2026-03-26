@@ -27,7 +27,7 @@ export function RelayTable({
         <Checkbox
           checked={original[type]}
           onCheckedChange={(checked) => {
-            onUpdateRelay(index, { ...original, [type]: !!checked })
+            onUpdateRelay(index, { ...original, [type]: Boolean(checked) })
           }}
         />
       )

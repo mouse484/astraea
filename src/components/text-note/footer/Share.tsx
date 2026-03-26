@@ -45,14 +45,14 @@ export default function Share({ event: _event }: Props) {
         icon: ClipboardCopy,
         label: 'Copy Note ID (note1)',
         onClick: () => {
-          copyToClipboard(noteId.encoded)
+          void copyToClipboard(noteId.encoded)
         },
       },
       {
         icon: ClipboardCopy,
         label: 'Copy Note ID (hex)',
         onClick: () => {
-          copyToClipboard(noteId.decoded)
+          void copyToClipboard(noteId.decoded)
         },
       },
     ],
@@ -61,7 +61,7 @@ export default function Share({ event: _event }: Props) {
         icon: Link,
         label: 'Copy Link',
         onClick: () => {
-          copyToClipboard(neventUrl)
+          void copyToClipboard(neventUrl)
         },
       },
       {
@@ -69,12 +69,12 @@ export default function Share({ event: _event }: Props) {
         label: 'Share Link',
         onClick: () => {
           try {
-            navigator.share({
+            void navigator.share({
               url: neventUrl,
             })
           } catch (error) {
             console.error('Share failed:', error)
-            copyToClipboard(neventUrl)
+            void copyToClipboard(neventUrl)
           }
         },
       },

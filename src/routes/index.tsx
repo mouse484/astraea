@@ -6,7 +6,7 @@ import { Button } from '@/shadcn-ui/components/ui/button'
 export const Route = createFileRoute({
   component: RouteComponent,
   beforeLoad: () => {
-    if (readStore('pubkey')) {
+    if (readStore('pubkey') !== undefined) {
       throw redirect({
         to: '/home',
       })
@@ -24,22 +24,24 @@ function RouteComponent() {
       <Button
         className="mt-8"
         disabled={!globalThis.nostr}
-        onClick={async () => {
-          const pubkey = await (globalThis.nostr!.getPublicKey()).catch((error) => {
-            console.error(error)
-          })
-          if (pubkey) {
-            writeStore('pubkey', pubkey)
-            navigate({
-              to: '/settings/relays',
+        onClick={() => {
+          void (async () => {
+            const pubkey = await (globalThis.nostr!.getPublicKey()).catch((error) => {
+              console.error(error)
             })
-            toast.success('Successfully signed in with NIP-07 extension')
-          } else {
-            toast.error('Failed to sign in with NIP-07 extension')
-          }
+            if (pubkey === undefined) {
+              toast.error('Failed to sign in with NIP-07 extension')
+            } else {
+              writeStore('pubkey', pubkey)
+              void navigate({
+                to: '/settings/relays',
+              })
+              toast.success('Successfully signed in with NIP-07 extension')
+            }
+          })()
         }}
       >
-        Sign in with NIP-07 extention
+        Sign in with NIP-07 extension
       </Button>
     </div>
   )
