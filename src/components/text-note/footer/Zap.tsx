@@ -120,7 +120,7 @@ export default function Zap({ event, setTimelinePaused }: Props) {
         {invoice === undefined
           ? (
               <Form {...form}>
-                <form className="space-y-4" onSubmit={() => form.handleSubmit(onSubmit)}>
+                <form className="space-y-4" onSubmit={void form.handleSubmit(onSubmit)}>
                   <FormField
                     control={form.control}
                     name="amount"
