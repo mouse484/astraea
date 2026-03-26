@@ -18,7 +18,7 @@ export default function useNostr() {
     ) => {
       try {
         const signedEvent = await signEvent(schema, event)
-        await Promise.all(pool.publish(relays.write, signedEvent))
+        await Promise.allSettled(pool.publish(relays.write, signedEvent))
         toast.success(messages?.success ?? `Event published successfully. Kind: ${String(event.kind)}`)
         return signedEvent
       } catch (error) {
