@@ -14,7 +14,7 @@ export default function Profile({ metadata }: Props) {
   return (
     <div>
       <div className="z-0 h-60 bg-muted-foreground">
-        {(content?.banner !== undefined && content.banner !== null) && (
+        {(typeof content.banner === 'string' && content.banner.trim() !== '') && (
           <img
             className="size-full object-cover"
             alt="Banner"
