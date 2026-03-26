@@ -1,5 +1,7 @@
 export function setTitle(title?: string) {
+  const trimmedTitle = title === undefined || title === null ? '' : title.trim()
+
   return {
-    title: title === undefined ? 'Astraea' : `${title} - Astraea`,
+    title: trimmedTitle === '' ? 'Astraea' : `${trimmedTitle} - Astraea`,
   }
 }
