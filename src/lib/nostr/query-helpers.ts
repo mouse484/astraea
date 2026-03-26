@@ -17,13 +17,13 @@ interface QueryConfig<T, I = T> {
 
 export function createQuery<T, I = T>({ name, schema, kind, filterKey }: QueryConfig<T, I>) {
   return ({ pool, relays }: NostrQueryContext, id: string) => {
-    const filter: Filter = {
+    const filter = {
       kinds: [kind],
       [filterKey]: [id],
-    }
+    } as Filter
 
     return queryOptions({
-      queryKey: [name, id],
+      queryKey: [name, id, schema],
       queryFn: async () => {
         const event = await pool.get(relays, filter)
         if (!event) {
