@@ -15,19 +15,22 @@ import {
   TableRow,
 } from '@/shadcn-ui/components/ui/table'
 
-export interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
+export interface DataTableProps<TData> {
+  columns: ColumnDef<TData, any>[]
   data: TData[]
   isLoading?: boolean
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData>({
   columns,
   data,
   isLoading = false,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
   const tableData = useMemo(
-    () => (isLoading ? Array.from({ length: data.length }, () => ({} as TData)) : data),
+    () =>
+      isLoading
+        ? (Array.from({ length: data.length }).fill({} as TData) as TData[])
+        : data,
     [isLoading, data],
   )
 
@@ -42,7 +45,7 @@ export function DataTable<TData, TValue>({
     [isLoading, columns],
   )
 
-  const table = useReactTable({
+  const table = useReactTable<TData>({
     data: tableData,
     columns: tableColumns,
     getCoreRowModel: getCoreRowModel(),

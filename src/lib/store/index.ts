@@ -9,9 +9,8 @@ export function readStore<K extends StoreKey>(key: K): StoreValue<K> | undefined
   }
 
   try {
-    const parsed = JSON.parse(value)
     const schema = StoreSchemas[key] as Schema.Schema<StoreValue<K>>
-    const result = Schema.decodeUnknownSync(schema)(parsed)
+    const result = Schema.decodeUnknownSync(schema)(JSON.parse(value))
     return result
   } catch (error) {
     console.error(error)

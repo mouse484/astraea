@@ -42,7 +42,7 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
 
     if (!reply) return tags
 
-    const replyTags = (reply.tags || []) as Tag[]
+    const replyTags = (reply.tags ?? []) as Tag[]
     const pubkeys = new Set([reply.pubkey])
 
     let rootTag: Tag | undefined
@@ -77,13 +77,13 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
           author: repost.pubkey,
         }).encoded}`
         const quotedContent = content.length > 0 ? `${content}\n\n${nevent}` : nevent
-        return await publishEvent(TextNoteEventSchema, {
+        return publishEvent(TextNoteEventSchema, {
           content: quotedContent,
           kind: 1,
           tags: buildTags(),
         })
       } else {
-        return await publishEvent(TextNoteEventSchema, {
+        return publishEvent(TextNoteEventSchema, {
           content,
           kind: 1,
           tags: buildTags(),
@@ -105,7 +105,7 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       event.preventDefault()
-      handleSubmit()
+      void handleSubmit()
     }
   }
 
@@ -127,7 +127,7 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
         />
         <Button
           disabled={(text.length <= 0 && !repost) || mutation.isPending}
-          onClick={handleSubmit}
+          onClick={() => handleSubmit}
         >
           Post
           <SendHorizonal />

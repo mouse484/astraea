@@ -11,8 +11,8 @@ interface Props {
 export default function UserName({ metadata }: Props) {
   const { data: profile } = useQuery({
     queryKey: queryKeys.nip05(metadata?.content.nip05),
-    queryFn: () => queryProfile(metadata?.content.nip05 || ''),
-    enabled: !!metadata?.content.nip05,
+    queryFn: async () => queryProfile(metadata!.content.nip05!),
+    enabled: metadata?.content.nip05 !== undefined && metadata?.content.nip05.length > 0,
   })
 
   if (profile) {
@@ -26,7 +26,7 @@ export default function UserName({ metadata }: Props) {
     return (
       <span className="text-muted-foreground">
         @
-        {metadata?.content.name || metadata?.pubkey.slice(0, 8)}
+        {metadata?.content.name ?? metadata?.pubkey.slice(0, 8)}
       </span>
     )
   }

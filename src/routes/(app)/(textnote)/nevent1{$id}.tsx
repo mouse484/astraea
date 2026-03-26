@@ -15,7 +15,7 @@ export const Route = createFileRoute({
       relays: decodedRelays && decodedRelays.length > 0 ? decodedRelays : relays.read,
     }, nevent.decoded.id))
 
-    if (!event) {
+    if (event === undefined) {
       throw new Error(`Event with ID ${id} not found`)
     }
 
@@ -32,7 +32,7 @@ function RouteComponent() {
   }) ?? [])[1] as string | undefined
   return (
     <>
-      {hasRoot && (() => {
+      {hasRoot !== undefined && (() => {
         const nevent = createEvent({
           id: hasRoot,
         })

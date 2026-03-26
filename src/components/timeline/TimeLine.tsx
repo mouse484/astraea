@@ -10,12 +10,12 @@ interface Props {
 }
 
 export default function TimeLine({ pubkeys }: Props) {
-  const parentReference = useRef<HTMLDivElement>(null)
+  const parentRef = useRef<HTMLDivElement>(null)
   const [isPaused, setIsPaused] = useState(false)
 
   const virtualizer = useVirtualizer({
     count: 9999,
-    getScrollElement: () => parentReference.current,
+    getScrollElement: () => parentRef.current,
     estimateSize: () => 200,
     overscan: 3,
   })
@@ -32,7 +32,7 @@ export default function TimeLine({ pubkeys }: Props) {
   virtualizer.options.count = items.length
 
   return (
-    <div ref={parentReference} className="h-full w-full overflow-y-auto">
+    <div ref={parentRef} className="size-full overflow-y-auto">
       <div
         className="relative w-full p-2"
         style={{ height: `${virtualizer.getTotalSize()}px` }}

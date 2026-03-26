@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getLightningLnurl } from './57'
 
-// eslint-disable-next-line style/max-len
 const LUD06 = 'lnurl1dp68gurn8ghj7ampd3kx2ar0veekzar0wd5xjtnrdakj7tnhv4kxctttdehhwm30d3h82unvwqhk6mm4wdjs769pa9'
 const LUD16 = 'mouse@walletofsatoshi.com'
 const EXPECTED_URL = 'https://walletofsatoshi.com/.well-known/lnurlp/mouse'

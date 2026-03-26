@@ -14,13 +14,13 @@ export default function TextNoteContent({ content }: Props) {
   return (
     <div className="space-y-2">
       {lines.map(({ type, value }, index) => {
-        const key = `${type}-${value}-${Number(index)}`
+        const key = `${type}-${String(value)}-${Number(index)}`
 
         if (type === 'text') {
           return (
             <p
               key={key}
-              className="break-words whitespace-pre-wrap"
+              className="wrap-break-word whitespace-pre-wrap"
             >
               {value}
             </p>

@@ -17,9 +17,9 @@ export default function ProfileIcon({ metadata, className }: Props) {
       />
       <AvatarFallback>
         {
-          metadata?.pubkey
-            ? metadata.pubkey.slice(0, 2).toUpperCase()
-            : <Skeleton />
+          metadata?.pubkey === undefined
+            ? <Skeleton />
+            : metadata.pubkey.slice(0, 2).toUpperCase()
         }
       </AvatarFallback>
     </Avatar>

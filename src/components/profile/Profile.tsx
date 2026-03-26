@@ -9,14 +9,14 @@ interface Props {
 
 export default function Profile({ metadata }: Props) {
   const content = metadata?.content || {}
-  const displayName = content?.display_name || content?.name || ''
+  const displayName = content?.display_name ?? content?.name ?? ''
 
   return (
     <div>
-      <div className="bg-muted-foreground z-0 h-60">
-        {content?.banner && (
+      <div className="z-0 h-60 bg-muted-foreground">
+        {(typeof content.banner === 'string' && content.banner.trim() !== '') && (
           <img
-            className="h-full w-full object-cover"
+            className="size-full object-cover"
             alt="Banner"
             decoding="async"
             loading="lazy"

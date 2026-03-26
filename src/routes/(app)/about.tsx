@@ -12,7 +12,7 @@ function RouteComponent() {
     <div className="mt-10 grid place-items-center gap-8">
       <div className="relative">
         <h1 className="text-3xl">Astraea</h1>
-        {import.meta.env.VITE_APP_VERSION && (
+        {import.meta.env.VITE_APP_VERSION !== undefined && (
           <Badge className="absolute -top-4 -right-8">
             {import.meta.env.VITE_APP_VERSION}
           </Badge>

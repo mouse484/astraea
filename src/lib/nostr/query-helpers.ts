@@ -17,19 +17,19 @@ interface QueryConfig<T, I = T> {
 
 export function createQuery<T, I = T>({ name, schema, kind, filterKey }: QueryConfig<T, I>) {
   return ({ pool, relays }: NostrQueryContext, id: string) => {
-    const filter: Filter = {
+    const filter = {
       kinds: [kind],
-    }
-    filter[filterKey] = [id]
+      [filterKey]: [id],
+    } as Filter
 
     return queryOptions({
-      queryKey: [name, id],
+      queryKey: [name, id, schema],
       queryFn: async () => {
         const event = await pool.get(relays, filter)
         if (!event) {
           throw new Error(`${name} event not found`)
         }
-        return await Schema.decodeUnknownPromise(schema)(event)
+        return Schema.decodeUnknownPromise(schema)(event)
           .catch((error) => {
             console.error(error)
             throw error

@@ -9,19 +9,24 @@ import { signEvent } from '../utils/sign-event'
 export function useZap(metadata: { lud06?: string | null, lud16?: string | null }) {
   const lnurl = useMemo(() => getLightningLnurl(metadata), [metadata])
 
-  const query = useQuery({
+  const query = useQuery<{
+    isEnabled: boolean
+    lnurlResponse?: typeof LnurlPayResponseWithNIP57Schema.Type
+  }>({
     queryKey: ['lnurlPayment', lnurl],
     queryFn: async () => {
-      if (!lnurl) return
+      if (!lnurl) return { isEnabled: false }
       const response = await fetch(lnurl)
-      if (!response.ok) return
-      const json = await response.json()
+      if (!response.ok) return { isEnabled: false }
       try {
-        const lnurl = Schema.decodeUnknownSync(LnurlPayResponseWithNIP57Schema)(json)
-        return lnurl.allowsNostr === true && typeof lnurl.callback === 'string'
-          ? { isEnabled: true, lnurlResponse: lnurl }
-          : undefined
-      } catch {}
+        const lnurlResponse = Schema.decodeUnknownSync(LnurlPayResponseWithNIP57Schema)(await response.json())
+        if (lnurlResponse.allowsNostr === true && typeof lnurlResponse.callback === 'string') {
+          return { isEnabled: true, lnurlResponse }
+        }
+        return { isEnabled: false, lnurlResponse }
+      } catch {
+        return { isEnabled: false }
+      }
     },
     enabled: !!lnurl,
     retry: 1,
@@ -43,8 +48,9 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
         relays?: string[]
         targetEventId: string
       }) => {
-      if (!query.data?.lnurlResponse?.callback) throw new Error('No callback URL')
-      const url = new URL(query.data.lnurlResponse.callback)
+      const callback = query.data?.lnurlResponse?.callback
+      if (typeof callback !== 'string') throw new Error('No callback URL')
+      const url = new URL(callback)
 
       const signedEvent = await signEvent(ZapRequestEventSchema, {
         kind: 9734,
@@ -65,8 +71,7 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
       const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch invoice')
 
-      const json = await response.json()
-      const invoice = Schema.decodeUnknownSync(LnurlPayInvoiceResponseSchema)(json)
+      const invoice = Schema.decodeUnknownSync(LnurlPayInvoiceResponseSchema)(await response.json())
 
       if ('status' in invoice && invoice.status === 'ERROR') {
         throw new Error(invoice.reason)
@@ -78,5 +83,6 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
     },
   })
 
+  // eslint-disable-next-line @tanstack/query/no-rest-destructuring
   return { ...query, mutation }
 }

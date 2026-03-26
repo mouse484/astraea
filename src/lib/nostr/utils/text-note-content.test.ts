@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import { createEvent } from '../nip19'
 import { parseTextNoteContent } from './text-note-content'
 
-// eslint-disable-next-line style/max-len
 const SAMPLE_NEVENT = 'nevent1qqst8cujky046negxgwwm5ynqwn53t8aqjr6afd8g59nfqwxpdhylpcpzamhxue69uhhyetvv9ujuetcv9khqmr99e3k7mg8arnc9'
 const SAMPLE_NEVENT_RESULT = createEvent(SAMPLE_NEVENT)
 

@@ -17,7 +17,7 @@ export const Route = createFileRoute({
   component: RouteComponent,
   beforeLoad: () => {
     const pubkeyHex = readStore('pubkey')
-    if (!pubkeyHex) {
+    if (pubkeyHex === undefined) {
       throw redirect({
         to: '/',
       })
@@ -38,13 +38,13 @@ export const Route = createFileRoute({
     return (
       <Layout>
         <Alert className="mx-auto w-4/5" variant="destructive">
-          <AlertCircle className="!mr-2 h-8 w-8 flex-shrink-0" />
+          <AlertCircle className="mr-2! size-8 shrink-0" />
           <AlertTitle className="text-xl font-semibold">{error.name}</AlertTitle>
           <AlertDescription>
             <p>
               {error.message || 'An unexpected error occurred.'}
             </p>
-            {error.stack && (
+            {error.stack !== undefined && (
               <pre className="mt-2 text-sm text-wrap text-current/80">{error.stack}</pre>
             )}
           </AlertDescription>
@@ -73,7 +73,7 @@ function RouteComponent() {
           }
         } else if (event.kind === 7) {
           const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
-          if (targetId) {
+          if (targetId !== undefined) {
             queryClient.setQueryData(
               queryKeys.reaction(targetId, event.pubkey, event.content),
               event,
