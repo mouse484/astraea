@@ -9,7 +9,7 @@ import { Checkbox } from '@/shadcn-ui/components/ui/checkbox'
 
 type Relay = StoreValue<'relays'>[number]
 
-interface RelayTableProps extends Omit<DataTableProps<Relay, unknown>, 'columns' | 'data'> {
+interface RelayTableProps extends Omit<DataTableProps<Relay>, 'columns' | 'data'> {
   relays: StoreValue<'relays'>
   onUpdateRelay: (index: number, updatedRelay: StoreValue<'relays'>[number]) => void
   onDeleteRelay: (index: number) => void
@@ -22,7 +22,7 @@ export function RelayTable({
   ...dataTableProps
 }: RelayTableProps) {
   function createCell(type: 'read' | 'write') {
-    return ({ row: { index, original } }: CellContext<Relay, unknown>) => {
+    return ({ row: { index, original } }: CellContext<Relay, any>) => {
       return (
         <Checkbox
           checked={original[type]}
