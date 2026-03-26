@@ -76,7 +76,7 @@ const appprofileNpub1Char123idChar125Route =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof appRouteRouteWithChildren
+  '/': typeof IndexRoute
   '/about': typeof appAboutRoute
   '/global': typeof appGlobalRoute
   '/home': typeof appHomeRoute
@@ -87,7 +87,7 @@ export interface FileRoutesByFullPath {
   '/settings/relays': typeof appSettingsRelaysRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof appRouteRouteWithChildren
+  '/': typeof IndexRoute
   '/about': typeof appAboutRoute
   '/global': typeof appGlobalRoute
   '/home': typeof appHomeRoute
@@ -154,6 +154,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/(app)': {
+      id: '/(app)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof appRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -161,18 +168,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(app)': {
-      id: '/(app)'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof appRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(app)/about': {
-      id: '/(app)/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof appAboutRouteImport
+    '/(app)/home': {
+      id: '/(app)/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof appHomeRouteImport
       parentRoute: typeof appRouteRoute
     }
     '/(app)/global': {
@@ -182,32 +182,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appGlobalRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/home': {
-      id: '/(app)/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof appHomeRouteImport
+    '/(app)/about': {
+      id: '/(app)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof appAboutRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/(profile)/npub1{$id}': {
-      id: '/(app)/(profile)/npub1{$id}'
-      path: '/npub1{$id}'
-      fullPath: '/npub1{$id}'
-      preLoaderRoute: typeof appprofileNpub1Char123idChar125RouteImport
-      parentRoute: typeof appRouteRoute
-    }
-    '/(app)/(textnote)/nevent1{$id}': {
-      id: '/(app)/(textnote)/nevent1{$id}'
-      path: '/nevent1{$id}'
-      fullPath: '/nevent1{$id}'
-      preLoaderRoute: typeof apptextnoteNevent1Char123idChar125RouteImport
-      parentRoute: typeof appRouteRoute
-    }
-    '/(app)/(textnote)/note1{$id}': {
-      id: '/(app)/(textnote)/note1{$id}'
-      path: '/note1{$id}'
-      fullPath: '/note1{$id}'
-      preLoaderRoute: typeof apptextnoteNote1Char123idChar125RouteImport
+    '/(app)/settings/relays': {
+      id: '/(app)/settings/relays'
+      path: '/settings/relays'
+      fullPath: '/settings/relays'
+      preLoaderRoute: typeof appSettingsRelaysRouteImport
       parentRoute: typeof appRouteRoute
     }
     '/(app)/settings/general': {
@@ -217,11 +203,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appSettingsGeneralRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/settings/relays': {
-      id: '/(app)/settings/relays'
-      path: '/settings/relays'
-      fullPath: '/settings/relays'
-      preLoaderRoute: typeof appSettingsRelaysRouteImport
+    '/(app)/(textnote)/note1{$id}': {
+      id: '/(app)/(textnote)/note1{$id}'
+      path: '/note1{$id}'
+      fullPath: '/note1{$id}'
+      preLoaderRoute: typeof apptextnoteNote1Char123idChar125RouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/(textnote)/nevent1{$id}': {
+      id: '/(app)/(textnote)/nevent1{$id}'
+      path: '/nevent1{$id}'
+      fullPath: '/nevent1{$id}'
+      preLoaderRoute: typeof apptextnoteNevent1Char123idChar125RouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/(profile)/npub1{$id}': {
+      id: '/(app)/(profile)/npub1{$id}'
+      path: '/npub1{$id}'
+      fullPath: '/npub1{$id}'
+      preLoaderRoute: typeof appprofileNpub1Char123idChar125RouteImport
       parentRoute: typeof appRouteRoute
     }
   }
