@@ -8,7 +8,8 @@ const HexSchema = z.string().regex(HEX_REGEX)
 export const Hex32BytesSchema = HexSchema.length(64)
 export const Hex64BytesSchema = HexSchema.length(128)
 export const KindIntegerSchema = z.number().int().min(0).max(65_535)
-export const PubkeySchema = Hex32BytesSchema.brand('Pubkey')
+export const PubkeySchema = Hex32BytesSchema.brand<'Pubkey'>()
+export type Pubkey = z.infer<typeof PubkeySchema>
 
 export const RelayUrlSchema = z.url({
   protocol: /^ws(s)?$/,

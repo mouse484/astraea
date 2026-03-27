@@ -1,5 +1,6 @@
 import { redirect } from '@tanstack/react-router'
 import { toast } from 'sonner'
+import { PubkeySchema } from '@/lib/nostr/schemas/common'
 import { readStore, writeStore } from '@/lib/store'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
@@ -26,17 +27,16 @@ function RouteComponent() {
         disabled={!globalThis.nostr}
         onClick={() => {
           void (async () => {
-            const pubkey = await (globalThis.nostr!.getPublicKey()).catch((error) => {
-              console.error(error)
-            })
-            if (pubkey === undefined) {
-              toast.error('Failed to sign in with NIP-07 extension')
-            } else {
+            const _pubkey = await (globalThis.nostr!.getPublicKey()).catch(console.error)
+            const pubkey = await PubkeySchema.parseAsync(_pubkey).catch(console.error)
+            if (pubkey) {
               writeStore('pubkey', pubkey)
               void navigate({
                 to: '/settings/relays',
               })
               toast.success('Successfully signed in with NIP-07 extension')
+            } else {
+              toast.error('Failed to sign in with NIP-07 extension')
             }
           })()
         }}
