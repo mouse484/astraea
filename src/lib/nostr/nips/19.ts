@@ -12,10 +12,10 @@ function isValid(type: Nip19Type, s: string): boolean {
   }
 }
 
-export const NpubSchema = z.string().refine(
-  s => isValid('npub', s),
-  { message: 'Invalid npub format' },
-)
+// export const NpubSchema = z.string().refine(
+//   s => isValid('npub', s),
+//   { message: 'Invalid npub format' },
+// )
 
 export const NoteIDSchema = z.string().refine(
   s => isValid('note', s),

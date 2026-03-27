@@ -3,7 +3,7 @@ import { NostrEventSchema } from '../nips/01'
 import { Hex32BytesSchema, PubkeySchema, RelayUrlSchema } from '../schemas/common'
 import { stringToNumber } from '../schemas/utilities'
 
-export const ZapRequestTagSchema = z.union([
+const ZapRequestTagSchema = z.union([
   z.tuple([z.literal('relays'), RelayUrlSchema]).rest(RelayUrlSchema),
   z.tuple([z.literal('amount'), stringToNumber]),
   z.tuple([z.literal('lnurl'), z.string()]),

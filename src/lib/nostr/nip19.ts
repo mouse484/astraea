@@ -1,11 +1,8 @@
 import type { DecodedResult } from 'nostr-tools/nip19'
 import {
   decode,
-
-  naddrEncode,
   neventEncode,
   noteEncode,
-  nprofileEncode,
   npubEncode,
 } from 'nostr-tools/nip19'
 
@@ -69,12 +66,7 @@ function createEntityFactory<T extends Entity>(
 }
 
 export const createPubkey = createEntityFactory('npub', npubEncode)
-export type Pubkey = ReturnType<typeof createPubkey>
 export const createNoteId = createEntityFactory('note', noteEncode)
-export type NoteId = ReturnType<typeof createNoteId>
-export const createProfile = createEntityFactory('nprofile', nprofileEncode)
-export type Profile = ReturnType<typeof createProfile>
+// export const createProfile = createEntityFactory('nprofile', nprofileEncode)
 export const createEvent = createEntityFactory('nevent', neventEncode)
-export type Event = ReturnType<typeof createEvent>
-export const createAddr = createEntityFactory('naddr', naddrEncode)
-export type Addr = ReturnType<typeof createAddr>
+// export const createAddr = createEntityFactory('naddr', naddrEncode)
