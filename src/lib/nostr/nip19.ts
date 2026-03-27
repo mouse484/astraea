@@ -1,10 +1,16 @@
-import type { DecodedResult } from 'nostr-tools/nip19'
+import type { DecodedResult as _DecodedResult } from 'nostr-tools/nip19'
+import type { Pubkey } from './schemas/common'
 import {
   decode,
   neventEncode,
   noteEncode,
   npubEncode,
 } from 'nostr-tools/nip19'
+
+type DecodedResult = Exclude<_DecodedResult, { type: 'npub' }> | {
+  type: 'npub'
+  data: Pubkey
+}
 
 type Entity = Exclude<DecodedResult['type'], 'nsec' | 'nrelay'>
 
