@@ -42,7 +42,7 @@
     "lucide-react": "^1.0.1",
     "next-themes": "^0.4.6",
     "normalize-url": "^9.0.0",
-    "nostr-tools": "^2.20.0",
+    "nostr-tools": "^2.23.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.72.0",
