@@ -19,7 +19,8 @@ export const LightningMetadataSchema = Schema.Struct({
 
 function decodeLnurl(lnurl: string): string | undefined {
   try {
-    const { words } = bech32.decode(lnurl, 2000)
+    // FIXME: cast to template literal type to satisfy bech32.decode, which expects a string of the form `${string}1${string}`
+    const { words } = bech32.decode(lnurl as `${string}1${string}`, 2000)
     const data = bech32.fromWords(words)
     return new TextDecoder().decode(new Uint8Array(data))
   } catch {
