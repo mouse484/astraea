@@ -18,10 +18,9 @@ export const URLSchema = z.preprocess((value) => {
   try {
     const url = new URL(normalizeUrl(String(value), { defaultProtocol: 'https' }))
     return url.href
-  } catch {
-    return ''
-  }
-}, z.url())
+  } catch {}
+// eslint-disable-next-line unicorn/no-useless-undefined, unicorn/prefer-top-level-await
+}, z.url().optional().catch(undefined))
 
 export const ImageURISchema = z.url({
   protocol: /^(https?|data)$/,
