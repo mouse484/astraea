@@ -13,6 +13,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@scure/base": "^2.0.0",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/query-async-storage-persister": "^5.95.2",
     "@tanstack/react-form": "^1.28.5",
