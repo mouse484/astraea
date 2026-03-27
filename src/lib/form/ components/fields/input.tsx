@@ -5,10 +5,20 @@ import BaseField, { extractBaseFieldProps } from './_base'
 
 interface Props extends BaseFieldProps, ComponentProps<'input'> { }
 
+type InferValueType<T> = T extends 'number' ? number : string
+
 export default function InputField(properties: Props) {
   const { baseFieldProps, restProps } = extractBaseFieldProps(properties)
+
+  const handleChange = (value: string) => {
+    if (restProps.type === 'number') {
+      return Number(value)
+    }
+    return value
+  }
+
   return (
-    <BaseField<string> {...baseFieldProps}>
+    <BaseField<InferValueType<typeof restProps.type>> {...baseFieldProps}>
       {(field, state) => (
         <Input
           id={field.name}
@@ -16,7 +26,7 @@ export default function InputField(properties: Props) {
           name={field.name}
           value={field.state.value}
           onBlur={field.handleBlur}
-          onChange={event => field.handleChange(event.target.value)}
+          onChange={event => field.handleChange(handleChange(event.target.value))}
           {...restProps}
         />
       )}
