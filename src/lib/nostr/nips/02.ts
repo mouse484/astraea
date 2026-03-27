@@ -1,32 +1,27 @@
-import { Schema } from 'effect'
+import { z } from 'zod'
 import { PubkeySchema, RelayUrlSchema } from '../schemas/common'
 
-export const FollowListTagSchema = Schema.transform(
-  Schema.Array(
-    Schema.Union(
-      Schema.Tuple(
-        Schema.Literal('p'),
+export const FollowListTagSchema = z.codec(
+  z.array(
+    z.union([
+      z.tuple([
+        z.literal('p'),
         PubkeySchema,
-        Schema.optionalElement(RelayUrlSchema),
-        Schema.optionalElement(Schema.String).annotations({
-          description: 'local name or petname',
-        }),
-      ),
-      Schema.Array(Schema.String),
-    ),
+        RelayUrlSchema.optional(),
+        z.string().optional(),
+      ]),
+      z.array(z.string()),
+    ]),
   ),
-  Schema.Array(PubkeySchema),
+  z.array(PubkeySchema),
   {
-    strict: true,
     decode: (tags) => {
       return tags
-        .filter(([tagName]) => tagName === 'p')
-        .map(([_, pubkey]) => pubkey)
+        .filter(tag => Array.isArray(tag) && tag[0] === 'p')
+        .map(tag => tag[1])
     },
     encode: (pubkeys) => {
-      return pubkeys.map((pubkey) => {
-        return ['p', pubkey] as const
-      })
+      return pubkeys.map(pubkey => ['p', pubkey])
     },
   },
 )

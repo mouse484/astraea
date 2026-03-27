@@ -1,4 +1,4 @@
-import { Schema } from 'effect'
+import { z } from 'zod'
 import {
   Hex32BytesSchema,
   Hex64BytesSchema,
@@ -8,52 +8,44 @@ import {
   RelayUrlSchema,
 } from '../schemas/common'
 
-export const TagSchema = Schema.Union(
-  Schema.Tuple(
-    Schema.Literal('e'),
+export const TagSchema = z.union([
+  z.tuple([
+    z.literal('e'),
     PubkeySchema,
-    Schema.optionalElement(RelayUrlSchema),
-    Schema.optionalElement(PubkeySchema),
-  ),
-  Schema.Tuple(
-    Schema.Literal('p'),
+    RelayUrlSchema.optional(),
+    PubkeySchema.optional(),
+  ]),
+  z.tuple([
+    z.literal('p'),
     PubkeySchema,
-    Schema.optionalElement(RelayUrlSchema),
-  ),
-  Schema.Tuple(
-    Schema.Literal('a'),
-    Schema.optionalElement(
-      Schema.TemplateLiteralParser(
-        KindIntegerSchema,
-        ':',
-        PubkeySchema,
-        ':',
-        Schema.String,
-      ),
-    ),
-    Schema.optionalElement(RelayUrlSchema),
-  ),
-  Schema.Tuple(
-    Schema.Literal('alt'),
-    Schema.String,
-  ),
-  Schema.Array(Schema.String).pipe(Schema.minItems(1)),
-)
+    RelayUrlSchema.optional(),
+  ]),
+  z.tuple([
+    z.literal('a'),
+    z.string().regex(/^\d+:\w{64}:.+$/).optional(), // kind:pubkey:d format
+    RelayUrlSchema.optional(),
+  ]),
+  z.tuple([
+    z.literal('alt'),
+    z.string(),
+  ]),
+  z.array(z.string()).min(1),
+])
 
-const TagsSchema = Schema.Array(TagSchema)
+const TagsSchema = z.array(TagSchema)
 
-export const NostrEventSchema = Schema.Struct({
+export const NostrEventSchema = z.object({
   id: Hex32BytesSchema,
   pubkey: PubkeySchema,
-  created_at: Schema.Number,
+  created_at: z.number(),
   kind: KindIntegerSchema,
   tags: TagsSchema,
-  content: Schema.String,
+  content: z.string(),
   sig: Hex64BytesSchema,
 })
 
-export const UserMetadataSchema = Schema.Struct({
-  name: Schema.String,
-  about: Schema.String,
+export const UserMetadataSchema = z.object({
+  name: z.string(),
+  about: z.string(),
   picture: ImageURISchema,
 })

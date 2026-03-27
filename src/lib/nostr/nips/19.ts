@@ -1,9 +1,9 @@
-import { Schema } from 'effect'
 import { nip19 } from 'nostr-tools'
+import { z } from 'zod'
 
 type Nip19Type = ReturnType<typeof nip19.decode>['type']
 
-function isVaild(type: Nip19Type, s: string): boolean {
+function isValid(type: Nip19Type, s: string): boolean {
   try {
     const decoded = nip19.decode(s)
     return decoded.type === type
@@ -12,14 +12,17 @@ function isVaild(type: Nip19Type, s: string): boolean {
   }
 }
 
-export const NpubSchema = Schema.String.pipe(
-  Schema.filter(s => isVaild('npub', s)),
+export const NpubSchema = z.string().refine(
+  s => isValid('npub', s),
+  { message: 'Invalid npub format' },
 )
 
-export const NoteIDSchema = Schema.String.pipe(
-  Schema.filter(s => isVaild('note', s)),
+export const NoteIDSchema = z.string().refine(
+  s => isValid('note', s),
+  { message: 'Invalid note format' },
 )
 
-export const NostrtEventAddressSchema = Schema.String.pipe(
-  Schema.filter(s => isVaild('nevent', s)),
+export const NostrtEventAddressSchema = z.string().refine(
+  s => isValid('nevent', s),
+  { message: 'Invalid nevent format' },
 )

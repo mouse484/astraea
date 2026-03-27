@@ -1,3 +1,4 @@
+import type { z } from 'zod'
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -31,7 +32,7 @@ import Replies from './Replies'
 import TextNoteContent from './TextNoteContent'
 
 interface Props {
-  event: typeof TextNoteEventSchema.Type
+  event: z.infer<typeof TextNoteEventSchema>
   withReplies?: boolean
   isDisplayFooter?: boolean
   setTimelinePaused?: (paused: boolean) => void

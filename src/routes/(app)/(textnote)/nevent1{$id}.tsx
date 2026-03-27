@@ -29,7 +29,7 @@ function RouteComponent() {
   const { event } = Route.useLoaderData()
   const hasRoot = (event.tags.find((tag) => {
     return tag[0] === 'e' && tag[3] === 'root'
-  }) ?? [])[1] as string | undefined
+  }) ?? [])[1]
   return (
     <>
       {hasRoot !== undefined && (() => {

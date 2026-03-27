@@ -1,4 +1,4 @@
-import type { Schema } from 'effect'
+import type { ZodObject } from 'zod'
 import type { createQuery } from '@/lib/nostr/query-helpers'
 import { useRouteContext } from '@tanstack/react-router'
 import { toast } from 'sonner'
@@ -8,9 +8,9 @@ export default function useNostr() {
   const { relays, pool } = useRouteContext({ from: '/(app)' })
 
   return {
-    publishEvent: async <S extends Schema.Struct<any>>(
+    publishEvent: async <S extends ZodObject<any>>(
       schema: S,
-      event: Pick<S['Type'], 'kind' | 'tags' | 'content'>,
+      event: Pick<ReturnType<S['parse']>, 'kind' | 'tags' | 'content'>,
       messages?: {
         success?: string
         error?: string
@@ -26,7 +26,7 @@ export default function useNostr() {
         toast.error(messages?.error ?? `Failed to publish event. Kind: ${String(event.kind)}`)
       }
     },
-    getQueryOption: <T, I = T>(queryOption: ReturnType<typeof createQuery<T, I>>, id: string) => {
+    getQueryOption: <T>(queryOption: ReturnType<typeof createQuery<T>>, id: string) => {
       return queryOption({ pool, relays: relays.read }, id)
     },
     relays,

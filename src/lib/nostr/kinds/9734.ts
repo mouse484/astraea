@@ -1,36 +1,26 @@
-import { Schema } from 'effect'
+import { z } from 'zod'
 import { NostrEventSchema } from '../nips/01'
 import { Hex32BytesSchema, PubkeySchema, RelayUrlSchema } from '../schemas/common'
 
-export const ZapRequestTagSchema = Schema.Union(
-  Schema.Tuple(
-    [Schema.Literal('relays')],
-    RelayUrlSchema,
-  ),
-  Schema.Tuple(
-    Schema.Literal('amount'),
-    Schema.NumberFromString,
-  ),
-  Schema.Tuple(
-    Schema.Literal('lnurl'),
-    Schema.String,
-  ),
-  Schema.Tuple(
-    Schema.Literal('p'),
-    PubkeySchema,
-  ),
-  Schema.Tuple(
-    Schema.Literal('e'),
-    Hex32BytesSchema,
-  ),
-  Schema.Tuple(
-    Schema.Literal('a'),
-    Schema.String,
-  ),
+const NumberFromStringCodec = z.codec(
+  z.string(),
+  z.number(),
+  {
+    decode: s => Number.parseFloat(s),
+    encode: n => n.toString(),
+  },
 )
 
-export const ZapRequestEventSchema = Schema.Struct({
-  ...NostrEventSchema.fields,
-  kind: Schema.Literal(9734),
-  tags: Schema.Array(ZapRequestTagSchema),
+export const ZapRequestTagSchema = z.union([
+  z.tuple([z.literal('relays')]).rest(RelayUrlSchema),
+  z.tuple([z.literal('amount'), NumberFromStringCodec]),
+  z.tuple([z.literal('lnurl'), z.string()]),
+  z.tuple([z.literal('p'), PubkeySchema]),
+  z.tuple([z.literal('e'), Hex32BytesSchema]),
+  z.tuple([z.literal('a'), z.string()]),
+])
+
+export const ZapRequestEventSchema = NostrEventSchema.extend({
+  kind: z.literal(9734),
+  tags: z.array(ZapRequestTagSchema),
 })

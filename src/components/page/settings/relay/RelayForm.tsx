@@ -1,12 +1,10 @@
-import { Schema } from 'effect'
+import { z } from 'zod'
 import { useAppForm } from '@/lib/form'
 import { RelayUrlSchema } from '@/lib/nostr/schemas/common'
 
-const FormSchema = Schema.standardSchemaV1(
-  Schema.Struct({
-    relay: RelayUrlSchema,
-  }),
-)
+const FormSchema = z.object({
+  relay: RelayUrlSchema,
+})
 
 interface RelayFormProps {
   onAddRelay: (url: string) => void

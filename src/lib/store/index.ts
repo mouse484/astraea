@@ -1,5 +1,4 @@
 import type { StoreKey, StoreValue } from './schema'
-import { Schema } from 'effect'
 import { StoreSchemas } from './schema'
 
 export function readStore<K extends StoreKey>(key: K): StoreValue<K> | undefined {
@@ -9,9 +8,16 @@ export function readStore<K extends StoreKey>(key: K): StoreValue<K> | undefined
   }
 
   try {
-    const schema = StoreSchemas[key] as Schema.Schema<StoreValue<K>>
-    const result = Schema.decodeUnknownSync(schema)(JSON.parse(value))
-    return result
+    const schema = StoreSchemas[key]
+    const parsedJson: unknown = JSON.parse(value)
+    const result = schema.safeParse(parsedJson)
+
+    if (!result.success) {
+      console.error(result.error)
+      return undefined
+    }
+
+    return result.data as StoreValue<K>
   } catch (error) {
     console.error(error)
     return undefined
@@ -19,9 +25,9 @@ export function readStore<K extends StoreKey>(key: K): StoreValue<K> | undefined
 }
 
 export function writeStore<K extends StoreKey>(key: K, value: StoreValue<K>): void {
-  const schema = StoreSchemas[key] as Schema.Schema<StoreValue<K>>
+  const schema = StoreSchemas[key]
 
-  const result = Schema.decodeUnknownSync(schema)(value)
+  const result = schema.parse(value)
 
   localStorage.setItem(key, JSON.stringify(result))
 }

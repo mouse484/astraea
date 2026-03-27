@@ -1,10 +1,11 @@
+import type { z } from 'zod'
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { Repeat2 } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
 interface Props {
-  event: typeof TextNoteEventSchema.Type
+  event: z.infer<typeof TextNoteEventSchema>
   isOpen?: boolean
   onToggle?: (open: boolean) => void
   setTimelinePaused?: (paused: boolean) => void

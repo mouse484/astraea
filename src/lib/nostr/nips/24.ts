@@ -1,31 +1,34 @@
-import { Schema } from 'effect'
+import { z } from 'zod'
 import { ImageURISchema, URLSchema } from '../schemas/common'
 
-export const MetadataExtraFieldsSchema = Schema.Struct({
-  display_name: Schema.String,
+const StringBooleanCodec = z.codec(
+  z.enum(['true', 'false']),
+  z.boolean(),
+  {
+    decode: s => s === 'true',
+    encode: b => b ? 'true' : 'false',
+  },
+)
+
+export const MetadataExtraFieldsSchema = z.object({
+  display_name: z.string(),
   website: URLSchema,
   banner: ImageURISchema,
-  bot: Schema.Union(
-    Schema.Boolean,
-    Schema.String.pipe(
-      Schema.filter(s => s === 'true' || s === 'false'),
-      Schema.transform(Schema.Boolean, {
-        decode: s => s === 'true',
-        encode: b => b ? 'true' : 'false',
-      }),
-    ),
-  ),
-  birthday: Schema.Struct({
-    year: Schema.Number,
-    month: Schema.Number,
-    day: Schema.Number,
-  }).pipe(Schema.partial),
+  bot: z.union([
+    z.boolean(),
+    StringBooleanCodec,
+  ]),
+  birthday: z.object({
+    year: z.number(),
+    month: z.number(),
+    day: z.number(),
+  }).partial().optional(),
   /**
    * @deprecated use `display_name` instead
    */
-  displayName: Schema.String,
+  displayName: z.string().optional(),
   /**
    * @deprecated use `name` instead
    */
-  username: Schema.String,
+  username: z.string().optional(),
 })

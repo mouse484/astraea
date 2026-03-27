@@ -1,21 +1,21 @@
 import type { Filter } from 'nostr-tools'
+import type { ZodType } from 'zod'
 import type { QueryKeyList } from '../query-keys'
 import type { RouterContext } from '@/main'
 import { queryOptions } from '@tanstack/react-query'
-import { Schema } from 'effect'
 
 interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
   relays: string[]
 }
 
-interface QueryConfig<T, I = T> {
+interface QueryConfig<T> {
   name: QueryKeyList
-  schema: Schema.Schema<T, I>
+  schema: ZodType<T>
   kind: number
   filterKey: keyof Pick<Filter, 'ids' | 'authors'>
 }
 
-export function createQuery<T, I = T>({ name, schema, kind, filterKey }: QueryConfig<T, I>) {
+export function createQuery<T>({ name, schema, kind, filterKey }: QueryConfig<T>) {
   return ({ pool, relays }: NostrQueryContext, id: string) => {
     const filter = {
       kinds: [kind],
@@ -29,7 +29,7 @@ export function createQuery<T, I = T>({ name, schema, kind, filterKey }: QueryCo
         if (!event) {
           throw new Error(`${name} event not found`)
         }
-        return Schema.decodeUnknownPromise(schema)(event)
+        return schema.parseAsync(event)
           .catch((error) => {
             console.error(error)
             throw error

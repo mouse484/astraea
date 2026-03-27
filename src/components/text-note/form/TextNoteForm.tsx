@@ -1,3 +1,4 @@
+import type { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import { SendHorizonal } from 'lucide-react'
 import { useState } from 'react'
@@ -9,12 +10,12 @@ import { Textarea } from '@/shadcn-ui/components/ui/textarea'
 import ContentWarningForm from './ContentWarningForm'
 
 interface Props {
-  reply?: typeof TextNoteEventSchema.Type
-  repost?: typeof TextNoteEventSchema.Type
+  reply?: z.infer<typeof TextNoteEventSchema>
+  repost?: z.infer<typeof TextNoteEventSchema>
   onSuccess?: () => void
 }
 
-type Tag = typeof TextNoteEventSchema.Type['tags'][number]
+type Tag = z.infer<typeof TextNoteEventSchema>['tags'][number]
 
 export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
   const [text, setText] = useState('')
@@ -42,7 +43,7 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
 
     if (!reply) return tags
 
-    const replyTags = (reply.tags ?? []) as Tag[]
+    const replyTags = (reply.tags ?? [])
     const pubkeys = new Set([reply.pubkey])
 
     let rootTag: Tag | undefined

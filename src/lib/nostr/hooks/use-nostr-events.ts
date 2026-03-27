@@ -1,11 +1,11 @@
 import type { QueryKey } from '@tanstack/react-query'
+import type { ZodType } from 'zod'
 import { useRouteContext } from '@tanstack/react-router'
-import { Schema } from 'effect'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export function useNostrEvents<T extends { created_at: number }, I = T>(
+export function useNostrEvents<T extends { created_at: number }>(
   queryKey: QueryKey,
-  schema: Schema.Schema<T, I>,
+  schema: ZodType<T>,
   eventFilter?: (event: T) => boolean,
   enabled: boolean = true,
 ) {
@@ -23,13 +23,13 @@ export function useNostrEvents<T extends { created_at: number }, I = T>(
       const data = query.state.data
       if (data === undefined || data === null) continue
 
-      const decodedEvent = Schema.decodeUnknownEither(schema)(data)
-      if (decodedEvent._tag === 'Left') {
-        console.warn('Invalid event:', decodedEvent.left)
+      const decodedEvent = schema.safeParse(data)
+      if (!decodedEvent.success) {
+        console.warn('Invalid event:', decodedEvent.error)
         continue
       }
 
-      const event = decodedEvent.right
+      const event = decodedEvent.data
       if (eventFilter && !eventFilter(event)) continue
 
       events.add(event)

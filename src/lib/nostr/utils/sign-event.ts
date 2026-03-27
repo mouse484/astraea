@@ -1,20 +1,17 @@
+import type { ZodObject } from 'zod'
 import { getUnixTime } from 'date-fns'
-import { Schema } from 'effect'
 
-export async function signEvent<S extends Schema.Struct<any>>(
+export async function signEvent<S extends ZodObject<any>>(
   schema: S,
-  event: Pick<S['Type'], 'kind' | 'tags' | 'content'>,
+  event: Pick<ReturnType<S['parse']>, 'kind' | 'tags' | 'content'>,
 ) {
   if (!globalThis.nostr || typeof globalThis.nostr.signEvent !== 'function') {
     throw new Error('nostr extension is not available')
   }
-  const pickedSchema = schema.pick('kind', 'tags', 'content')
-  // eslint-disable-next-line ts/no-unsafe-argument
-  const encodedEvent = Schema.encodeUnknownSync(pickedSchema as any)(event) as {
-    kind: number
-    tags: string[][]
-    content: string
-  }
+  const pickedSchema = schema.pick({ kind: true, tags: true, content: true })
+
+  const encodedEvent = pickedSchema.parse(event)
+
   return globalThis.nostr.signEvent({
     kind: encodedEvent.kind,
     tags: encodedEvent.tags,

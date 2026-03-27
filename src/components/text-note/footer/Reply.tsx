@@ -1,3 +1,4 @@
+import type { z } from 'zod'
 import { MessageCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
@@ -6,7 +7,7 @@ import queryKeys from '@/lib/query-keys'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
 interface Props {
-  event: typeof TextNoteEventSchema.Type
+  event: z.infer<typeof TextNoteEventSchema>
   isOpen?: boolean
   onToggle?: (open: boolean) => void
   setTimelinePaused?: (paused: boolean) => void

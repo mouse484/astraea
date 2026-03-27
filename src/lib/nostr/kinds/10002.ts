@@ -1,14 +1,13 @@
-import { Schema } from 'effect'
 import { kinds } from 'nostr-tools'
+import { z } from 'zod'
 import { NostrEventSchema } from '../nips/01'
 import { RelayListSchema } from '../nips/65'
 import { createQuery } from '../query-helpers'
 
-export const RelayListEventSchema = Schema.Struct({
-  ...NostrEventSchema.fields,
-  kind: Schema.Literal(kinds.RelayList),
+export const RelayListEventSchema = NostrEventSchema.extend({
+  kind: z.literal(kinds.RelayList),
   tags: RelayListSchema,
-  content: Schema.optional(Schema.Literal('')),
+  content: z.literal('').optional(),
 })
 
 export const relayListQuery = createQuery({

@@ -1,5 +1,5 @@
+import type { z } from 'zod'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Schema } from 'effect'
 import { useMemo } from 'react'
 import { ZapRequestEventSchema } from '../kinds/9734'
 import { LnurlPayInvoiceResponseSchema } from '../luds/06'
@@ -11,7 +11,7 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
 
   const query = useQuery<{
     isEnabled: boolean
-    lnurlResponse?: typeof LnurlPayResponseWithNIP57Schema.Type
+    lnurlResponse?: z.infer<typeof LnurlPayResponseWithNIP57Schema>
   }>({
     queryKey: ['lnurlPayment', lnurl],
     queryFn: async () => {
@@ -19,7 +19,7 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
       const response = await fetch(lnurl)
       if (!response.ok) return { isEnabled: false }
       try {
-        const lnurlResponse = Schema.decodeUnknownSync(LnurlPayResponseWithNIP57Schema)(await response.json())
+        const lnurlResponse = LnurlPayResponseWithNIP57Schema.parse(await response.json())
         if (lnurlResponse.allowsNostr === true && typeof lnurlResponse.callback === 'string') {
           return { isEnabled: true, lnurlResponse }
         }
@@ -71,7 +71,7 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
       const response = await fetch(url)
       if (!response.ok) throw new Error('Failed to fetch invoice')
 
-      const invoice = Schema.decodeUnknownSync(LnurlPayInvoiceResponseSchema)(await response.json())
+      const invoice = LnurlPayInvoiceResponseSchema.parse(await response.json())
 
       if ('status' in invoice && invoice.status === 'ERROR') {
         throw new Error(invoice.reason)
