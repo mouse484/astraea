@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
+import type { z } from 'zod'
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useRouter } from '@tanstack/react-router'
 import { ClipboardCopy, Link, Share2 } from 'lucide-react'
@@ -15,7 +16,7 @@ import {
 } from '@/shadcn-ui/components/ui/dropdown-menu'
 
 interface Props {
-  event: typeof TextNoteEventSchema.Type
+  event: z.infer<typeof TextNoteEventSchema>
 }
 
 type MenuItems = {

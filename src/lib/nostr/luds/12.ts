@@ -1,5 +1,5 @@
-import { Schema } from 'effect'
+import { z } from 'zod'
 
-export const Lud12CommentAllowedSchema = Schema.Struct({
-  commentAllowed: Schema.optional(Schema.Number),
+export const Lud12CommentAllowedSchema = z.object({
+  commentAllowed: z.number().optional(),
 })

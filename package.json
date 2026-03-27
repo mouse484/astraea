@@ -24,7 +24,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "effect": "^3.21.0",
     "enhanced-ms": "^4.3.0",
     "frimousse": "^0.3.0",
     "lucide-react": "^1.0.1",
@@ -38,7 +37,8 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",
-    "vite-plugin-pwa": "^1.2.0"
+    "vite-plugin-pwa": "^1.2.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint-react/eslint-plugin": "2.13.0",

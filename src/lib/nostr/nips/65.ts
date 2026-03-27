@@ -1,30 +1,28 @@
-import { Schema } from 'effect'
+import { z } from 'zod'
 import { StoreSchemas } from '@/lib/store/schema'
 import { RelayUrlSchema } from '../schemas/common'
 
-export const RelayListSchema = Schema.transform(
-  Schema.Array(
-    Schema.Union(
-      Schema.Tuple(
-        Schema.Literal('r'),
+export const RelayListSchema = z.codec(
+  z.array(
+    z.union([
+      z.tuple([
+        z.literal('r'),
         RelayUrlSchema,
-        Schema.optionalElement(
-          Schema.Union(
-            Schema.Literal('read'),
-            Schema.Literal('write'),
-          ),
-        ),
-      ),
-      Schema.Array(Schema.String),
-    ),
+        z.union([
+          z.literal('read'),
+          z.literal('write'),
+        ]).optional(),
+      ]),
+      z.array(z.string()),
+    ]),
   ),
   StoreSchemas.relays,
   {
-    strict: true,
     decode: (tags) => {
       return tags
-        .filter(([tagName]) => tagName === 'r')
-        .map(([_, url, permission]) => {
+        .filter(tag => Array.isArray(tag) && tag[0] === 'r')
+        .map((tag) => {
+          const [_, url, permission] = tag
           return {
             url,
             read: permission === 'read' || permission === undefined,
@@ -37,9 +35,9 @@ export const RelayListSchema = Schema.transform(
         .filter(relay => relay.read || relay.write)
         .map((relay) => {
           if (relay.read && relay.write) {
-            return ['r', relay.url] as const
+            return ['r', relay.url]
           }
-          return ['r', relay.url, relay.read ? 'read' : 'write'] as const
+          return ['r', relay.url, relay.read ? 'read' : 'write']
         })
     },
   },

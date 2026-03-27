@@ -1,8 +1,7 @@
-import { Schema } from 'effect'
 import { kinds } from 'nostr-tools'
+import { z } from 'zod'
 import { NostrEventSchema } from '../nips/01'
 
-export const ReactionEventSchema = Schema.Struct({
-  ...NostrEventSchema.fields,
-  kind: Schema.Literal(kinds.Reaction),
+export const ReactionEventSchema = NostrEventSchema.extend({
+  kind: z.literal(kinds.Reaction),
 })

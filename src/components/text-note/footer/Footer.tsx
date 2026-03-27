@@ -1,3 +1,4 @@
+import type { z } from 'zod'
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
@@ -16,7 +17,7 @@ import Share from './Share'
 import Zap from './Zap'
 
 interface Props {
-  event: typeof TextNoteEventSchema.Type
+  event: z.infer<typeof TextNoteEventSchema>
   setTimelinePaused?: (paused: boolean) => void
 }
 

@@ -1,10 +1,10 @@
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useQuery } from '@tanstack/react-query'
-import { Schema } from 'effect'
 import { CopyIcon, ZapIcon } from 'lucide-react'
 import { useState } from 'react'
 import QRCode from 'react-qr-code'
 import { toast } from 'sonner'
+import { z } from 'zod'
 import { useAppForm } from '@/lib/form'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useZap } from '@/lib/nostr/hooks/use-zap'
@@ -23,7 +23,7 @@ import { Input } from '@/shadcn-ui/components/ui/input'
 import { cn } from '@/shadcn-ui/utils'
 
 interface Props {
-  event: typeof TextNoteEventSchema.Type
+  event: z.infer<typeof TextNoteEventSchema>
   setTimelinePaused?: (paused: boolean) => void
 }
 
@@ -35,18 +35,14 @@ export default function Zap({ event, setTimelinePaused }: Props) {
   const zap = useZap(metadata?.content ?? {})
   const commentAllowed = zap.data?.lnurlResponse?.commentAllowed ?? 0
 
-  const ZapFormSchema = Schema.Struct({
-    amount: Schema.Number.pipe(
-      Schema.int(),
-      Schema.greaterThanOrEqualTo(1),
-      Schema.lessThanOrEqualTo(1_000_000),
-    ),
-    message: Schema.String.pipe(Schema.maxLength(commentAllowed)),
+  const ZapFormSchema = z.object({
+    amount: z.number().int().min(1).max(1_000_000),
+    message: z.string().max(commentAllowed),
   })
 
   const form = useAppForm({
     validators: {
-      onSubmit: Schema.standardSchemaV1(ZapFormSchema),
+      onSubmit: ZapFormSchema,
     },
     defaultValues: {
       amount: 39,

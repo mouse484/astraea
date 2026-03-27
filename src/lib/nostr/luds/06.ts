@@ -1,22 +1,21 @@
-import { Schema } from 'effect'
+import { z } from 'zod'
 import { Lud12CommentAllowedSchema } from './12'
 
-export const LnurlPayResponseSchema = Schema.Struct({
-  callback: Schema.String,
-  maxSendable: Schema.Number,
-  minSendable: Schema.Number,
-  metadata: Schema.String,
-  tag: Schema.String,
-  ...Lud12CommentAllowedSchema.fields,
-})
+export const LnurlPayResponseSchema = z.object({
+  callback: z.string(),
+  maxSendable: z.number(),
+  minSendable: z.number(),
+  metadata: z.string(),
+  tag: z.string(),
+}).extend(Lud12CommentAllowedSchema.shape)
 
-export const LnurlPayInvoiceResponseSchema = Schema.Union(
-  Schema.Struct({
-    pr: Schema.String,
-    routes: Schema.Array(Schema.Any),
+export const LnurlPayInvoiceResponseSchema = z.union([
+  z.object({
+    pr: z.string(),
+    routes: z.array(z.any()),
   }),
-  Schema.Struct({
-    status: Schema.Literal('ERROR'),
-    reason: Schema.String,
+  z.object({
+    status: z.literal('ERROR'),
+    reason: z.string(),
   }),
-)
+])
