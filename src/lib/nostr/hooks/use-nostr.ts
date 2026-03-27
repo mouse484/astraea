@@ -1,4 +1,4 @@
-import type { output, ZodObject } from 'zod'
+import type { output, z, ZodObject } from 'zod'
 import type { createQuery } from '@/lib/nostr/query-helpers'
 import { useRouteContext } from '@tanstack/react-router'
 import { toast } from 'sonner'
@@ -26,7 +26,7 @@ export default function useNostr() {
         toast.error(messages?.error ?? `Failed to publish event. Kind: ${String(event.kind)}`)
       }
     },
-    getQueryOption: <T>(queryOption: ReturnType<typeof createQuery<T>>, id: string) => {
+    getQueryOption: <T extends z.ZodObject<any>>(queryOption: ReturnType<typeof createQuery<T>>, id: string) => {
       return queryOption({ pool, relays: relays.read }, id)
     },
     relays,
