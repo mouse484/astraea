@@ -39,7 +39,7 @@ export function RelayForm({ onAddRelay }: RelayFormProps) {
               />
             )}
           </form.AppField>
-          <form.Submit className="w-25">
+          <form.Submit className="w-25" checkDirty>
             Add
           </form.Submit>
         </div>
