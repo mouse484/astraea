@@ -1,12 +1,11 @@
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { useQuery } from '@tanstack/react-query'
 import { Schema } from 'effect'
 import { CopyIcon, ZapIcon } from 'lucide-react'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
 import QRCode from 'react-qr-code'
 import { toast } from 'sonner'
+import { useAppForm } from '@/lib/form'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useZap } from '@/lib/nostr/hooks/use-zap'
 import { metadataQuery } from '@/lib/nostr/kinds/0'
@@ -20,16 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shadcn-ui/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/shadcn-ui/components/ui/form'
 import { Input } from '@/shadcn-ui/components/ui/input'
-import { Textarea } from '@/shadcn-ui/components/ui/textarea'
 import { cn } from '@/shadcn-ui/utils'
 
 interface Props {
@@ -51,42 +41,40 @@ export default function Zap({ event, setTimelinePaused }: Props) {
       Schema.greaterThanOrEqualTo(1),
       Schema.lessThanOrEqualTo(1_000_000),
     ),
-    message: Schema.optional(Schema.String.pipe(Schema.maxLength(commentAllowed))),
+    message: Schema.String.pipe(Schema.maxLength(commentAllowed)),
   })
 
-  type ZapFormData = typeof ZapFormSchema.Type
-  const zapFormStandardSchema = Schema.standardSchemaV1(ZapFormSchema)
-
-  const form = useForm<ZapFormData>({
-    resolver: standardSchemaResolver(zapFormStandardSchema),
+  const form = useAppForm({
+    validators: {
+      onSubmit: Schema.standardSchemaV1(ZapFormSchema),
+    },
     defaultValues: {
       amount: 39,
       message: '',
     },
+    onSubmit({ value }) {
+      // TODO: mutation剥がしていいかも？
+      zap.mutation.mutate({
+        amount: value.amount,
+        message: value.message,
+        pubkey: pubkey.decoded,
+        targetEventId: event.id,
+        relays: [...new Set([
+          ...relays.write,
+          ...relays.read,
+        ])],
+      }, {
+        onSuccess: (result) => {
+          setInvoice(result.pr)
+        },
+        onError: (error) => {
+          setInvoice(undefined)
+          console.error('Invoice generation failed:', error)
+          toast.error(`Failed to generate invoice: ${error.message || 'Unknown error'}`)
+        },
+      })
+    },
   })
-
-  const onSubmit = (data: ZapFormData) => {
-    if (zap.mutation === undefined) return
-    zap.mutation.mutate({
-      amount: data.amount,
-      message: data.message,
-      pubkey: pubkey.decoded,
-      targetEventId: event.id,
-      relays: [...new Set([
-        ...relays.write,
-        ...relays.read,
-      ])],
-    }, {
-      onSuccess: (result) => {
-        setInvoice(result.pr)
-      },
-      onError: (error) => {
-        setInvoice(undefined)
-        console.error('Invoice generation failed:', error)
-        toast.error(`Failed to generate invoice: ${error.message || 'Unknown error'}`)
-      },
-    })
-  }
 
   const [open, setOpen] = useState(false)
   return (
@@ -119,48 +107,28 @@ export default function Zap({ event, setTimelinePaused }: Props) {
         </DialogHeader>
         {invoice === undefined
           ? (
-              <Form {...form}>
-                <form className="space-y-4" onSubmit={void form.handleSubmit(onSubmit)}>
-                  <FormField
-                    control={form.control}
-                    name="amount"
-                    render={() => (
-                      <FormItem>
-                        <FormLabel>Amount (sats)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...form.register('amount', { valueAsNumber: true })}
-                            disabled={zap.mutation.isPending}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+              <form.AppForm>
+                <form.Root>
+                  <form.AppField name="amount">
+                    {field => (
+                      <field.InputField label="Amount (sats)" type="number" />
                     )}
-                  />
+                  </form.AppField>
                   {commentAllowed > 0 && (
-                    <FormField
-                      control={form.control}
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Message (optional)</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              disabled={zap.mutation.isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+                    <form.AppField name="message">
+                      {field => (
+                        <field.InputField
+                          label={`Message (max ${commentAllowed} chars)`}
+                          type="text"
+                        />
                       )}
-                    />
+                    </form.AppField>
                   )}
-                  <Button className="w-full" type="submit" disabled={zap.mutation.isPending}>
-                    {zap.mutation.isPending ? 'Generating...' : 'Generate Invoice'}
-                  </Button>
-                </form>
-              </Form>
+                  <form.Submit className="w-full">
+                    Generate Invoice
+                  </form.Submit>
+                </form.Root>
+              </form.AppForm>
             )
           : (
               <div className="grid w-full place-items-center gap-3">
@@ -179,9 +147,7 @@ export default function Zap({ event, setTimelinePaused }: Props) {
                   />
                   <Button
                     aria-label="Copy"
-                    className={`
-                      absolute top-1/2 right-1 size-7 -translate-y-1/2
-                    `}
+                    className="absolute top-1/2 right-1 size-7 -translate-y-1/2"
                     size="icon"
                     type="button"
                     variant="ghost"
