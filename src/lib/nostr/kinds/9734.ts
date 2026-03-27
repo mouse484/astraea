@@ -6,7 +6,7 @@ const NumberFromStringCodec = z.codec(
   z.string(),
   z.number(),
   {
-    decode: s => Number.parseFloat(s),
+    decode: s => Number.parseInt(s, 10),
     encode: n => n.toString(),
   },
 )
