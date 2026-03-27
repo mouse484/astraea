@@ -8,9 +8,9 @@ import { createQuery } from '../query-helpers'
 export const TextNoteEventSchema = NostrEventSchema.extend({
   kind: z.literal(kinds.ShortTextNote),
   tags: z.array(z.union([
-    TagSchema,
     TextNoteTagSchema,
     ContentWarningTagSchema,
+    TagSchema,
   ])),
 })
 
