@@ -6,7 +6,7 @@ export const TextNoteTagSchema = z.union([
   z.tuple([
     z.literal('e'),
     NoteIDSchema,
-    z.tuple([z.literal(''), RelayUrlSchema]).optional(),
+    z.union([RelayUrlSchema, z.literal('')]).optional(),
     z.union([
       z.literal('root'),
       z.literal('reply'),
