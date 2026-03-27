@@ -3,14 +3,14 @@ import InputField from './ components/fields/input'
 import Root from './ components/forms/root'
 import Submit from './ components/forms/submit'
 
-export const {
+const {
   fieldContext,
   formContext,
   useFormContext,
   useFieldContext,
 } = createFormHookContexts()
 
-export const { useAppForm } = createFormHook({
+const { useAppForm } = createFormHook({
   fieldContext,
   formContext,
   formComponents: {
@@ -21,3 +21,9 @@ export const { useAppForm } = createFormHook({
     InputField,
   },
 })
+
+export {
+  useAppForm,
+  useFieldContext,
+  useFormContext,
+}

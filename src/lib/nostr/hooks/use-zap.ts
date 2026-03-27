@@ -1,4 +1,5 @@
 import type { z } from 'zod'
+import type { Pubkey } from '../schemas/common'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { ZapRequestEventSchema } from '../kinds/9734'
@@ -44,7 +45,7 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
       {
         amount: number
         message?: string
-        pubkey: string
+        pubkey: Pubkey
         relays: string[]
         targetEventId: string
       }) => {

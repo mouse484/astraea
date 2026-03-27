@@ -5,6 +5,7 @@ import { useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { createEvent } from '@/lib/nostr/nip19'
+import { PubkeySchema } from '@/lib/nostr/schemas/common'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { Textarea } from '@/shadcn-ui/components/ui/textarea'
 import ContentWarningForm from './ContentWarningForm'
@@ -43,7 +44,7 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
 
     if (!reply) return tags
 
-    const replyTags = (reply.tags ?? [])
+    const replyTags = reply.tags ?? []
     const pubkeys = new Set([reply.pubkey])
 
     let rootTag: Tag | undefined
@@ -52,7 +53,10 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
       if (tag[0] === 'e' && tag[3] === 'root') {
         rootTag = tag
       } else if (tag[0] === 'p') {
-        pubkeys.add(tag[1])
+        const pubkey = PubkeySchema.safeParse(tag[1])
+        if (pubkey.success) {
+          pubkeys.add(pubkey.data)
+        }
       }
     }
 
