@@ -1,10 +1,9 @@
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
+import { useForm } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { Schema } from 'effect'
 import { CopyIcon, ZapIcon } from 'lucide-react'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useMemo, useState } from 'react'
 import QRCode from 'react-qr-code'
 import { toast } from 'sonner'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
@@ -20,17 +19,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shadcn-ui/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/shadcn-ui/components/ui/form'
 import { Input } from '@/shadcn-ui/components/ui/input'
+import { Label } from '@/shadcn-ui/components/ui/label'
 import { Textarea } from '@/shadcn-ui/components/ui/textarea'
 import { cn } from '@/shadcn-ui/utils'
+
+const amountSchema = Schema.standardSchemaV1(
+  Schema.Number.pipe(
+    Schema.int(),
+    Schema.greaterThanOrEqualTo(1),
+    Schema.lessThanOrEqualTo(1_000_000),
+  ),
+)
 
 interface Props {
   event: typeof TextNoteEventSchema.Type
@@ -45,48 +45,41 @@ export default function Zap({ event, setTimelinePaused }: Props) {
   const zap = useZap(metadata?.content ?? {})
   const commentAllowed = zap.data?.lnurlResponse?.commentAllowed ?? 0
 
-  const ZapFormSchema = Schema.Struct({
-    amount: Schema.Number.pipe(
-      Schema.int(),
-      Schema.greaterThanOrEqualTo(1),
-      Schema.lessThanOrEqualTo(1_000_000),
+  const messageSchema = useMemo(
+    () => Schema.standardSchemaV1(
+      Schema.optional(Schema.String.pipe(Schema.maxLength(commentAllowed))),
     ),
-    message: Schema.optional(Schema.String.pipe(Schema.maxLength(commentAllowed))),
-  })
+    [commentAllowed],
+  )
 
-  type ZapFormData = typeof ZapFormSchema.Type
-  const zapFormStandardSchema = Schema.standardSchemaV1(ZapFormSchema)
-
-  const form = useForm<ZapFormData>({
-    resolver: standardSchemaResolver(zapFormStandardSchema),
+  const form = useForm({
     defaultValues: {
       amount: 39,
       message: '',
     },
+    onSubmit: ({ value }) => {
+      if (zap.mutation === undefined) return
+      zap.mutation.mutate({
+        amount: value.amount,
+        message: value.message,
+        pubkey: pubkey.decoded,
+        targetEventId: event.id,
+        relays: [...new Set([
+          ...relays.write,
+          ...relays.read,
+        ])],
+      }, {
+        onSuccess: (result) => {
+          setInvoice(result.pr)
+        },
+        onError: (error) => {
+          setInvoice(undefined)
+          console.error('Invoice generation failed:', error)
+          toast.error(`Failed to generate invoice: ${error.message || 'Unknown error'}`)
+        },
+      })
+    },
   })
-
-  const onSubmit = (data: ZapFormData) => {
-    if (zap.mutation === undefined) return
-    zap.mutation.mutate({
-      amount: data.amount,
-      message: data.message,
-      pubkey: pubkey.decoded,
-      targetEventId: event.id,
-      relays: [...new Set([
-        ...relays.write,
-        ...relays.read,
-      ])],
-    }, {
-      onSuccess: (result) => {
-        setInvoice(result.pr)
-      },
-      onError: (error) => {
-        setInvoice(undefined)
-        console.error('Invoice generation failed:', error)
-        toast.error(`Failed to generate invoice: ${error.message || 'Unknown error'}`)
-      },
-    })
-  }
 
   const [open, setOpen] = useState(false)
   return (
@@ -119,48 +112,66 @@ export default function Zap({ event, setTimelinePaused }: Props) {
         </DialogHeader>
         {invoice === undefined
           ? (
-              <Form {...form}>
-                <form className="space-y-4" onSubmit={void form.handleSubmit(onSubmit)}>
-                  <FormField
-                    control={form.control}
-                    name="amount"
-                    render={() => (
-                      <FormItem>
-                        <FormLabel>Amount (sats)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...form.register('amount', { valueAsNumber: true })}
-                            disabled={zap.mutation.isPending}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {commentAllowed > 0 && (
-                    <FormField
-                      control={form.control}
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Message (optional)</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              disabled={zap.mutation.isPending}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+              <form
+                className="space-y-4"
+                onSubmit={(event_) => {
+                  event_.preventDefault()
+                  void form.handleSubmit()
+                }}
+              >
+                <form.Field
+                  name="amount"
+                  validators={{ onChange: amountSchema }}
+                >
+                  {field => (
+                    <div className="grid gap-2">
+                      <Label htmlFor={field.name}>Amount (sats)</Label>
+                      <Input
+                        id={field.name}
+                        type="number"
+                        value={field.state.value}
+                        disabled={zap.mutation.isPending}
+                        onBlur={field.handleBlur}
+                        onChange={event_ => field.handleChange(Number(event_.target.value))}
+                      />
+                      {field.state.meta.errors.length > 0 && (
+                        <p className="text-sm text-destructive">
+                          {field.state.meta.errors[0]?.message}
+                        </p>
                       )}
-                    />
+                    </div>
                   )}
-                  <Button className="w-full" type="submit" disabled={zap.mutation.isPending}>
-                    {zap.mutation.isPending ? 'Generating...' : 'Generate Invoice'}
-                  </Button>
-                </form>
-              </Form>
+                </form.Field>
+                {commentAllowed > 0 && (
+                  <form.Field
+                    name="message"
+                    validators={{
+                      onChange: messageSchema,
+                    }}
+                  >
+                    {field => (
+                      <div className="grid gap-2">
+                        <Label htmlFor={field.name}>Message (optional)</Label>
+                        <Textarea
+                          id={field.name}
+                          value={field.state.value}
+                          disabled={zap.mutation.isPending}
+                          onBlur={field.handleBlur}
+                          onChange={event_ => field.handleChange(event_.target.value)}
+                        />
+                        {field.state.meta.errors.length > 0 && (
+                          <p className="text-sm text-destructive">
+                            {field.state.meta.errors[0]?.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </form.Field>
+                )}
+                <Button className="w-full" type="submit" disabled={zap.mutation.isPending}>
+                  {zap.mutation.isPending ? 'Generating...' : 'Generate Invoice'}
+                </Button>
+              </form>
             )
           : (
               <div className="grid w-full place-items-center gap-3">

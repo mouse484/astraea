@@ -1,63 +1,69 @@
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
+import { useForm } from '@tanstack/react-form'
 import { Schema } from 'effect'
-
-import { useForm } from 'react-hook-form'
 import { RelayUrlSchema } from '@/lib/nostr/schemas/common'
 import { Button } from '@/shadcn-ui/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/shadcn-ui/components/ui/form'
 import { Input } from '@/shadcn-ui/components/ui/input'
+import { Label } from '@/shadcn-ui/components/ui/label'
 
-const FormSchema = Schema.standardSchemaV1(
-  Schema.Struct({
-    relay: RelayUrlSchema,
-  }),
-)
+const relaySchema = Schema.standardSchemaV1(RelayUrlSchema)
 
 interface RelayFormProps {
   onAddRelay: (url: string) => void
 }
 
 export function RelayForm({ onAddRelay }: RelayFormProps) {
-  const form = useForm<typeof FormSchema.Type>({
-    resolver: standardSchemaResolver(FormSchema),
+  const form = useForm({
+    defaultValues: {
+      relay: '',
+    },
+    onSubmit: async ({ value, formApi }) => {
+      onAddRelay(value.relay)
+      formApi.reset()
+    },
   })
 
-  function onSubmit(values: typeof FormSchema.Type) {
-    onAddRelay(values.relay)
-    form.reset()
-  }
-
   return (
-    <Form {...form}>
-      <form className="space-y-4" onSubmit={void form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="relay"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Relay</FormLabel>
-              <FormControl>
-                <Input placeholder="wss://relay.example.com" type="url" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          className="ml-2"
-          type="submit"
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
-        >
-          Create
-        </Button>
-      </form>
-    </Form>
+    <form
+      className="space-y-4"
+      onSubmit={(event_) => {
+        event_.preventDefault()
+        void form.handleSubmit()
+      }}
+    >
+      <form.Field
+        name="relay"
+        validators={{ onChange: relaySchema }}
+      >
+        {field => (
+          <div className="grid gap-2">
+            <Label htmlFor={field.name}>Relay</Label>
+            <Input
+              id={field.name}
+              placeholder="wss://relay.example.com"
+              type="url"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={event_ => field.handleChange(event_.target.value)}
+            />
+            {field.state.meta.errors.length > 0 && (
+              <p className="text-sm text-destructive">
+                {field.state.meta.errors[0]?.message}
+              </p>
+            )}
+          </div>
+        )}
+      </form.Field>
+      <form.Subscribe selector={state => [state.canSubmit, state.isSubmitting]}>
+        {([canSubmit, isSubmitting]) => (
+          <Button
+            className="ml-2"
+            type="submit"
+            disabled={!canSubmit || isSubmitting}
+          >
+            Create
+          </Button>
+        )}
+      </form.Subscribe>
+    </form>
   )
 }
