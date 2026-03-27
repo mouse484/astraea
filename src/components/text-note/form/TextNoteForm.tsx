@@ -128,7 +128,7 @@ export default function TextNoteForm({ reply, repost, onSuccess }: Props) {
         />
         <Button
           disabled={(text.length <= 0 && !repost) || mutation.isPending}
-          onClick={() => handleSubmit}
+          onClick={() => void handleSubmit()}
         >
           Post
           <SendHorizonal />

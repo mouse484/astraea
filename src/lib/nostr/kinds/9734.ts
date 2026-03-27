@@ -1,19 +1,11 @@
 import { z } from 'zod'
 import { NostrEventSchema } from '../nips/01'
 import { Hex32BytesSchema, PubkeySchema, RelayUrlSchema } from '../schemas/common'
-
-const NumberFromStringCodec = z.codec(
-  z.string(),
-  z.number(),
-  {
-    decode: s => Number.parseInt(s, 10),
-    encode: n => n.toString(),
-  },
-)
+import { stringToNumber } from '../schemas/utilities'
 
 export const ZapRequestTagSchema = z.union([
   z.tuple([z.literal('relays'), RelayUrlSchema]).rest(RelayUrlSchema),
-  z.tuple([z.literal('amount'), NumberFromStringCodec]),
+  z.tuple([z.literal('amount'), stringToNumber]),
   z.tuple([z.literal('lnurl'), z.string()]),
   z.tuple([z.literal('p'), PubkeySchema]),
   z.tuple([z.literal('e'), Hex32BytesSchema]),

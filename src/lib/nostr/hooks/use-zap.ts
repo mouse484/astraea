@@ -38,25 +38,27 @@ export function useZap(metadata: { lud06?: string | null, lud16?: string | null 
         amount,
         message,
         pubkey,
-        relays = [],
+        relays,
         targetEventId,
       }:
       {
         amount: number
         message?: string
         pubkey: string
-        relays?: string[]
+        relays: string[]
         targetEventId: string
       }) => {
       const callback = query.data?.lnurlResponse?.callback
       if (typeof callback !== 'string') throw new Error('No callback URL')
       const url = new URL(callback)
 
+      const [relay, ...restRelays] = relays
+
       const signedEvent = await signEvent(ZapRequestEventSchema, {
         kind: 9734,
         content: message ?? '',
         tags: [
-          ['relays', ...relays],
+          ['relays', relay, ...restRelays],
           ['amount', amount],
           ['lnurl', url.href],
           ['p', pubkey],

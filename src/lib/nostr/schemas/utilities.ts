@@ -1,5 +1,10 @@
 import z from 'zod'
 
+export const stringToNumber = z.codec(z.string().regex(z.regexes.number), z.number(), {
+  decode: string_ => Number.parseFloat(string_),
+  encode: number_ => number_.toString(),
+})
+
 export function jsonCodec<T extends z.core.$ZodType>(schema: T) {
   return z.codec(z.string(), schema, {
     decode: (jsonString, context) => {
