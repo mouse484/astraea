@@ -1,9 +1,9 @@
-import type { ZodObject } from 'zod'
+import type { input, ZodObject } from 'zod'
 import { getUnixTime } from 'date-fns'
 
 export async function signEvent<S extends ZodObject<any>>(
   schema: S,
-  event: Pick<ReturnType<S['parse']>, 'kind' | 'tags' | 'content'>,
+  event: Pick<input<S>, 'kind' | 'tags' | 'content'>,
 ) {
   if (!globalThis.nostr || typeof globalThis.nostr.signEvent !== 'function') {
     throw new Error('nostr extension is not available')

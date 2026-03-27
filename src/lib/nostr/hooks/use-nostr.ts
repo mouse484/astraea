@@ -1,4 +1,4 @@
-import type { ZodObject } from 'zod'
+import type { input, ZodObject } from 'zod'
 import type { createQuery } from '@/lib/nostr/query-helpers'
 import { useRouteContext } from '@tanstack/react-router'
 import { toast } from 'sonner'
@@ -10,7 +10,7 @@ export default function useNostr() {
   return {
     publishEvent: async <S extends ZodObject<any>>(
       schema: S,
-      event: Pick<ReturnType<S['parse']>, 'kind' | 'tags' | 'content'>,
+      event: Pick<input<S>, 'kind' | 'tags' | 'content'>,
       messages?: {
         success?: string
         error?: string
