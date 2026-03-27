@@ -29,18 +29,20 @@ export function RelayForm({ onAddRelay }: RelayFormProps) {
   return (
     <form.AppForm>
       <form.Root>
-        <form.AppField name="relay">
-          {field => (
-            <field.InputField
-              label="Relay"
-              placeholder="wss://relay.example.com"
-              type="url"
-            />
-          )}
-        </form.AppField>
-        <form.Submit>
-          Add
-        </form.Submit>
+        <div className="flex items-end gap-2">
+          <form.AppField name="relay">
+            {field => (
+              <field.InputField
+                label="Relay"
+                placeholder="wss://relay.example.com"
+                type="url"
+              />
+            )}
+          </form.AppField>
+          <form.Submit className="w-25">
+            Add
+          </form.Submit>
+        </div>
       </form.Root>
     </form.AppForm>
   )

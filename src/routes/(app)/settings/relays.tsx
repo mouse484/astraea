@@ -64,7 +64,7 @@ function RouteComponent() {
   }
 
   return (
-    <>
+    <div className="space-y-8">
       <RelayForm onAddRelay={handleAddRelay} />
 
       {relays.length > 0 && (
@@ -128,6 +128,6 @@ function RouteComponent() {
           Save Relays
         </Button>
       </div>
-    </>
+    </div>
   )
 }
