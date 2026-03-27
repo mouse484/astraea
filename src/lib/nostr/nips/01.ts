@@ -22,7 +22,7 @@ export const TagSchema = z.union([
   ]),
   z.tuple([
     z.literal('a'),
-    z.string().regex(/^\d+:\w{64}:.+$/).optional(), // kind:pubkey:d format
+    z.string().regex(/^\d+:[0-9a-f]{64}:.+$/i).optional(), // kind:pubkey:d format
     RelayUrlSchema.optional(),
   ]),
   z.tuple([
