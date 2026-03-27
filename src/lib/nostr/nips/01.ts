@@ -37,7 +37,7 @@ const TagsSchema = z.array(TagSchema)
 export const NostrEventSchema = z.object({
   id: Hex32BytesSchema,
   pubkey: PubkeySchema,
-  created_at: z.number(),
+  created_at: z.number().int().nonnegative(),
   kind: KindIntegerSchema,
   tags: TagsSchema,
   content: z.string(),
