@@ -1,7 +1,8 @@
 import type { RouterContext } from '@/main'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { createRootRouteWithContext, HeadContent, Link, Outlet } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { ThemeProvider } from 'next-themes'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { Toaster } from '@/shadcn-ui/components/ui/sonner'
@@ -15,8 +16,12 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         <Outlet />
         <Toaster />
       </ThemeProvider>
-      <TanStackRouterDevtools initialIsOpen={false} />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <TanStackDevtools
+        plugins={[
+          { name: 'Tanstack Query', render: <ReactQueryDevtoolsPanel /> },
+          { name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> },
+        ]}
+      />
     </>
   ),
   notFoundComponent: () => (
