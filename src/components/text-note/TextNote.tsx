@@ -32,7 +32,7 @@ import Replies from './Replies'
 import TextNoteContent from './TextNoteContent'
 
 interface Props {
-  event: z.infer<typeof TextNoteEventSchema>
+  event: z.output<typeof TextNoteEventSchema>
   withReplies?: boolean
   isDisplayFooter?: boolean
   setTimelinePaused?: (paused: boolean) => void
