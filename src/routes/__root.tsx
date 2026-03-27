@@ -18,8 +18,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       </ThemeProvider>
       <TanStackDevtools
         plugins={[
-          { name: 'Tanstack Query', render: <ReactQueryDevtoolsPanel /> },
-          { name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> },
+          { name: 'TanStack Query', render: <ReactQueryDevtoolsPanel /> },
+          { name: 'TanStack Router', render: <TanStackRouterDevtoolsPanel /> },
         ]}
       />
     </>
