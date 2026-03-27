@@ -3,22 +3,26 @@ import type { BaseFieldProps } from './_base'
 import { Input } from '@/shadcn-ui/components/ui/input'
 import BaseField, { extractBaseFieldProps } from './_base'
 
-interface Props extends BaseFieldProps, ComponentProps<'input'> { }
+interface Props extends BaseFieldProps, ComponentProps<'input'> {
+  valueAsNumber?: boolean
+}
 
-type InferValueType<T> = T extends 'number' ? number : string
+type InferValueType<T> = T extends true ? number : string
 
-export default function InputField(properties: Props) {
+export default function InputField({ valueAsNumber, ...properties }: Props) {
   const { baseFieldProps, restProps } = extractBaseFieldProps(properties)
 
+  const isNumber = restProps.type === 'number' || valueAsNumber
+
   const handleChange = (value: string) => {
-    if (restProps.type === 'number') {
+    if (isNumber) {
       return Number(value)
     }
     return value
   }
 
   return (
-    <BaseField<InferValueType<typeof restProps.type>> {...baseFieldProps}>
+    <BaseField<InferValueType<typeof isNumber>> {...baseFieldProps}>
       {(field, state) => (
         <Input
           id={field.name}
