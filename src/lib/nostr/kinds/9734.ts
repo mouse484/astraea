@@ -12,7 +12,7 @@ const NumberFromStringCodec = z.codec(
 )
 
 export const ZapRequestTagSchema = z.union([
-  z.tuple([z.literal('relays')]).rest(RelayUrlSchema),
+  z.tuple([z.literal('relays'), RelayUrlSchema]).rest(RelayUrlSchema),
   z.tuple([z.literal('amount'), NumberFromStringCodec]),
   z.tuple([z.literal('lnurl'), z.string()]),
   z.tuple([z.literal('p'), PubkeySchema]),
