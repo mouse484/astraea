@@ -1,18 +1,6 @@
-import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { Schema } from 'effect'
-
-import { useForm } from 'react-hook-form'
+import { useAppForm } from '@/lib/form'
 import { RelayUrlSchema } from '@/lib/nostr/schemas/common'
-import { Button } from '@/shadcn-ui/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/shadcn-ui/components/ui/form'
-import { Input } from '@/shadcn-ui/components/ui/input'
 
 const FormSchema = Schema.standardSchemaV1(
   Schema.Struct({
@@ -25,39 +13,35 @@ interface RelayFormProps {
 }
 
 export function RelayForm({ onAddRelay }: RelayFormProps) {
-  const form = useForm<typeof FormSchema.Type>({
-    resolver: standardSchemaResolver(FormSchema),
+  const form = useAppForm({
+    validators: {
+      onChange: FormSchema,
+    },
+    defaultValues: {
+      relay: '',
+    },
+    onSubmit: ({ value, formApi }) => {
+      onAddRelay(value.relay)
+      formApi.reset()
+    },
   })
 
-  function onSubmit(values: typeof FormSchema.Type) {
-    onAddRelay(values.relay)
-    form.reset()
-  }
-
   return (
-    <Form {...form}>
-      <form className="space-y-4" onSubmit={void form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="relay"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Relay</FormLabel>
-              <FormControl>
-                <Input placeholder="wss://relay.example.com" type="url" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+    <form.AppForm>
+      <form.Root>
+        <form.AppField name="relay">
+          {field => (
+            <field.InputField
+              label="Relay"
+              placeholder="wss://relay.example.com"
+              type="url"
+            />
           )}
-        />
-        <Button
-          className="ml-2"
-          type="submit"
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
-        >
-          Create
-        </Button>
-      </form>
-    </Form>
+        </form.AppField>
+        <form.Submit>
+          Add
+        </form.Submit>
+      </form.Root>
+    </form.AppForm>
   )
 }
