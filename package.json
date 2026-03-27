@@ -27,7 +27,7 @@
     "date-fns": "^4.1.0",
     "enhanced-ms": "^4.3.0",
     "frimousse": "^0.3.0",
-    "lucide-react": "^1.1.0",
+    "lucide-react": "^1.6.0",
     "next-themes": "^0.4.6",
     "normalize-url": "^9.0.0",
     "nostr-tools": "^2.23.3",
