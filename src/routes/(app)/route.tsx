@@ -2,11 +2,10 @@ import { Outlet, redirect } from '@tanstack/react-router'
 import { getUnixTime, subMinutes } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
 import { useEffect } from 'react'
-import { filterByKind } from 'rx-nostr'
-import { share } from 'rxjs'
+import { batch } from 'rx-nostr'
+import { bufferTime } from 'rxjs'
 import { Layout } from '@/components/layout/Layout'
 import { createPubkey } from '@/lib/nostr/nip19'
-import queryKeyList from '@/lib/query-key'
 import { readStore } from '@/lib/store'
 import { Alert, AlertDescription, AlertTitle } from '@/shadcn-ui/components/ui/alert'
 
@@ -62,41 +61,34 @@ export const Route = createFileRoute({
     )
   },
 })
-
 function RouteComponent() {
-  const { queryClient, rxNostr, rxForwardReq } = Route.useRouteContext()
+  const { events, rxNostr, rxForwardReq, rxBackwardReq } = Route.useRouteContext()
 
   useEffect(() => {
-    const event$ = rxNostr.use(rxForwardReq).pipe(share())
-    const kind1Subscription = event$.pipe(filterByKind(1)).subscribe(({ event }) => {
-      const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
-        || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
-      if (eventTag) {
-        queryClient.setQueryData(queryKeyList.reply(eventTag[1], event.id), event)
-      } else {
-        queryClient.setQueryData(queryKeyList.textnote(event.id), event)
-      }
-    })
-    const kind7Subscription = event$.pipe(filterByKind(7)).subscribe(({ event }) => {
-      const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
-      if (targetId !== undefined) {
-        queryClient.setQueryData(
-          queryKeyList.reaction(targetId, event.pubkey, event.content),
-          event,
-        )
-      }
+    const forwardSubscription = rxNostr.use(
+      rxForwardReq,
+    ).subscribe(({ event }) => {
+      events.utils.writeInsert(event)
     })
 
-    rxForwardReq.emit({
-      kinds: [1, 7],
-      since: getUnixTime(subMinutes(new Date(), 10)),
+    const backwardSubscription = rxNostr.use(
+      rxBackwardReq.pipe(bufferTime(1000), batch()),
+    ).subscribe(({ event }) => {
+      events.utils.writeInsert(event)
+    })
+
+    events.onFirstReady(() => {
+      rxForwardReq.emit({
+        kinds: [1, 7],
+        since: getUnixTime(subMinutes(new Date(), 10)),
+      })
     })
 
     return () => {
-      kind1Subscription.unsubscribe()
-      kind7Subscription.unsubscribe()
+      forwardSubscription.unsubscribe()
+      backwardSubscription.unsubscribe()
     }
-  })
+  }, [events, events.utils, rxBackwardReq, rxForwardReq, rxNostr])
 
   return (
     <Layout>
