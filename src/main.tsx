@@ -6,7 +6,7 @@ import { ms } from 'enhanced-ms'
 import { SimplePool } from 'nostr-tools'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-
+import { rxBackwardReq, rxForwardReq, rxNostr } from './lib/nostr/rx-nostr'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
@@ -24,6 +24,9 @@ const pool = new SimplePool()
 const context = {
   queryClient,
   pool,
+  rxNostr,
+  rxForwardReq,
+  rxBackwardReq,
 } as const
 
 const persister = createAsyncStoragePersister({

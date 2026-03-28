@@ -2,6 +2,8 @@ import { Outlet, redirect } from '@tanstack/react-router'
 import { getUnixTime, subMinutes } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
 import { useEffect } from 'react'
+import { filterByKind } from 'rx-nostr'
+import { share } from 'rxjs'
 import { Layout } from '@/components/layout/Layout'
 import { createPubkey } from '@/lib/nostr/nip19'
 import queryKeyList from '@/lib/query-key'
@@ -15,7 +17,7 @@ const defaultRelays = [
 
 export const Route = createFileRoute({
   component: RouteComponent,
-  beforeLoad: () => {
+  beforeLoad: ({ context: { rxNostr } }) => {
     const pubkeyHex = readStore('pubkey')
     if (pubkeyHex === undefined) {
       throw redirect({
@@ -25,6 +27,13 @@ export const Route = createFileRoute({
 
     const pubkey = createPubkey(pubkeyHex)
     const relays = readStore('relays')
+
+    // TODO: rxNostrへ移行が完了後にrelaysの形式を変更予定
+    const _relays = Object.fromEntries(
+      relays?.map(r => [r.url, { read: r.read, write: r.write }]) ?? defaultRelays.map(url => [url, { read: true, write: true }]),
+    )
+
+    rxNostr.addDefaultRelays(_relays)
 
     return {
       pubkey,
@@ -55,35 +64,37 @@ export const Route = createFileRoute({
 })
 
 function RouteComponent() {
-  const { relays, pool, queryClient } = Route.useRouteContext()
+  const { queryClient, rxNostr, rxForwardReq } = Route.useRouteContext()
 
   useEffect(() => {
-    const subscription = pool.subscribe(relays.read, {
+    const event$ = rxNostr.use(rxForwardReq).pipe(share())
+    const kind1Subscription = event$.pipe(filterByKind(1)).subscribe(({ event }) => {
+      const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
+        || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
+      if (eventTag) {
+        queryClient.setQueryData(queryKeyList.reply(eventTag[1], event.id), event)
+      } else {
+        queryClient.setQueryData(queryKeyList.textnote(event.id), event)
+      }
+    })
+    const kind7Subscription = event$.pipe(filterByKind(7)).subscribe(({ event }) => {
+      const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
+      if (targetId !== undefined) {
+        queryClient.setQueryData(
+          queryKeyList.reaction(targetId, event.pubkey, event.content),
+          event,
+        )
+      }
+    })
+
+    rxForwardReq.emit({
       kinds: [1, 7],
       since: getUnixTime(subMinutes(new Date(), 10)),
-    }, {
-      onevent(event) {
-        if (event.kind === 1) {
-          const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
-            || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
-          if (eventTag) {
-            queryClient.setQueryData(queryKeyList.reply(eventTag[1], event.id), event)
-          } else {
-            queryClient.setQueryData(queryKeyList.textnote(event.id), event)
-          }
-        } else if (event.kind === 7) {
-          const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
-          if (targetId !== undefined) {
-            queryClient.setQueryData(
-              queryKeyList.reaction(targetId, event.pubkey, event.content),
-              event,
-            )
-          }
-        }
-      },
     })
+
     return () => {
-      subscription.close()
+      kind1Subscription.unsubscribe()
+      kind7Subscription.unsubscribe()
     }
   })
 

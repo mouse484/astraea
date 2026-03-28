@@ -21,6 +21,27 @@ export default mouse(
       }],
     },
   },
+  {
+    rules: {
+      'unicorn/prevent-abbreviations': [
+        'error',
+        {
+          allowList: {
+            Props: true,
+            Ref: true,
+            args: true,
+            Req: true,
+          },
+        },
+      ],
+    },
+  },
+  {
+    files: ['vite-env.d.ts'],
+    rules: {
+      'unicorn/prevent-abbreviations': 'off',
+    },
+  },
   pluginQuery.configs['flat/recommended'],
   pluginRouter.configs['flat/recommended'],
 )
