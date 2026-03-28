@@ -37,7 +37,7 @@ export default mouse(
     },
   },
   {
-    files: ['vite-env.d.ts'],
+    files: ['src/vite-env.d.ts'],
     rules: {
       'unicorn/prevent-abbreviations': 'off',
     },
