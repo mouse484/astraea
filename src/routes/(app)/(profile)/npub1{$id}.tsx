@@ -9,7 +9,11 @@ export const Route = createFileRoute({
   loader: async ({ params: { id }, context: { queryClient, pool, relays } }) => {
     const pubkey = createPubkey(`npub1${id}`)
 
-    return queryClient.fetchQuery(metadataQuery({ pool, relays: relays.read }, pubkey.decoded))
+    return queryClient.fetchQuery(metadataQuery(
+      { pool, relays: relays.read },
+      pubkey.decoded,
+      ({ setKey, id }) => setKey(id),
+    ))
   },
   head(context) {
     return {

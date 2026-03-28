@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
-import queryKeys from '@/lib/query-keys'
+import queryKeyList from '@/lib/query-key'
 import TextNoteForm from '../form/TextNoteForm'
 import Emoji from './Emoji'
 import Reaction from './Reaction'
@@ -24,7 +24,7 @@ interface Props {
 export default function Footer({ event, setTimelinePaused }: Props) {
   const [openForm, setOpenForm] = useState<'reply' | 'repost' | undefined>()
   const reactions = useNostrEvents(
-    queryKeys.reaction(event.id),
+    queryKeyList.reaction(event.id),
     ReactionEventSchema,
   )
   const { queryClient } = useRouteContext({ from: '/(app)' })
@@ -47,7 +47,7 @@ export default function Footer({ event, setTimelinePaused }: Props) {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(
-        queryKeys.reaction(event.id, data.pubkey, data.content),
+        queryKeyList.reaction(event.id, data.pubkey, data.content),
         data,
       )
     },

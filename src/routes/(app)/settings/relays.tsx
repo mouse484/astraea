@@ -83,10 +83,14 @@ function RouteComponent() {
             void (async () => {
               setIsLoading(true)
               try {
-                const query = relayListQuery({
-                  pool,
-                  relays: relays.filter(r => r.read).map(r => r.url),
-                }, pubkey.decoded)
+                const query = relayListQuery(
+                  {
+                    pool,
+                    relays: relays.filter(r => r.read).map(r => r.url),
+                  },
+                  pubkey.decoded,
+                  ({ setKey, id }) => setKey(id),
+                )
 
                 await queryClient.invalidateQueries(query)
                 const data = await queryClient.fetchQuery(query)

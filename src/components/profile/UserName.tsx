@@ -2,7 +2,7 @@ import type { MetadataEvent } from '@/lib/nostr/kinds/0'
 import { useQuery } from '@tanstack/react-query'
 import { BadgeCheck } from 'lucide-react'
 import { queryProfile } from 'nostr-tools/nip05'
-import queryKeys from '@/lib/query-keys'
+import queryKeyList from '@/lib/query-key'
 
 interface Props {
   metadata?: MetadataEvent
@@ -10,7 +10,7 @@ interface Props {
 
 export default function UserName({ metadata }: Props) {
   const { data: profile } = useQuery({
-    queryKey: queryKeys.nip05(metadata?.content.nip05),
+    queryKey: queryKeyList.nip05(metadata?.content.nip05),
     queryFn: async () => queryProfile(metadata!.content.nip05!),
     enabled: metadata?.content.nip05 !== undefined && metadata?.content.nip05.length > 0,
   })
