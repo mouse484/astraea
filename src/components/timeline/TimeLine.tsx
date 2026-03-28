@@ -65,11 +65,8 @@ export default function TimeLine({ pubkeys }: Props) {
 
   const lastItemRef = useRef<Event[]>([])
   const items = useMemo(() => {
-    if (isTop || isPaused) {
-      if (lastItemRef.current.length <= PAGE_SIZE) {
-        lastItemRef.current = data
-      }
-      return lastItemRef.current
+    if (!isTop || isPaused) {
+      return lastItemRef.current.length > 0 ? lastItemRef.current : data
     }
     lastItemRef.current = data
     return data
