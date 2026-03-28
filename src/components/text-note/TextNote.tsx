@@ -45,9 +45,13 @@ export default function TextNote({
   setTimelinePaused,
 }: Props) {
   const navigate = useNavigate()
-  const { getQueryOption } = useNostr()
+  const { queryContext } = useNostr()
   const pubkey = createPubkey(event.pubkey)
-  const { data: metadata } = useQuery(getQueryOption(metadataQuery, pubkey.decoded))
+  const { data: metadata } = useQuery(metadataQuery(
+    queryContext,
+    pubkey.decoded,
+    ({ setKey, id }) => setKey(id),
+  ))
 
   const displayName = metadata?.content.display_name
     ?? metadata?.content.name

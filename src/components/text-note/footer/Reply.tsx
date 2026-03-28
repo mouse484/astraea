@@ -3,7 +3,7 @@ import { MessageCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
 import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
-import queryKeys from '@/lib/query-keys'
+import queryKeyList from '@/lib/query-key'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
 interface Props {
@@ -27,7 +27,7 @@ export default function Reply({ event, isOpen = false, onToggle, setTimelinePaus
   }
 
   const items = useNostrEvents(
-    queryKeys.reply(event.id),
+    queryKeyList.reply(event.id),
     TextNoteEventSchema,
   )
   return (

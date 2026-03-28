@@ -10,10 +10,14 @@ export const Route = createFileRoute({
   loader: async ({ params: { id }, context: { queryClient, pool, relays } }) => {
     const nevent = createEvent(`nevent1${id}`)
     const decodedRelays = nevent.decoded.relays
-    const event = await queryClient.ensureQueryData(TextNoteQuery({
-      pool,
-      relays: decodedRelays && decodedRelays.length > 0 ? decodedRelays : relays.read,
-    }, nevent.decoded.id))
+    const event = await queryClient.ensureQueryData(TextNoteQuery(
+      {
+        pool,
+        relays: decodedRelays && decodedRelays.length > 0 ? decodedRelays : relays.read,
+      },
+      nevent.decoded.id,
+      ({ setKey, id }) => setKey(id),
+    ))
 
     if (event === undefined) {
       throw new Error(`Event with ID ${id} not found`)

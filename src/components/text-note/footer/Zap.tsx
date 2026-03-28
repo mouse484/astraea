@@ -28,9 +28,13 @@ interface Props {
 }
 
 export default function Zap({ event, setTimelinePaused }: Props) {
-  const { getQueryOption, relays } = useNostr()
+  const { queryContext, relays } = useNostr()
   const pubkey = createPubkey(event.pubkey)
-  const { data: metadata } = useQuery(getQueryOption(metadataQuery, pubkey.decoded))
+  const { data: metadata } = useQuery(metadataQuery(
+    queryContext,
+    pubkey.decoded,
+    ({ setKey, id }) => setKey(id),
+  ))
   const [invoice, setInvoice] = useState<string>()
   const zap = useZap(metadata?.content ?? {})
   const commentAllowed = zap.data?.lnurlResponse?.commentAllowed ?? 0

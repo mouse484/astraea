@@ -5,10 +5,14 @@ import { FollowListQuery } from '@/lib/nostr/kinds/3'
 export const Route = createFileRoute({
   component: RouteComponent,
   async  loader({ context: { queryClient, pool, relays, pubkey } }) {
-    return queryClient.fetchQuery(FollowListQuery({
-      pool,
-      relays: relays.read,
-    }, pubkey.decoded))
+    return queryClient.fetchQuery(FollowListQuery(
+      {
+        pool,
+        relays: relays.read,
+      },
+      pubkey.decoded,
+      ({ setKey, id }) => setKey(id),
+    ))
   },
 })
 
