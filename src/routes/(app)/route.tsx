@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { batch } from 'rx-nostr'
 import { bufferTime, merge } from 'rxjs'
 import { Layout } from '@/components/layout/Layout'
+import { getCollectionByKind } from '@/lib/nostr/collections'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
 import { Alert, AlertDescription, AlertTitle } from '@/shadcn-ui/components/ui/alert'
@@ -69,16 +70,8 @@ function RouteComponent() {
       rxNostr.use(rxForwardReq),
       rxNostr.use(rxBackwardReq.pipe(bufferTime(1000), batch())),
     ).subscribe(({ event }) => {
-      const collection = () => {
-        switch (event.kind) {
-          case 1: {
-            return collections.textNote
-          }
-        }
-      }
-
       // eslint-disable-next-line ts/no-unsafe-argument
-      collection()?.utils.writeUpsert(event as any)
+      getCollectionByKind(collections, event.kind)?.utils.writeUpsert(event as any)
     })
 
     rxForwardReq.emit({

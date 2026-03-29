@@ -41,3 +41,11 @@ export function createNostrCollections(queryClient: QueryClient) {
     }),
   } as const
 }
+
+export function getCollectionByKind(collections: ReturnType<typeof createNostrCollections>, kind: number) {
+  switch (kind) {
+    case 1: {
+      return collections.textNote
+    }
+  }
+}
