@@ -1,4 +1,4 @@
-import type { Event } from 'nostr-typedef'
+import type z from 'zod'
 import { and, eq, inArray, lte, useLiveInfiniteQuery } from '@tanstack/react-db'
 import { useRouteContext } from '@tanstack/react-router'
 import { useVirtualizer } from '@tanstack/react-virtual'
@@ -14,7 +14,7 @@ interface Props {
 const PAGE_SIZE = 10
 
 export default function TimeLine({ pubkeys }: Props) {
-  const events = useRouteContext({ from: '/(app)', select: s => s.events })
+  const events = useRouteContext({ from: '/(app)', select: s => s.collections.textNote })
   const parentRef = useRef<HTMLDivElement>(null)
   const [isPaused, setIsPaused] = useState(false)
 
@@ -63,7 +63,7 @@ export default function TimeLine({ pubkeys }: Props) {
     }
   }, [data, fetchNextPage, hasNextPage, isFetchingNextPage, virtualizer])
 
-  const lastItemRef = useRef<Event[]>([])
+  const lastItemRef = useRef<z.infer<typeof TextNoteEventSchema>[]>([])
   const items = useMemo(() => {
     if (!isTop || isPaused) {
       return lastItemRef.current.length > 0 ? lastItemRef.current : data

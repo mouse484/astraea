@@ -3,7 +3,7 @@ import { getUnixTime, subMinutes } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
 import { useEffect } from 'react'
 import { batch } from 'rx-nostr'
-import { bufferTime } from 'rxjs'
+import { bufferTime, merge } from 'rxjs'
 import { Layout } from '@/components/layout/Layout'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
@@ -62,33 +62,34 @@ export const Route = createFileRoute({
   },
 })
 function RouteComponent() {
-  const { events, rxNostr, rxForwardReq, rxBackwardReq } = Route.useRouteContext()
+  const { collections, rxNostr, rxForwardReq, rxBackwardReq } = Route.useRouteContext()
 
   useEffect(() => {
-    const forwardSubscription = rxNostr.use(
-      rxForwardReq,
+    const subscription = merge(
+      rxNostr.use(rxForwardReq),
+      rxNostr.use(rxBackwardReq.pipe(bufferTime(1000), batch())),
     ).subscribe(({ event }) => {
-      events.utils.writeInsert(event)
+      const collection = () => {
+        switch (event.kind) {
+          case 1: {
+            return collections.textNote
+          }
+        }
+      }
+
+      // eslint-disable-next-line ts/no-unsafe-argument
+      collection()?.utils.writeUpsert(event as any)
     })
 
-    const backwardSubscription = rxNostr.use(
-      rxBackwardReq.pipe(bufferTime(1000), batch()),
-    ).subscribe(({ event }) => {
-      events.utils.writeInsert(event)
-    })
-
-    events.onFirstReady(() => {
-      rxForwardReq.emit({
-        kinds: [1, 7],
-        since: getUnixTime(subMinutes(new Date(), 10)),
-      })
+    rxForwardReq.emit({
+      kinds: [1, 7],
+      since: getUnixTime(subMinutes(new Date(), 10)),
     })
 
     return () => {
-      forwardSubscription.unsubscribe()
-      backwardSubscription.unsubscribe()
+      subscription.unsubscribe()
     }
-  }, [events, events.utils, rxBackwardReq, rxForwardReq, rxNostr])
+  }, [collections, rxBackwardReq, rxForwardReq, rxNostr])
 
   return (
     <Layout>

@@ -1,7 +1,4 @@
-import type { Event } from 'nostr-typedef'
-import { BasicIndex, createCollection } from '@tanstack/db'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
-import { queryCollectionOptions } from '@tanstack/query-db-collection'
 import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
@@ -9,6 +6,7 @@ import { ms } from 'enhanced-ms'
 import { SimplePool } from 'nostr-tools'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
+import { createNostrCollections } from './lib/nostr/collections'
 import { rxBackwardReq, rxForwardReq, rxNostr } from './lib/nostr/rx-nostr'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
@@ -23,19 +21,6 @@ const queryClient = new QueryClient({
   },
 })
 const pool = new SimplePool()
-const events = createCollection(
-  queryCollectionOptions({
-    queryClient,
-    queryKey: ['events'],
-    queryFn: () => {
-      return [] as Event[]
-    },
-    getKey: item => item.id,
-    defaultIndexType: BasicIndex,
-    autoIndex: 'eager',
-  }),
-)
-events.startSyncImmediate()
 
 const context = {
   queryClient,
@@ -43,7 +28,7 @@ const context = {
   rxNostr,
   rxForwardReq,
   rxBackwardReq,
-  events,
+  collections: createNostrCollections(queryClient),
 } as const
 
 const persister = createAsyncStoragePersister({
