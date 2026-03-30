@@ -32,6 +32,7 @@
     "next-themes": "^0.4.6",
     "normalize-url": "^9.0.0",
     "nostr-tools": "^2.23.3",
+    "nostr-typedef": "^0.13.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

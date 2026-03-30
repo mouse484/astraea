@@ -11,8 +11,9 @@ export const FollowListEventSchema = NostrEventSchema.extend({
 
 export type FollowListEvent = z.infer<typeof FollowListEventSchema>
 
-export const FollowListQuery = createQuery<FollowListEvent>({
+export const [FollowListQuery, setFollowListQuery] = createQuery({
   name: 'followlist',
   kind: kinds.Contacts,
+  schema: FollowListEventSchema,
   filterKey: 'authors',
 })

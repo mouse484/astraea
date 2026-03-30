@@ -16,8 +16,9 @@ export const TextNoteEventSchema = NostrEventSchema.extend({
 
 export type TextNoteEvent = z.infer<typeof TextNoteEventSchema>
 
-export const TextNoteQuery = createQuery<TextNoteEvent>({
+export const [TextNoteQuery, setTextNoteQuery] = createQuery({
   name: 'textnote',
   kind: kinds.ShortTextNote,
+  schema: TextNoteEventSchema,
   filterKey: 'ids',
 })

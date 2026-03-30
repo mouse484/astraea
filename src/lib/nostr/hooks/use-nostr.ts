@@ -4,6 +4,7 @@ import { useRouteContext } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import { signEvent } from '../utils/sign-event'
 
+// TODO: このフックがいるかから検討する
 export default function useNostr() {
   const { relays, pool, rxBackwardReq, queryClient } = useRouteContext({ from: '/(app)' })
 

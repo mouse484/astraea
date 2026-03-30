@@ -6,7 +6,7 @@ import { format, fromUnixTime } from 'date-fns'
 import { Ellipsis, Eye } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
-import { metadataQuery } from '@/lib/nostr/kinds/0'
+import { MetadataQuery } from '@/lib/nostr/kinds/0'
 import { createEvent, createPubkey } from '@/lib/nostr/nip19'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import {
@@ -47,7 +47,7 @@ export default function TextNote({
   const navigate = useNavigate()
   const { queryContext } = useNostr()
   const pubkey = createPubkey(event.pubkey)
-  const { data: metadata } = useQuery(metadataQuery(
+  const { data: metadata } = useQuery(MetadataQuery(
     queryContext,
     pubkey.decoded,
     ({ setKey, id }) => setKey(id),

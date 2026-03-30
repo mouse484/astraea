@@ -3,6 +3,8 @@ import type { ZodType } from 'zod'
 import { useRouteContext } from '@tanstack/react-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+// TODO: schemaのparseはイベント取得時に行なっているので、ここでは行わないようにする
+// TOOO: QueriesObserverで代替可能かも: https://tanstack.com/query/latest/docs/reference/QueriesObserver
 export function useNostrEvents<T extends { created_at: number }>(
   queryKey: QueryKey,
   schema: ZodType<T>,

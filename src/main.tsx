@@ -10,8 +10,10 @@ import ReactDOM from 'react-dom/client'
 import { batch } from 'rx-nostr'
 import { bufferTime, merge } from 'rxjs'
 import queryKeyList from '@/lib/query-key'
-
-import { MetadataEventSchema } from './lib/nostr/kinds/0'
+import { setMetadataQuery } from './lib/nostr/kinds/0'
+import { setTextNoteQuery } from './lib/nostr/kinds/1'
+import { setFollowListQuery } from './lib/nostr/kinds/3'
+import { setReactionQuery } from './lib/nostr/kinds/7'
 import { rxBackwardReq, rxForwardReq, rxNostr } from './lib/nostr/rx-nostr'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
@@ -35,38 +37,31 @@ merge(
     // TODO: kindによってのsetQueryDataの振り分けロジックを検討し改善する
     switch (event.kind) {
       case 0: {
-        queryClient.setQueryData(queryKeyList.metadata(event.pubkey), MetadataEventSchema.parse(event))
+        setMetadataQuery(queryClient, event, ({ setKey, event }) => setKey(event.pubkey))
 
         break
       }
       case 1: {
         const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
           || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
-        if (eventTag) {
-          queryClient.setQueryData(queryKeyList.reply(eventTag[1], event.id), event)
-        } else {
-          queryClient.setQueryData(queryKeyList.textnote(event.id), event)
-        }
 
+        setTextNoteQuery(queryClient, event, ({ setKey, event }) => {
+          return eventTag ? queryKeyList.reply(eventTag[1], event.id) : setKey(event.id)
+        })
         break
       }
       case 3: {
-        queryClient.setQueryData(queryKeyList.followlist(event.pubkey), event)
-
+        setFollowListQuery(queryClient, event, ({ setKey, event }) => setKey(event.pubkey))
         break
       }
       case 7: {
         const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
         if (targetId !== undefined) {
-          queryClient.setQueryData(
-            queryKeyList.reaction(targetId, event.pubkey, event.content),
-            event,
-          )
+          setReactionQuery(queryClient, event, ({ setKey, event }) => setKey(targetId, event.pubkey, event.content))
         }
 
         break
       }
-        // No default
     }
   })
 

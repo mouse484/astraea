@@ -1,6 +1,6 @@
 import Profile from '@/components/profile/Profile'
 import TimeLine from '@/components/timeline/TimeLine'
-import { metadataQuery } from '@/lib/nostr/kinds/0'
+import { MetadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { setTitle } from '@/lib/set-title'
 
@@ -9,7 +9,7 @@ export const Route = createFileRoute({
   loader: async ({ params: { id }, context: { queryClient, rxBackwardReq } }) => {
     const pubkey = createPubkey(`npub1${id}`)
 
-    return queryClient.fetchQuery(metadataQuery(
+    return queryClient.fetchQuery(MetadataQuery(
       { queryClient, rxBackwardReq },
       pubkey.decoded,
       ({ setKey, id }) => setKey(id),
