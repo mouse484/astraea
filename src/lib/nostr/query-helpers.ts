@@ -1,4 +1,4 @@
-import type { QueryClient } from '@tanstack/react-query'
+import type { QueryClient, UseQueryOptions } from '@tanstack/react-query'
 import type { Filter } from 'nostr-tools'
 import type { Event } from 'nostr-typedef'
 import type z from 'zod'
@@ -11,6 +11,22 @@ export interface NostrQueryContext
   extends Pick<RouterContext, 'queryClient' | 'rxBackwardReq'> {
   relays?: string[]
 }
+
+export type QueryFunction<Schema extends z.infer<z.ZodObject<any>>> = (
+  context: NostrQueryContext,
+  id: string,
+  setQueryKeyFunction: (
+    context: { id: string, setKey: QueryKeyList[QueryKeyListName] },
+  ) => readonly string[],
+) => UseQueryOptions<Schema, Error, Schema, readonly string[]>
+
+export type SetQueryFunction<Schema extends z.infer<z.ZodObject<any>>> = (
+  queryClient: QueryClient,
+  event: Event,
+  setQueryKeyFunction: (
+    context: { setKey: QueryKeyList[QueryKeyListName], event: Schema },
+  ) => readonly string[],
+) => void
 
 export function createQuery<
   Schema extends z.ZodObject<any>,
@@ -26,11 +42,9 @@ export function createQuery<
 ) {
   return [
     function queryFunction(
-      { queryClient, rxBackwardReq, relays }: NostrQueryContext,
-      id: string,
-      setQueryKeyFunction: (
-        { id, setKey }: { id: string, setKey: QueryKeyList[Name] },
-      ) => ReturnType<QueryKeyList[Name]>,
+      { queryClient, rxBackwardReq, relays },
+      id,
+      setQueryKeyFunction,
     ) {
       const filter = {
         kinds: [kind],
@@ -64,19 +78,17 @@ export function createQuery<
       })
     },
     function setQueryFunction(
-      queryClient: QueryClient,
-      event: Event,
-      setQueryKeyFunction: (
-        { setKey, event }: { setKey: QueryKeyList[Name], event: z.infer<Schema> },
-      ) => ReturnType<QueryKeyList[Name | QueryKeyListName]>,
+      queryClient,
+      event,
+      setQueryKeyFunction,
     ) {
       const parsed = schema.safeParse(event)
       if (parsed.success) {
         const queryKey = setQueryKeyFunction({ setKey: queryKeyList[name], event: parsed.data })
-        return queryClient.setQueryData<z.infer<Schema>>(queryKey, parsed.data)
+        queryClient.setQueryData<z.infer<Schema>>(queryKey, parsed.data)
       } else {
         console.error('Failed to parse event:', parsed.error)
       }
     },
-  ] as const
+  ] satisfies [QueryFunction<z.infer<Schema>>, SetQueryFunction<z.infer<Schema>>]
 }

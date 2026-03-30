@@ -29,11 +29,8 @@ export default function TextNoteContent({ content }: Props) {
           return (
             <NostrEvent
               key={key}
-              queryOptions={context => TextNoteQuery(
-                context,
-                value.decoded.id,
-                ({ setKey, id }) => setKey(id),
-              )}
+              queryFunction={TextNoteQuery}
+              queryOptions={[value.decoded.id, ({ setKey, id }) => setKey(id)]}
             >
               {event => (
                 <TextNote event={event} isDisplayFooter={false} />

@@ -1,20 +1,28 @@
 import type z from 'zod'
-import type { NostrQueryContext, NostrQueryOptions } from '@/lib/nostr/query-helpers'
+import type { QueryFunction } from '@/lib/nostr/query-helpers'
 import { useQuery } from '@tanstack/react-query'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 
-interface Props<Schema extends z.ZodObject<any>> {
-  queryOptions: (context: NostrQueryContext) => NostrQueryOptions<Schema>
-  children?: (event: z.output<Schema>) => React.ReactNode
+interface Props<T extends z.infer<z.ZodObject<any>>> {
+  queryFunction: QueryFunction<T>
+  queryOptions: readonly [
+    string,
+    Parameters<QueryFunction<T>>[2],
+  ]
+  children?: (event: T) => React.ReactNode
 }
 
-export default function NostrEvent<Schema extends z.ZodObject<any>>({
+export default function NostrEvent<T extends z.infer<z.ZodObject<any>>>({
+  queryFunction,
   queryOptions,
   children,
-}: Props<Schema>): React.ReactNode {
+}: Props<T>): React.ReactNode {
   const { queryContext } = useNostr()
-  const queryOption = queryOptions(queryContext)
-  const { data } = useQuery<z.output<Schema>>(queryOption)
+  const [id, setQueryKeyFunction] = queryOptions
+
+  const options = queryFunction(queryContext, id, setQueryKeyFunction)
+
+  const { data } = useQuery(options)
 
   if (!data || !children) {
     return <></>

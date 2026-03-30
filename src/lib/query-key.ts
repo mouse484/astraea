@@ -1,6 +1,6 @@
-function _<T extends string>(prefix: T, ...args: unknown[]) {
+function _<T extends string>(prefix: T, ...args: (string | undefined)[]) {
   return [prefix, ...args]
-    .filter(argument => argument !== undefined) as [T, ...unknown[]]
+    .filter(argument => argument !== undefined) as [T, ...string[]]
 }
 
 const queryKeyList = {
