@@ -12,8 +12,9 @@ export const RelayListEventSchema = NostrEventSchema.extend({
 
 export type RelayListEvent = z.infer<typeof RelayListEventSchema>
 
-export const relayListQuery = createQuery<RelayListEvent> ({
+export const [RelayListQuery, setRelayListQuery] = createQuery({
   name: 'relaylist',
   kind: kinds.RelayList,
+  schema: RelayListEventSchema,
   filterKey: 'authors',
 })
