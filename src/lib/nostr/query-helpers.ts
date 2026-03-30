@@ -3,11 +3,11 @@ import type { Filter } from 'nostr-tools'
 import type z from 'zod'
 import type { QueryKeyList, QueryKeyListName } from '../query-key'
 import type { RouterContext } from '@/main'
-import { queryOptions } from '@tanstack/react-query'
+import { QueryObserver, queryOptions } from '@tanstack/react-query'
 import queryKeyList from '../query-key'
 
-export interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
-  relays: string[]
+export interface NostrQueryContext extends Pick<RouterContext, 'queryClient' | 'rxBackwardReq'> {
+  relays?: string[]
 }
 
 export type NostrQueryOptions<Schema extends z.ZodObject<any>> = UseQueryOptions<
@@ -48,10 +48,10 @@ export function createQuery<
   Schema extends z.ZodObject<any>,
   Name extends QueryKeyListName,
 >(
-  { name, schema, kind, filterKey }: QueryConfig<Schema, Name>,
+  { name, kind, filterKey }: QueryConfig<Schema, Name>,
 ): NostrQueryFunction<Schema, Name> {
   const queryFunction: NostrQueryFunction<Schema, Name> = (
-    { pool, relays },
+    { queryClient, rxBackwardReq, relays },
     id,
     setQueryKeyFunction,
   ) => {
@@ -62,20 +62,27 @@ export function createQuery<
 
     const queryKey = setQueryKeyFunction({ id, setKey: queryKeyList[name] })
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     return queryOptions<z.output<Schema>, Error, z.output<Schema>, readonly unknown[]>({
       queryKey,
-      queryFn: async () => {
-        const event = await pool.get(relays, filter)
-        if (!event) {
-          throw new Error(`${name} event not found`)
-        }
-
-        return schema.parseAsync(event)
-          .catch((error) => {
-            console.error(error, schema.shape)
-            throw error
+      queryFn: async ({ signal }) => {
+        return new Promise<z.infer<Schema>>((resolve, reject) => {
+          if (signal.aborted) {
+            reject(signal.reason)
+          }
+          const options = relays ? { relays } : undefined
+          rxBackwardReq.emit(filter, options)
+          const observer = new QueryObserver(queryClient, { queryKey })
+          const unsubscribe = observer.subscribe((result) => {
+            if (result.data !== undefined) {
+              resolve(result.data as z.infer<Schema>)
+            }
           })
+
+          signal.addEventListener('abort', () => {
+            unsubscribe()
+            reject(new Error('Query aborted'))
+          }, { signal })
+        })
       },
     })
   }

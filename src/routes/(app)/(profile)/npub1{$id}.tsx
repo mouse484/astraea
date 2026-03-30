@@ -6,11 +6,11 @@ import { setTitle } from '@/lib/set-title'
 
 export const Route = createFileRoute({
   component: RouteComponent,
-  loader: async ({ params: { id }, context: { queryClient, pool, relays } }) => {
+  loader: async ({ params: { id }, context: { queryClient, rxBackwardReq } }) => {
     const pubkey = createPubkey(`npub1${id}`)
 
     return queryClient.fetchQuery(metadataQuery(
-      { pool, relays: relays.read },
+      { queryClient, rxBackwardReq },
       pubkey.decoded,
       ({ setKey, id }) => setKey(id),
     ))

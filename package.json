@@ -37,6 +37,7 @@
     "react-dom": "^19.2.4",
     "react-qr-code": "^2.0.18",
     "rx-nostr": "^3.6.2",
+    "rxjs": "^7.8.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",

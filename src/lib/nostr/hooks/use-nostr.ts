@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { signEvent } from '../utils/sign-event'
 
 export default function useNostr() {
-  const { relays, pool } = useRouteContext({ from: '/(app)' })
+  const { relays, pool, rxBackwardReq, queryClient } = useRouteContext({ from: '/(app)' })
 
   return {
     publishEvent: async <S extends z.ZodObject<any>>(
@@ -27,8 +27,8 @@ export default function useNostr() {
       }
     },
     queryContext: {
-      pool,
-      relays: relays.read,
+      queryClient,
+      rxBackwardReq,
     } satisfies NostrQueryContext,
     relays,
   }

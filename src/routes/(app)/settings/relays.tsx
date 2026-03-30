@@ -13,7 +13,7 @@ export const Route = createFileRoute({
 })
 
 function RouteComponent() {
-  const { queryClient, pool, pubkey } = Route.useRouteContext()
+  const { queryClient, rxBackwardReq, pubkey } = Route.useRouteContext()
   const { publishEvent } = useNostr()
 
   const [relays, setRelays] = useState<StoreValue<'relays'>>(() => {
@@ -85,8 +85,8 @@ function RouteComponent() {
               try {
                 const query = relayListQuery(
                   {
-                    pool,
-                    relays: relays.filter(r => r.read).map(r => r.url),
+                    queryClient,
+                    rxBackwardReq,
                   },
                   pubkey.decoded,
                   ({ setKey, id }) => setKey(id),

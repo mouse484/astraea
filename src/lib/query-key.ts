@@ -6,7 +6,7 @@ function _<T extends string>(prefix: T, ...args: unknown[]) {
 const queryKeyList = {
   /** Kind / Nostr Events */
   // Kind 0
-  metadata: (id?: string) => _('metadata', id),
+  metadata: (pubkey?: string) => _('metadata', pubkey),
   // Kind 1
   textnote: (id?: string) => _('textnote', id),
   reply: (targetId?: string, eventId?: string) => _('reply', targetId, eventId),

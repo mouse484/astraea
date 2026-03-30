@@ -7,13 +7,14 @@ import { Button } from '@/shadcn-ui/components/ui/button'
 
 export const Route = createFileRoute({
   component: RouteComponent,
-  loader: async ({ params: { id }, context: { queryClient, pool, relays } }) => {
+  loader: async ({ params: { id }, context: { queryClient, rxBackwardReq } }) => {
     const nevent = createEvent(`nevent1${id}`)
     const decodedRelays = nevent.decoded.relays
     const event = await queryClient.ensureQueryData(TextNoteQuery(
       {
-        pool,
-        relays: decodedRelays && decodedRelays.length > 0 ? decodedRelays : relays.read,
+        queryClient,
+        rxBackwardReq,
+        relays: decodedRelays,
       },
       nevent.decoded.id,
       ({ setKey, id }) => setKey(id),

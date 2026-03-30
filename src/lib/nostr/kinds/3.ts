@@ -4,7 +4,7 @@ import { NostrEventSchema } from '../nips/01'
 import { FollowListTagSchema } from '../nips/02'
 import { createQuery } from '../query-helpers'
 
-const FollowListEventSchema = NostrEventSchema.extend({
+export const FollowListEventSchema = NostrEventSchema.extend({
   kind: z.literal(kinds.Contacts),
   tags: FollowListTagSchema,
 })
