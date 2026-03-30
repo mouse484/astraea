@@ -22,9 +22,8 @@ export const MetadataEventSchema = NostrEventSchema.extend({
 
 export type MetadataEvent = z.infer<typeof MetadataEventSchema>
 
-export const metadataQuery = createQuery({
+export const metadataQuery = createQuery<MetadataEvent>({
   name: 'metadata',
-  schema: MetadataEventSchema,
   kind: kinds.Metadata,
   filterKey: 'authors',
 })
