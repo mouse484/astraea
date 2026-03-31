@@ -7,24 +7,31 @@ import {
   PubkeySchema,
   RelayUrlSchema,
 } from '../schemas/common'
+import { tupleWithOptional } from '../schemas/utilities'
 
 export const TagSchema = z.union([
-  z.tuple([
-    z.literal('e'),
+  tupleWithOptional(
+    [
+      z.literal('e'),
+      PubkeySchema,
+    ],
+    RelayUrlSchema,
     PubkeySchema,
-    RelayUrlSchema.optional(),
-    PubkeySchema.optional(),
-  ]),
-  z.tuple([
-    z.literal('p'),
-    PubkeySchema,
-    RelayUrlSchema.optional(),
-  ]),
-  z.tuple([
-    z.literal('a'),
-    z.string().regex(/^\d+:[0-9a-f]{64}:.+$/i).optional(), // kind:pubkey:d format
-    RelayUrlSchema.optional(),
-  ]),
+  ),
+  tupleWithOptional(
+    [
+      z.literal('p'),
+      PubkeySchema,
+    ],
+    RelayUrlSchema,
+  ),
+  tupleWithOptional(
+    [
+      z.literal('a'),
+    ],
+    z.string().regex(/^\d+:[0-9a-f]{64}:.+$/i), // kind:pubkey:d format
+    RelayUrlSchema,
+  ),
   z.tuple([
     z.literal('alt'),
     z.string(),

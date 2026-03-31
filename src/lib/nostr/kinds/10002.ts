@@ -7,7 +7,7 @@ import { createQuery } from '../query-helpers'
 export const RelayListEventSchema = NostrEventSchema.extend({
   kind: z.literal(kinds.RelayList),
   tags: RelayListSchema,
-  content: z.literal('').optional(),
+  content: z.literal(''),
 })
 
 export type RelayListEvent = z.infer<typeof RelayListEventSchema>
