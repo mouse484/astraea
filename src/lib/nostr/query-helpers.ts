@@ -84,7 +84,7 @@ export function createQuery<
             const onAbort = (_event?: globalThis.Event) => {
               if (settled) return
               settled = true
-              if (unsubscribe) unsubscribe()
+              queueMicrotask(() => unsubscribe?.())
               reject(new Error('Query aborted'))
             }
 
@@ -95,7 +95,7 @@ export function createQuery<
                 if (settled) return
                 settled = true
                 signal.removeEventListener('abort', onAbort)
-                if (unsubscribe) unsubscribe()
+                queueMicrotask(() => unsubscribe?.())
                 resolve(result.data)
               }
             })
