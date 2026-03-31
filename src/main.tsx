@@ -4,7 +4,6 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { getUnixTime, subMinutes } from 'date-fns'
 import { ms } from 'enhanced-ms'
-import { SimplePool } from 'nostr-tools'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { batch } from 'rx-nostr'
@@ -27,7 +26,6 @@ const queryClient = new QueryClient({
     },
   },
 })
-const pool = new SimplePool()
 
 merge(
   rxNostr.use(rxForwardReq),
@@ -72,7 +70,6 @@ rxForwardReq.emit({
 
 const context = {
   queryClient,
-  pool,
   rxNostr,
   rxForwardReq,
   rxBackwardReq,
