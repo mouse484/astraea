@@ -13,12 +13,20 @@ export interface NostrQueryContext
   relays?: string[]
 }
 
+export type SetQueryKeyFunctionParameter = (
+  context: { id: string, setKey: QueryKeyList[QueryKeyListName] },
+) => readonly string[]
+
+export type QueryOptions = readonly [
+  string,
+  SetQueryKeyFunctionParameter,
+  { relays?: string[] }?,
+]
+
 export type QueryFunction<Schema extends z.infer<z.ZodObject<any>>> = (
   context: NostrQueryContext,
   id: string,
-  setQueryKeyFunction: (
-    context: { id: string, setKey: QueryKeyList[QueryKeyListName] },
-  ) => readonly string[],
+  setQueryKeyFunction: SetQueryKeyFunctionParameter,
 ) => UseQueryOptions<Schema, Error, Schema, readonly string[]>
 
 export type SetQueryFunction<Schema extends z.infer<z.ZodObject<any>>> = (
