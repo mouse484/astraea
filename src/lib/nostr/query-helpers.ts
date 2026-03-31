@@ -5,6 +5,7 @@ import type z from 'zod'
 import type { QueryKeyList, QueryKeyListName } from '../query-key'
 import type { RouterContext } from '@/main'
 import { QueryObserver, queryOptions } from '@tanstack/react-query'
+import ms from 'enhanced-ms'
 import queryKeyList from '../query-key'
 
 export interface NostrQueryContext
@@ -55,24 +56,41 @@ export function createQuery<
 
       return queryOptions({
         queryKey,
-        queryFn: async ({ signal }) => {
+        queryFn: async (context) => {
+          const signal = AbortSignal.any([
+            context.signal,
+            AbortSignal.timeout(ms('30s')),
+          ])
           return new Promise<z.infer<Schema>>((resolve, reject) => {
             if (signal.aborted) {
               return reject(signal.reason)
             }
+
             const options = relays ? { relays } : undefined
             rxBackwardReq.emit(filter, options)
-            const observer = new QueryObserver(queryClient, { queryKey })
-            const unsubscribe = observer.subscribe((result) => {
+            const observer = new QueryObserver<z.infer<Schema>>(queryClient, { queryKey })
+
+            let settled = false
+            let unsubscribe: (() => void) | undefined
+
+            const onAbort = (_event?: globalThis.Event) => {
+              if (settled) return
+              settled = true
+              if (unsubscribe) unsubscribe()
+              reject(new Error('Query aborted'))
+            }
+
+            signal.addEventListener('abort', onAbort)
+
+            unsubscribe = observer.subscribe((result) => {
               if (result.data !== undefined) {
-                resolve(result.data as z.infer<Schema>)
+                if (settled) return
+                settled = true
+                signal.removeEventListener('abort', onAbort)
+                if (unsubscribe) unsubscribe()
+                resolve(result.data)
               }
             })
-
-            signal.addEventListener('abort', () => {
-              unsubscribe()
-              reject(new Error('Query aborted'))
-            }, { signal })
           })
         },
       })
