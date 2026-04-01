@@ -4,14 +4,6 @@ import { useRouteContext } from '@tanstack/react-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 /**
- * Returns true when two query keys are deeply equal.
- */
-function queryKeyMatches(queryKeyA: QueryKey, queryKeyB: QueryKey): boolean {
-  if (queryKeyA.length !== queryKeyB.length) return false
-  return JSON.stringify(queryKeyA) === JSON.stringify(queryKeyB)
-}
-
-/**
  * Creates a throttled callback that runs at most once per delay window.
  */
 function createThrottle(function_: () => void, delayMs: number) {
@@ -91,7 +83,8 @@ export function useNostrEvents<T extends { created_at: number }>(
     const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
       if (
         Array.isArray(event.query.queryKey)
-        && queryKeyMatches(event.query.queryKey, queryKey)
+        // simple kind check, ["textnote", ...] ["metadata", ...] etc
+        && event.query.queryKey[0] === queryKey[0]
         && (event.type === 'added' || event.type === 'updated')
       ) {
         throttledUpdateRef.current()
