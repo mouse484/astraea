@@ -67,8 +67,6 @@ export function useNostrEvents<T extends { created_at: number }>(
   const [items, setItems] = useState<T[]>(() => getLatestItems())
   const previousItemsRef = useRef<T[]>(items)
 
-  const unsubscribeRef = useRef<(() => void) | undefined>(undefined)
-
   const handleUpdate = useCallback(() => {
     const newItems = getLatestItems()
 
@@ -90,8 +88,7 @@ export function useNostrEvents<T extends { created_at: number }>(
       return
     }
 
-    // TOOO: QueriesObserverで代替可能かも
-    unsubscribeRef.current = queryClient.getQueryCache().subscribe((event) => {
+    const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
       if (
         Array.isArray(event.query.queryKey)
         && queryKeyMatches(event.query.queryKey, queryKey)
@@ -102,8 +99,7 @@ export function useNostrEvents<T extends { created_at: number }>(
     })
 
     return () => {
-      unsubscribeRef.current?.()
-      unsubscribeRef.current = undefined
+      unsubscribe()
     }
   }, [queryClient, queryKey, enabled, handleUpdate])
 
