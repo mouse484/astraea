@@ -40,7 +40,7 @@ function createThrottle(function_: () => void, delayMs: number) {
   return { run, cancel }
 }
 
-export function useNostrEvents<T extends { created_at: number }>(
+export function useNostrEvents<T extends { id: string, created_at: number }>(
   queryKey: QueryKey,
   _schema: ZodType<T>,
   eventFilter?: (event: T) => boolean,
@@ -77,7 +77,7 @@ export function useNostrEvents<T extends { created_at: number }>(
 
     if (
       previousItemsRef.current.length === newItems.length
-      && previousItemsRef.current.every((item, index) => item.created_at === newItems[index].created_at)
+      && previousItemsRef.current.every((item, index) => item.id === newItems[index].id)
     ) {
       return
     }
