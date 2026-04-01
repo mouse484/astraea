@@ -20,7 +20,7 @@ export const FollowListTagSchema = z.codec(
   {
     decode: (tags) => {
       return tags
-        .filter(tag => Array.isArray(tag) && tag[0] === 'p' && tag.length >= 2)
+        .filter(tag => Array.isArray(tag) && tag[0] === 'p')
         .map(tag => tag[1]!)
     },
     encode: (pubkeys) => {
