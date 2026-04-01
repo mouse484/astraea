@@ -75,11 +75,11 @@ export function createQuery<
             }
 
             const options = relays ? { relays } : undefined
-            rxBackwardReq.emit(filter, options)
-            const observer = new QueryObserver<z.infer<Schema>>(queryClient, { queryKey })
 
             let settled = false
             let unsubscribe: (() => void) | undefined
+
+            const observer = new QueryObserver<z.infer<Schema>>(queryClient, { queryKey })
 
             const onAbort = (_event?: globalThis.Event) => {
               if (settled) return
@@ -99,6 +99,8 @@ export function createQuery<
                 resolve(result.data)
               }
             })
+
+            rxBackwardReq.emit(filter, options)
           })
         },
       })
