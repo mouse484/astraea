@@ -1,7 +1,9 @@
 import type { QueryKey } from '@tanstack/react-query'
-import type { ZodType } from 'zod'
+import type { NostrEvent } from '../nips/01'
+import type { QueryKeyList } from '@/lib/query-key'
 import { useRouteContext } from '@tanstack/react-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import queryKeyList from '@/lib/query-key'
 
 /**
  * Creates a throttled callback that runs at most once per delay window.
@@ -40,27 +42,30 @@ function createThrottle(function_: () => void, delayMs: number) {
   return { run, cancel }
 }
 
-export function useNostrEvents<T extends { id: string, created_at: number }>(
-  queryKey: QueryKey,
-  _schema: ZodType<T>,
-  eventFilter?: (event: T) => boolean,
+export function useNostrEvents<
+  Event extends NostrEvent,
+>(
+  setQueryKey: (_: QueryKeyList) => QueryKey,
+  eventFilter?: (event: Event) => boolean,
   enabled: boolean = true,
 ) {
   const { queryClient } = useRouteContext({ from: '/(app)' })
+
+  const queryKey = setQueryKey(queryKeyList)
 
   const getLatestItems = useCallback(() => {
     if (queryKey.length <= 0) {
       return []
     }
 
-    const events = new Set<T>()
+    const events = new Set<Event>()
     const queries = queryClient.getQueryCache().findAll({ queryKey })
 
     for (const query of queries) {
       const data = query.state.data
       if (data === undefined || data === null) continue
 
-      const event = data as T
+      const event = data as Event
       if (eventFilter && !eventFilter(event)) continue
 
       events.add(event)
@@ -69,8 +74,8 @@ export function useNostrEvents<T extends { id: string, created_at: number }>(
     return [...events].toSorted((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0))
   }, [eventFilter, queryClient, queryKey])
 
-  const [items, setItems] = useState<T[]>(() => getLatestItems())
-  const previousItemsRef = useRef<T[]>(items)
+  const [items, setItems] = useState<Event[]>(() => getLatestItems())
+  const previousItemsRef = useRef<Event[]> (items)
 
   const handleUpdate = useCallback(() => {
     const newItems = getLatestItems()
