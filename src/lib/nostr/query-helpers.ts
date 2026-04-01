@@ -1,6 +1,5 @@
 import type { QueryClient, UseQueryOptions } from '@tanstack/react-query'
-import type { Filter } from 'nostr-tools'
-import type { Event } from 'nostr-typedef'
+import type { Event, Filter } from 'nostr-typedef'
 import type z from 'zod'
 import type { QueryKeyList, QueryKeyListName } from '../query-key'
 import type { RouterContext } from '@/main'
