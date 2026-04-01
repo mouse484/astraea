@@ -109,6 +109,7 @@ export function useNostrEvents<
     throttledUpdateRef.current = createThrottle(() => {
       latestHandleUpdateRef.current()
     }, 100)
+    latestHandleUpdateRef.current()
 
     const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
       if (
@@ -125,7 +126,7 @@ export function useNostrEvents<
       unsubscribe()
       throttledUpdateRef.current.cancel()
     }
-  }, [queryClient, queryKey, enabled])
+  }, [queryClient, queryKey, enabled, eventFilter, handleUpdate])
 
   return items
 }
