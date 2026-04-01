@@ -25,13 +25,15 @@ export const TagSchema = z.union([
     ],
     RelayUrlSchema,
   ),
-  tupleWithOptional(
-    [
-      z.literal('a'),
-    ],
-    z.string().regex(/^\d+:[0-9a-f]{64}:.+$/i), // kind:pubkey:d format
-    RelayUrlSchema,
-  ),
+  z.union([
+    tupleWithOptional(
+      [
+        z.literal('a'),
+        z.string().regex(/^\d+:[0-9a-f]{64}:.+$/i), // kind:pubkey:d format
+      ],
+      RelayUrlSchema,
+    ),
+  ]),
   z.tuple([
     z.literal('alt'),
     z.string(),
