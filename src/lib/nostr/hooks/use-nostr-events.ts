@@ -8,9 +8,14 @@ import { useCallback, useEffect, useRef, useState } from 'react'
  */
 function createThrottle(function_: () => void, delayMs: number) {
   let lastCall = 0
-  let timeoutId: NodeJS.Timeout | undefined
+  let timeoutId: ReturnType<typeof globalThis.setTimeout> | undefined
+  let cancelled = false
 
-  return () => {
+  const run = () => {
+    if (cancelled) {
+      return
+    }
+
     const now = Date.now()
     const timeSinceLastCall = now - lastCall
 
@@ -25,6 +30,14 @@ function createThrottle(function_: () => void, delayMs: number) {
       }, delayMs - timeSinceLastCall)
     }
   }
+
+  const cancel = () => {
+    cancelled = true
+    clearTimeout(timeoutId)
+    timeoutId = undefined
+  }
+
+  return { run, cancel }
 }
 
 export function useNostrEvents<T extends { created_at: number }>(
@@ -73,12 +86,24 @@ export function useNostrEvents<T extends { created_at: number }>(
     setItems(newItems)
   }, [getLatestItems])
 
-  const throttledUpdateRef = useRef(createThrottle(handleUpdate, 100))
+  const latestHandleUpdateRef = useRef(handleUpdate)
+
+  useEffect(() => {
+    latestHandleUpdateRef.current = handleUpdate
+  }, [handleUpdate])
+
+  const throttledUpdateRef = useRef(createThrottle(() => {
+    latestHandleUpdateRef.current()
+  }, 100))
 
   useEffect(() => {
     if (!enabled) {
       return
     }
+
+    throttledUpdateRef.current = createThrottle(() => {
+      latestHandleUpdateRef.current()
+    }, 100)
 
     const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
       if (
@@ -87,14 +112,15 @@ export function useNostrEvents<T extends { created_at: number }>(
         && event.query.queryKey[0] === queryKey[0]
         && (event.type === 'added' || event.type === 'updated')
       ) {
-        throttledUpdateRef.current()
+        throttledUpdateRef.current.run()
       }
     })
 
     return () => {
       unsubscribe()
+      throttledUpdateRef.current.cancel()
     }
-  }, [queryClient, queryKey, enabled, handleUpdate])
+  }, [queryClient, queryKey, enabled])
 
   return items
 }
