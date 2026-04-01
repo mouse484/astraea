@@ -1,12 +1,11 @@
-import type { z } from 'zod'
-import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
+import type { TextNoteEvent } from '@/lib/nostr/kinds/1'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { format, fromUnixTime } from 'date-fns'
 import { Ellipsis, Eye } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
-import { metadataQuery } from '@/lib/nostr/kinds/0'
+import { MetadataQuery } from '@/lib/nostr/kinds/0'
 import { createEvent, createPubkey } from '@/lib/nostr/nip19'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import {
@@ -32,7 +31,7 @@ import Replies from './Replies'
 import TextNoteContent from './TextNoteContent'
 
 interface Props {
-  event: z.output<typeof TextNoteEventSchema>
+  event: TextNoteEvent
   withReplies?: boolean
   isDisplayFooter?: boolean
   setTimelinePaused?: (paused: boolean) => void
@@ -47,7 +46,7 @@ export default function TextNote({
   const navigate = useNavigate()
   const { queryContext } = useNostr()
   const pubkey = createPubkey(event.pubkey)
-  const { data: metadata } = useQuery(metadataQuery(
+  const { data: metadata } = useQuery(MetadataQuery(
     queryContext,
     pubkey.decoded,
     ({ setKey, id }) => setKey(id),

@@ -1,10 +1,7 @@
 import { Outlet, redirect } from '@tanstack/react-router'
-import { getUnixTime, subMinutes } from 'date-fns'
 import { AlertCircle } from 'lucide-react'
-import { useEffect } from 'react'
 import { Layout } from '@/components/layout/Layout'
 import { createPubkey } from '@/lib/nostr/nip19'
-import queryKeyList from '@/lib/query-key'
 import { readStore } from '@/lib/store'
 import { Alert, AlertDescription, AlertTitle } from '@/shadcn-ui/components/ui/alert'
 
@@ -15,7 +12,7 @@ const defaultRelays = [
 
 export const Route = createFileRoute({
   component: RouteComponent,
-  beforeLoad: () => {
+  beforeLoad: ({ context: { rxNostr } }) => {
     const pubkeyHex = readStore('pubkey')
     if (pubkeyHex === undefined) {
       throw redirect({
@@ -25,6 +22,14 @@ export const Route = createFileRoute({
 
     const pubkey = createPubkey(pubkeyHex)
     const relays = readStore('relays')
+
+    rxNostr.setDefaultRelays(
+      // TODO: readStoreのrelaysをsetDefaultRelaysに合わて変更する
+      Object.fromEntries(
+        relays?.map(r => [r.url, { read: r.read, write: r.write }])
+        ?? defaultRelays.map(url => [url, { read: true, write: true }]),
+      ),
+    )
 
     return {
       pubkey,
@@ -55,38 +60,6 @@ export const Route = createFileRoute({
 })
 
 function RouteComponent() {
-  const { relays, pool, queryClient } = Route.useRouteContext()
-
-  useEffect(() => {
-    const subscription = pool.subscribe(relays.read, {
-      kinds: [1, 7],
-      since: getUnixTime(subMinutes(new Date(), 10)),
-    }, {
-      onevent(event) {
-        if (event.kind === 1) {
-          const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
-            || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
-          if (eventTag) {
-            queryClient.setQueryData(queryKeyList.reply(eventTag[1], event.id), event)
-          } else {
-            queryClient.setQueryData(queryKeyList.textnote(event.id), event)
-          }
-        } else if (event.kind === 7) {
-          const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
-          if (targetId !== undefined) {
-            queryClient.setQueryData(
-              queryKeyList.reaction(targetId, event.pubkey, event.content),
-              event,
-            )
-          }
-        }
-      },
-    })
-    return () => {
-      subscription.close()
-    }
-  })
-
   return (
     <Layout>
       <Outlet />

@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { useAppForm } from '@/lib/form'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useZap } from '@/lib/nostr/hooks/use-zap'
-import { metadataQuery } from '@/lib/nostr/kinds/0'
+import { MetadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import {
@@ -30,7 +30,7 @@ interface Props {
 export default function Zap({ event, setTimelinePaused }: Props) {
   const { queryContext, relays } = useNostr()
   const pubkey = createPubkey(event.pubkey)
-  const { data: metadata } = useQuery(metadataQuery(
+  const { data: metadata } = useQuery(MetadataQuery(
     queryContext,
     pubkey.decoded,
     ({ setKey, id }) => setKey(id),

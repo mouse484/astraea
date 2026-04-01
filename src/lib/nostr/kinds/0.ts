@@ -15,16 +15,16 @@ const MetadataSchema = z.object({
   ...LightningMetadataSchema.shape,
 }).partial()
 
-const MetadataEventSchema = NostrEventSchema.extend({
+export const MetadataEventSchema = NostrEventSchema.extend({
   kind: z.literal(kinds.Metadata),
   content: jsonCodec(MetadataSchema),
 })
 
 export type MetadataEvent = z.infer<typeof MetadataEventSchema>
 
-export const metadataQuery = createQuery({
+export const [MetadataQuery, setMetadataQuery] = createQuery({
   name: 'metadata',
-  schema: MetadataEventSchema,
   kind: kinds.Metadata,
+  schema: MetadataEventSchema,
   filterKey: 'authors',
 })

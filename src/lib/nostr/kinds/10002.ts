@@ -7,12 +7,14 @@ import { createQuery } from '../query-helpers'
 export const RelayListEventSchema = NostrEventSchema.extend({
   kind: z.literal(kinds.RelayList),
   tags: RelayListSchema,
-  content: z.literal('').optional(),
+  content: z.literal(''),
 })
 
-export const relayListQuery = createQuery({
+export type RelayListEvent = z.infer<typeof RelayListEventSchema>
+
+export const [RelayListQuery, setRelayListQuery] = createQuery({
   name: 'relaylist',
-  schema: RelayListEventSchema,
   kind: kinds.RelayList,
+  schema: RelayListEventSchema,
   filterKey: 'authors',
 })

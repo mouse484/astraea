@@ -13,6 +13,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@rx-nostr/crypto": "^0.0.0",
     "@scure/base": "^2.0.0",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/query-async-storage-persister": "^5.95.2",
@@ -31,10 +32,13 @@
     "next-themes": "^0.4.6",
     "normalize-url": "^9.0.0",
     "nostr-tools": "^2.23.3",
+    "nostr-typedef": "^0.13.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-qr-code": "^2.0.18",
+    "rx-nostr": "^3.6.2",
+    "rxjs": "^7.8.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",

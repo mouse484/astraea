@@ -1,17 +1,17 @@
-function _<T extends string>(prefix: T, ...args: unknown[]) {
+function _<T extends string>(prefix: T, ...args: (string | undefined)[]) {
   return [prefix, ...args]
-    .filter(argument => argument !== undefined) as [T, ...unknown[]]
+    .filter(argument => argument !== undefined) as [T, ...string[]]
 }
 
 const queryKeyList = {
   /** Kind / Nostr Events */
   // Kind 0
-  metadata: (id?: string) => _('metadata', id),
+  metadata: (pubkey?: string) => _('metadata', pubkey),
   // Kind 1
   textnote: (id?: string) => _('textnote', id),
   reply: (targetId?: string, eventId?: string) => _('reply', targetId, eventId),
   // Kind 3
-  followlist: (id?: string) => _('followlist', id),
+  followlist: (pubkey?: string) => _('followlist', pubkey),
   // Kind 7
   reaction: (targetId?: string, pubkey?: string, content?: string) =>
     _('reaction', targetId, pubkey, content),

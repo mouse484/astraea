@@ -1,5 +1,5 @@
 import type z from 'zod'
-import { getUnixTime } from 'date-fns'
+import { signer } from '../rx-nostr'
 
 export async function signEvent<S extends z.ZodObject<{
   kind: z.ZodNumber | z.ZodLiteral<number>
@@ -9,16 +9,8 @@ export async function signEvent<S extends z.ZodObject<{
   schema: S,
   event: Pick<z.output<S>, 'kind' | 'tags' | 'content'>,
 ) {
-  if (!globalThis.nostr || typeof globalThis.nostr.signEvent !== 'function') {
-    throw new Error('nostr extension is not available')
-  }
   const pickedSchema = schema.pick({ kind: true, tags: true, content: true })
   const encodedEvent = pickedSchema.encode(event)
 
-  return globalThis.nostr.signEvent({
-    kind: encodedEvent.kind,
-    tags: encodedEvent.tags,
-    content: encodedEvent.content,
-    created_at: getUnixTime(new Date()),
-  })
+  return signer.signEvent(encodedEvent)
 }

@@ -4,14 +4,16 @@ import { NostrEventSchema } from '../nips/01'
 import { FollowListTagSchema } from '../nips/02'
 import { createQuery } from '../query-helpers'
 
-const FollowListEventSchema = NostrEventSchema.extend({
+export const FollowListEventSchema = NostrEventSchema.extend({
   kind: z.literal(kinds.Contacts),
   tags: FollowListTagSchema,
 })
 
-export const FollowListQuery = createQuery({
+export type FollowListEvent = z.infer<typeof FollowListEventSchema>
+
+export const [FollowListQuery, setFollowListQuery] = createQuery({
   name: 'followlist',
-  schema: FollowListEventSchema,
   kind: kinds.Contacts,
+  schema: FollowListEventSchema,
   filterKey: 'authors',
 })

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { RelayForm } from '@/components/page/settings/relay/RelayForm'
 import { RelayTable } from '@/components/page/settings/relay/RelayTable'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
-import { RelayListEventSchema, relayListQuery } from '@/lib/nostr/kinds/10002'
+import { RelayListEventSchema, RelayListQuery } from '@/lib/nostr/kinds/10002'
 import { readStore, writeStore } from '@/lib/store'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
@@ -13,7 +13,7 @@ export const Route = createFileRoute({
 })
 
 function RouteComponent() {
-  const { queryClient, pool, pubkey } = Route.useRouteContext()
+  const { queryClient, rxBackwardReq, pubkey } = Route.useRouteContext()
   const { publishEvent } = useNostr()
 
   const [relays, setRelays] = useState<StoreValue<'relays'>>(() => {
@@ -80,13 +80,14 @@ function RouteComponent() {
         <Button
           disabled={isLoading}
           onClick={() => {
+            // TODO: useMutation使うほうがいいかも
             void (async () => {
               setIsLoading(true)
               try {
-                const query = relayListQuery(
+                const query = RelayListQuery(
                   {
-                    pool,
-                    relays: relays.filter(r => r.read).map(r => r.url),
+                    queryClient,
+                    rxBackwardReq,
                   },
                   pubkey.decoded,
                   ({ setKey, id }) => setKey(id),

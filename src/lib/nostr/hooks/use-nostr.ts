@@ -1,11 +1,13 @@
 import type z from 'zod'
 import type { NostrQueryContext } from '@/lib/nostr/query-helpers'
 import { useRouteContext } from '@tanstack/react-router'
+import { firstValueFrom } from 'rxjs'
 import { toast } from 'sonner'
 import { signEvent } from '../utils/sign-event'
 
+// TODO: このフックがいるかから検討する
 export default function useNostr() {
-  const { relays, pool } = useRouteContext({ from: '/(app)' })
+  const { relays, rxBackwardReq, queryClient, rxNostr } = useRouteContext({ from: '/(app)' })
 
   return {
     publishEvent: async <S extends z.ZodObject<any>>(
@@ -18,7 +20,9 @@ export default function useNostr() {
     ) => {
       try {
         const signedEvent = await signEvent(schema, event)
-        await Promise.allSettled(pool.publish(relays.write, signedEvent))
+
+        await firstValueFrom(rxNostr.send(signedEvent))
+
         toast.success(messages?.success ?? `Event published successfully. Kind: ${String(event.kind)}`)
         return signedEvent
       } catch (error) {
@@ -27,8 +31,8 @@ export default function useNostr() {
       }
     },
     queryContext: {
-      pool,
-      relays: relays.read,
+      queryClient,
+      rxBackwardReq,
     } satisfies NostrQueryContext,
     relays,
   }

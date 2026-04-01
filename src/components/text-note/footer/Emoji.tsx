@@ -1,5 +1,5 @@
 import type { UseMutationResult } from '@tanstack/react-query'
-import type { VerifiedEvent } from 'nostr-tools'
+import type { Event } from 'nostr-typedef'
 import { SmilePlus } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/shadcn-ui/components/ui/button'
@@ -11,7 +11,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn-ui/components/ui/popover'
 
 interface Props {
-  mutation: UseMutationResult<VerifiedEvent, Error, string, unknown>
+  mutation: UseMutationResult<Event, Error, string, unknown>
   setTimelinePaused?: (paused: boolean) => void
 }
 

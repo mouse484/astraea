@@ -1,5 +1,5 @@
 import type { UseMutationResult } from '@tanstack/react-query'
-import type { VerifiedEvent } from 'nostr-tools'
+import type { Event } from 'nostr-typedef'
 import type { PropsWithChildren } from 'react'
 import type { z } from 'zod'
 import type { ReactionEventSchema } from '@/lib/nostr/kinds/7'
@@ -10,7 +10,7 @@ import { cn } from '@/shadcn-ui/utils'
 interface Props extends PropsWithChildren {
   content: string
   reactions: z.infer<typeof ReactionEventSchema>[]
-  mutation: UseMutationResult<VerifiedEvent, Error, string, unknown>
+  mutation: UseMutationResult<Event, Error, string, unknown>
   activeClassName: string
 }
 

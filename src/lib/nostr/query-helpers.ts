@@ -1,84 +1,122 @@
-import type { UseQueryOptions } from '@tanstack/react-query'
-import type { Filter } from 'nostr-tools'
+import type { QueryClient, UseQueryOptions } from '@tanstack/react-query'
+import type { Event, Filter } from 'nostr-typedef'
 import type z from 'zod'
 import type { QueryKeyList, QueryKeyListName } from '../query-key'
 import type { RouterContext } from '@/main'
-import { queryOptions } from '@tanstack/react-query'
+import { QueryObserver, queryOptions } from '@tanstack/react-query'
+import ms from 'enhanced-ms'
 import queryKeyList from '../query-key'
 
-export interface NostrQueryContext extends Pick<RouterContext, 'pool'> {
-  relays: string[]
+export interface NostrQueryContext
+  extends Pick<RouterContext, 'queryClient' | 'rxBackwardReq'> {
+  relays?: string[]
 }
 
-export type NostrQueryOptions<Schema extends z.ZodObject<any>> = UseQueryOptions<
-  z.output<Schema>,
-  Error,
-  z.output<Schema>,
-  readonly unknown[]
->
+export type SetQueryKeyFunctionParameter = (
+  context: { id: string, setKey: QueryKeyList[QueryKeyListName] },
+) => readonly string[]
 
-interface QueryConfig<
-  Schema extends z.ZodObject<any>,
-  Name extends QueryKeyListName,
-> {
-  name: Name
-  schema: Schema
-  kind: number
-  filterKey: keyof Pick<Filter, 'ids' | 'authors'>
-}
+export type QueryOptions = readonly [
+  string,
+  SetQueryKeyFunctionParameter,
+  { relays?: string[] }?,
+]
 
-export type SetQueryKeyFunction<Name extends QueryKeyListName> = ({
-  id,
-  setKey,
-}: {
-  id: string
-  setKey: QueryKeyList[Name]
-}) => ReturnType<QueryKeyList[Name]>
-
-export type NostrQueryFunction<
-  Schema extends z.ZodObject<any>,
-  Name extends QueryKeyListName,
-> = (
+export type QueryFunction<Schema extends z.infer<z.ZodObject<any>>> = (
   context: NostrQueryContext,
   id: string,
-  setQueryKeyFunction: SetQueryKeyFunction<Name>,
-) => NostrQueryOptions<Schema>
+  setQueryKeyFunction: SetQueryKeyFunctionParameter,
+) => UseQueryOptions<Schema, Error, Schema, readonly string[]>
+
+export type SetQueryFunction<Schema extends z.infer<z.ZodObject<any>>> = (
+  queryClient: QueryClient,
+  event: Event,
+  setQueryKeyFunction: (
+    context: { setKey: QueryKeyList[QueryKeyListName], event: Schema },
+  ) => readonly string[],
+) => void
 
 export function createQuery<
   Schema extends z.ZodObject<any>,
-  Name extends QueryKeyListName,
+  Name extends QueryKeyListName = QueryKeyListName,
 >(
-  { name, schema, kind, filterKey }: QueryConfig<Schema, Name>,
-): NostrQueryFunction<Schema, Name> {
-  const queryFunction: NostrQueryFunction<Schema, Name> = (
-    { pool, relays },
-    id,
-    setQueryKeyFunction,
-  ) => {
-    const filter = {
-      kinds: [kind],
-      [filterKey]: [id],
-    } as Filter
+  { name, kind, schema, filterKey }: {
+    name: Name
+    kind: number
+    schema: Schema
+    // TODO: フィルターの仕組み検討する
+    filterKey: keyof Pick<Filter, 'ids' | 'authors'> | undefined
+  },
+) {
+  return [
+    function queryFunction(
+      { queryClient, rxBackwardReq, relays },
+      id,
+      setQueryKeyFunction,
+    ) {
+      const filter = {
+        kinds: [kind],
+        ...(filterKey ? { [filterKey]: [id] } : {}),
+      } as Filter
 
-    const queryKey = setQueryKeyFunction({ id, setKey: queryKeyList[name] })
+      const queryKey = setQueryKeyFunction({ id, setKey: queryKeyList[name] })
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    return queryOptions<z.output<Schema>, Error, z.output<Schema>, readonly unknown[]>({
-      queryKey,
-      queryFn: async () => {
-        const event = await pool.get(relays, filter)
-        if (!event) {
-          throw new Error(`${name} event not found`)
-        }
+      return queryOptions({
+        queryKey,
+        queryFn: async (context) => {
+          const signal = AbortSignal.any([
+            context.signal,
+            AbortSignal.timeout(ms('30s')),
+          ])
+          return new Promise<z.infer<Schema>>((resolve, reject) => {
+            if (signal.aborted) {
+              return reject(signal.reason)
+            }
 
-        return schema.parseAsync(event)
-          .catch((error) => {
-            console.error(error, schema.shape)
-            throw error
+            const options = relays ? { relays } : undefined
+
+            let settled = false
+            let unsubscribe: (() => void) | undefined
+
+            const observer = new QueryObserver<z.infer<Schema>>(queryClient, { queryKey })
+
+            const onAbort = (_event?: globalThis.Event) => {
+              if (settled) return
+              settled = true
+              signal.removeEventListener('abort', onAbort)
+              queueMicrotask(() => unsubscribe?.())
+              reject(new Error('Query aborted'))
+            }
+
+            signal.addEventListener('abort', onAbort)
+
+            unsubscribe = observer.subscribe((result) => {
+              if (result.data !== undefined) {
+                if (settled) return
+                settled = true
+                signal.removeEventListener('abort', onAbort)
+                queueMicrotask(() => unsubscribe?.())
+                resolve(result.data)
+              }
+            })
+
+            rxBackwardReq.emit(filter, options)
           })
-      },
-    })
-  }
-
-  return queryFunction
+        },
+      })
+    },
+    function setQueryFunction(
+      queryClient,
+      event,
+      setQueryKeyFunction,
+    ) {
+      const parsed = schema.safeParse(event)
+      if (parsed.success) {
+        const queryKey = setQueryKeyFunction({ setKey: queryKeyList[name], event: parsed.data })
+        queryClient.setQueryData<z.infer<Schema>>(queryKey, parsed.data)
+      } else {
+        console.error('Failed to parse event:', parsed.error)
+      }
+    },
+  ] satisfies [QueryFunction<z.infer<Schema>>, SetQueryFunction<z.infer<Schema>>]
 }
