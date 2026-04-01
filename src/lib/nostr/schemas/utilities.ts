@@ -30,7 +30,7 @@ export function jsonCodec<T extends z.core.$ZodType>(schema: T) {
 /**
  * Zod Tuple with optional values.
  * zod build in: z.tuple([z.string(), z.string().optional()]) => [string, (string | undefined)?]
- * this utility: tupleWithOptional([z.string()], [z.string()]) => [string] | [string, string]
+ * this utility: tupleWithOptional([z.string()], z.string()) => [string] | [string, string]
  */
 export function tupleWithOptional<
   Default extends [z.core.SomeType, ...z.core.SomeType[]],
