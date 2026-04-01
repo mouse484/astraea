@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
+import type { ReactionEvent } from '@/lib/nostr/kinds/7'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
 import { Heart } from 'lucide-react'
@@ -23,9 +24,8 @@ interface Props {
 
 export default function Footer({ event, setTimelinePaused }: Props) {
   const [openForm, setOpenForm] = useState<'reply' | 'repost' | undefined>()
-  const reactions = useNostrEvents(
-    queryKeyList.reaction(event.id),
-    ReactionEventSchema,
+  const reactions = useNostrEvents<ReactionEvent>(
+    _ => _.reaction(event.id),
   )
   const { queryClient } = useRouteContext({ from: '/(app)' })
   const { publishEvent } = useNostr()

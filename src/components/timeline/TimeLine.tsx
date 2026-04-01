@@ -1,8 +1,7 @@
+import type { TextNoteEvent } from '@/lib/nostr/kinds/1'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { useRef, useState } from 'react'
 import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
-import { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
-import queryKeyList from '@/lib/query-key'
 import TextNote from '../text-note/TextNote'
 
 interface Props {
@@ -22,9 +21,8 @@ export default function TimeLine({ pubkeys }: Props) {
 
   const isTop = (virtualizer.scrollOffset ?? 0) <= 100
   // スクロールが上部かつダイアログが開いていないときだけ自動更新
-  const items = useNostrEvents(
-    queryKeyList.textnote(),
-    TextNoteEventSchema,
+  const items = useNostrEvents<TextNoteEvent>(
+    _ => _.textnote(),
     event => (pubkeys ? pubkeys.includes(event.pubkey) : true),
     !isPaused && isTop,
   )

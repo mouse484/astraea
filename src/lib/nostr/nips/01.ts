@@ -53,6 +53,8 @@ export const NostrEventSchema = z.object({
   sig: Hex64BytesSchema,
 })
 
+export type NostrEvent = z.infer<typeof NostrEventSchema>
+
 export const UserMetadataSchema = z.object({
   name: z.string(),
   about: z.string(),
