@@ -36,12 +36,12 @@ merge(
   .subscribe(({ event }) => {
     // TODO: kindによってのsetQueryDataの振り分けロジックを検討し改善する
     switch (event.kind) {
-      case 0: {
+      case kinds.Metadata: {
         setMetadataQuery(queryClient, event, ({ setKey, event }) => setKey(event.pubkey))
 
         break
       }
-      case 1: {
+      case kinds.ShortTextNote: {
         const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
           || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
 
@@ -50,11 +50,11 @@ merge(
         })
         break
       }
-      case 3: {
+      case kinds.Contacts: {
         setFollowListQuery(queryClient, event, ({ setKey, event }) => setKey(event.pubkey))
         break
       }
-      case 7: {
+      case kinds.Reaction: {
         const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
         if (targetId !== undefined) {
           setReactionQuery(queryClient, event, ({ setKey, event }) => setKey(targetId, event.pubkey, event.content))
