@@ -5,7 +5,7 @@ import { FollowListQuery } from '@/lib/nostr/kinds/3'
 export const Route = createFileRoute({
   component: RouteComponent,
   async  loader({ context: { queryClient, rxBackwardReq, pubkey } }) {
-    return queryClient.fetchQuery(FollowListQuery(
+    return queryClient.ensureQueryData(FollowListQuery(
       {
         queryClient,
         rxBackwardReq,
