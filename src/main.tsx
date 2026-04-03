@@ -4,6 +4,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { getUnixTime, subMinutes } from 'date-fns'
 import { ms } from 'enhanced-ms'
+import { kinds } from 'nostr-tools'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { batch } from 'rx-nostr'
@@ -13,6 +14,7 @@ import { setMetadataQuery } from './lib/nostr/kinds/0'
 import { setTextNoteQuery } from './lib/nostr/kinds/1'
 import { setFollowListQuery } from './lib/nostr/kinds/3'
 import { setReactionQuery } from './lib/nostr/kinds/7'
+import { setRelayListQuery } from './lib/nostr/kinds/10002'
 import { rxBackwardReq, rxForwardReq, rxNostr } from './lib/nostr/rx-nostr'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
@@ -34,12 +36,12 @@ merge(
   .subscribe(({ event }) => {
     // TODO: kindによってのsetQueryDataの振り分けロジックを検討し改善する
     switch (event.kind) {
-      case 0: {
+      case kinds.Metadata: {
         setMetadataQuery(queryClient, event, ({ setKey, event }) => setKey(event.pubkey))
 
         break
       }
-      case 1: {
+      case kinds.ShortTextNote: {
         const eventTag = event.tags.find(tag => tag[0] === 'e' && tag[3] === 'reply')
           || event.tags.find(tag => tag[0] === 'e' && tag[3] === 'root')
 
@@ -48,16 +50,20 @@ merge(
         })
         break
       }
-      case 3: {
+      case kinds.Contacts: {
         setFollowListQuery(queryClient, event, ({ setKey, event }) => setKey(event.pubkey))
         break
       }
-      case 7: {
+      case kinds.Reaction: {
         const targetId = event.tags.find(tag => tag[0] === 'e')?.[1]
         if (targetId !== undefined) {
           setReactionQuery(queryClient, event, ({ setKey, event }) => setKey(targetId, event.pubkey, event.content))
         }
 
+        break
+      }
+      case kinds.RelayList: {
+        setRelayListQuery(queryClient, event, ({ setKey, event }) => setKey(event.pubkey))
         break
       }
     }
