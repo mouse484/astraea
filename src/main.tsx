@@ -16,6 +16,7 @@ import { setFollowListQuery } from './lib/nostr/kinds/3'
 import { setReactionQuery } from './lib/nostr/kinds/7'
 import { setRelayListQuery } from './lib/nostr/kinds/10002'
 import { rxBackwardReq, rxForwardReq, rxNostr } from './lib/nostr/rx-nostr'
+
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
@@ -114,4 +115,8 @@ if (!rootElement.innerHTML) {
       </StrictMode>
     </>,
   )
+}
+
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  void navigator.serviceWorker.register('sw.js', { scope: '/', type: 'module' })
 }
