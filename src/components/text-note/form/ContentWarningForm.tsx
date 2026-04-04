@@ -13,7 +13,7 @@ import {
 } from '@/shadcn-ui/components/ui/dialog'
 import { Input } from '@/shadcn-ui/components/ui/input'
 import { Label } from '@/shadcn-ui/components/ui/label'
-import { cn } from '@/shadcn-ui/utils'
+import { cn } from '@/shadcn-ui/lib/utils'
 
 interface Props {
   value: false | true | string

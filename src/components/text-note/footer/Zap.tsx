@@ -20,7 +20,7 @@ import {
   DialogTrigger,
 } from '@/shadcn-ui/components/ui/dialog'
 import { Input } from '@/shadcn-ui/components/ui/input'
-import { cn } from '@/shadcn-ui/utils'
+import { cn } from '@/shadcn-ui/lib/utils'
 
 interface Props {
   event: z.infer<typeof TextNoteEventSchema>

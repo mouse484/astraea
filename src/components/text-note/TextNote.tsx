@@ -146,7 +146,7 @@ export default function TextNote({
                 : <TextNoteContent content={event.content} />}
             </CardContent>
             {isDisplayFooter && (
-              <CardFooter className="p-0 pt-3">
+              <CardFooter className="mt-2 bg-inherit p-0 pt-1">
                 <Footer event={event} setTimelinePaused={setTimelinePaused} />
               </CardFooter>
             )}

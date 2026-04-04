@@ -9,7 +9,7 @@ import {
   FieldLegend,
   FieldSet,
 } from '@/shadcn-ui/components/ui/field'
-import { cn } from '@/shadcn-ui/utils'
+import { cn } from '@/shadcn-ui/lib/utils'
 import { useFieldContext } from '../../'
 
 export interface BaseFieldProps {

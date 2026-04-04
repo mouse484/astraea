@@ -1,7 +1,7 @@
 import { Menu } from 'lucide-react'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { useSidebar } from '@/shadcn-ui/components/ui/sidebar'
-import { cn } from '@/shadcn-ui/utils'
+import { cn } from '@/shadcn-ui/lib/utils'
 
 interface Props {
   className?: string
