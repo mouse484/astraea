@@ -1,4 +1,4 @@
-import type { z } from 'zod'
+import type * as z from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import { SendHorizonal } from 'lucide-react'
 import { useState } from 'react'

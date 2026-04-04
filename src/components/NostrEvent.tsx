@@ -1,4 +1,4 @@
-import type z from 'zod'
+import type * as z from 'zod'
 import type { NostrQueryContext, QueryFunction, QueryOptions } from '@/lib/nostr/query-helpers'
 import { useQuery } from '@tanstack/react-query'
 import useNostr from '@/lib/nostr/hooks/use-nostr'

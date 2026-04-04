@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 import { ImageURISchema, URLSchema } from '../schemas/common'
 
 const StringBooleanCodec = z.codec(
@@ -11,7 +11,7 @@ const StringBooleanCodec = z.codec(
 )
 
 export const MetadataExtraFieldsSchema = z.object({
-  display_name: z.string(),
+  display_name: z.string().trim(),
   website: URLSchema,
   banner: ImageURISchema,
   bot: z.union([
@@ -26,9 +26,9 @@ export const MetadataExtraFieldsSchema = z.object({
   /**
    * @deprecated use `display_name` instead
    */
-  displayName: z.string().optional(),
+  displayName: z.string().trim().optional(),
   /**
    * @deprecated use `name` instead
    */
-  username: z.string().optional(),
+  username: z.string().trim().optional(),
 })

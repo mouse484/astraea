@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 
 const NIP05_WITH_DOMAIN = /^[\w\-.]+@[\w\-.]+$/
 const NIP05_WITHOUT_DOMAIN = /^[\w\-.]+\.[a-z]{2,}$/i
@@ -8,8 +8,8 @@ export const MetadataWithKind05Schema = z.object({
    * NIP-05 internet identifier.
    */
   nip05: z.codec(
-    z.string(),
-    z.string(),
+    z.string().trim(),
+    z.string().trim(),
     {
       decode: (value) => {
         if (value.startsWith('_@')) {

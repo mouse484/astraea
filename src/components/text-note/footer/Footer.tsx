@@ -1,4 +1,4 @@
-import type { z } from 'zod'
+import type * as z from 'zod'
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import type { ReactionEvent } from '@/lib/nostr/kinds/7'
 import { useMutation } from '@tanstack/react-query'

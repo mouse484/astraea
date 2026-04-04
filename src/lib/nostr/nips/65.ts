@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 import { StoreSchemas } from '@/lib/store/schema'
 import { RelayUrlSchema } from '../schemas/common'
 import { tupleWithOptional } from '../schemas/utilities'
@@ -11,12 +11,9 @@ export const RelayListSchema = z.codec(
           z.literal('r'),
           RelayUrlSchema,
         ],
-        z.union([
-          z.literal('read'),
-          z.literal('write'),
-        ]),
+        z.enum(['read', 'write']),
       ),
-      z.array(z.string()),
+      z.array(z.string().trim()),
     ]),
   ),
   StoreSchemas.relays,

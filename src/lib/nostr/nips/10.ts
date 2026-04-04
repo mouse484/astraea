@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 import { PubkeySchema, RelayUrlSchema } from '../schemas/common'
 import { tupleWithOptional } from '../schemas/utilities'
 import { NostrtEventAddressSchema, NoteIDSchema } from './19'
@@ -10,10 +10,7 @@ export const TextNoteTagSchema = z.union([
       NoteIDSchema,
     ],
     z.union([RelayUrlSchema, z.literal('')]),
-    z.union([
-      z.literal('root'),
-      z.literal('reply'),
-    ]),
+    z.enum(['root', 'reply']),
     PubkeySchema,
   ),
   tupleWithOptional(

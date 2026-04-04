@@ -1,7 +1,7 @@
 import type { UseMutationResult } from '@tanstack/react-query'
 import type { Event } from 'nostr-typedef'
 import type { PropsWithChildren } from 'react'
-import type { z } from 'zod'
+import type * as z from 'zod'
 import type { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import { useRouteContext } from '@tanstack/react-router'
 import { Button } from '@/shadcn-ui/components/ui/button'

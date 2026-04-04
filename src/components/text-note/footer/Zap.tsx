@@ -4,7 +4,7 @@ import { CopyIcon, ZapIcon } from 'lucide-react'
 import { useState } from 'react'
 import QRCode from 'react-qr-code'
 import { toast } from 'sonner'
-import { z } from 'zod'
+import * as z from 'zod'
 import { useAppForm } from '@/lib/form'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useZap } from '@/lib/nostr/hooks/use-zap'
@@ -40,8 +40,8 @@ export default function Zap({ event, setTimelinePaused }: Props) {
   const commentAllowed = zap.data?.lnurlResponse?.commentAllowed ?? 0
 
   const ZapFormSchema = z.object({
-    amount: z.number().int().min(1).max(1_000_000),
-    message: z.string().max(commentAllowed),
+    amount: z.int().min(1).max(1_000_000),
+    message: z.string().trim().max(commentAllowed),
   })
 
   const form = useAppForm({

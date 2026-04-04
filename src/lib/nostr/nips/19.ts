@@ -1,5 +1,5 @@
 import { nip19 } from 'nostr-tools'
-import { z } from 'zod'
+import * as z from 'zod'
 
 type Nip19Type = ReturnType<typeof nip19.decode>['type']
 
@@ -17,12 +17,12 @@ function isValid(type: Nip19Type, s: string): boolean {
 //   { message: 'Invalid npub format' },
 // )
 
-export const NoteIDSchema = z.string().refine(
+export const NoteIDSchema = z.string().trim().refine(
   s => isValid('note', s),
-  { message: 'Invalid note format' },
+  { error: 'Invalid note format' },
 )
 
-export const NostrtEventAddressSchema = z.string().refine(
+export const NostrtEventAddressSchema = z.string().trim().refine(
   s => isValid('nevent', s),
-  { message: 'Invalid nevent format' },
+  { error: 'Invalid nevent format' },
 )

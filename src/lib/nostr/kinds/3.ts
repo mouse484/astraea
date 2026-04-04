@@ -1,5 +1,5 @@
 import { kinds } from 'nostr-tools'
-import { z } from 'zod'
+import * as z from 'zod'
 import { NostrEventSchema } from '../nips/01'
 import { FollowListTagSchema } from '../nips/02'
 import { createQuery } from '../query-helpers'

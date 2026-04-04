@@ -1,5 +1,5 @@
 import { kinds } from 'nostr-tools'
-import { z } from 'zod'
+import * as z from 'zod'
 import { NostrEventSchema, TagSchema } from '../nips/01'
 import { TextNoteTagSchema } from '../nips/10'
 import { ContentWarningTagSchema } from '../nips/36'
