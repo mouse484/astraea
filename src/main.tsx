@@ -2,7 +2,7 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
-import { getUnixTime, subMinutes } from 'date-fns'
+import dayjs from 'dayjs'
 import { ms } from 'enhanced-ms'
 import { kinds } from 'nostr-tools'
 import { StrictMode } from 'react'
@@ -71,7 +71,7 @@ merge(
 
 rxForwardReq.emit({
   kinds: [1, 7],
-  since: getUnixTime(subMinutes(new Date(), 5)),
+  since: dayjs().subtract(5, 'minute').unix(),
 })
 
 const context = {
