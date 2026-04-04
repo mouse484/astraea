@@ -1,7 +1,7 @@
 import type { TextNoteEvent } from '@/lib/nostr/kinds/1'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { format, fromUnixTime } from 'date-fns'
+import dayjs from 'dayjs'
 import { Ellipsis, Eye } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
@@ -109,7 +109,7 @@ export default function TextNote({
                   <UserName metadata={metadata} />
                 </Link>
                 <div>
-                  {format(fromUnixTime(event.created_at), 'yyyy-MM-dd HH:mm')}
+                  {dayjs.unix(event.created_at).format('YYYY-MM-DD HH:mm')}
                 </div>
               </CardDescription>
               <CardAction>
