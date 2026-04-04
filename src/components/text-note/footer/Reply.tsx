@@ -1,4 +1,4 @@
-import type { z } from 'zod'
+import type * as z from 'zod'
 import type { TextNoteEvent, TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { MessageCircle } from 'lucide-react'
 import { useState } from 'react'

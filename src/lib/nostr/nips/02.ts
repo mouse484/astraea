@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 import { PubkeySchema, RelayUrlSchema } from '../schemas/common'
 import { tupleWithOptional } from '../schemas/utilities'
 
@@ -11,9 +11,9 @@ export const FollowListTagSchema = z.codec(
           PubkeySchema,
         ],
         RelayUrlSchema,
-        z.string(),
+        z.string().trim(),
       ),
-      z.array(z.string()),
+      z.array(z.string().trim()),
     ]),
   ),
   z.array(PubkeySchema),

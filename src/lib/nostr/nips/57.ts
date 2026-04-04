@@ -1,10 +1,10 @@
 import { bech32 } from '@scure/base'
-import { z } from 'zod'
+import * as z from 'zod'
 import { LnurlPayResponseSchema } from '../luds/06'
 
 const NIP57LnurlExtensionSchema = z.object({
   allowsNostr: z.boolean().optional(),
-  nostrPubkey: z.string().optional(),
+  nostrPubkey: z.string().trim().optional(),
 })
 
 export const LnurlPayResponseWithNIP57Schema = LnurlPayResponseSchema.extend(
@@ -12,8 +12,8 @@ export const LnurlPayResponseWithNIP57Schema = LnurlPayResponseSchema.extend(
 )
 
 export const LightningMetadataSchema = z.object({
-  lud06: z.string().nullable().optional(),
-  lud16: z.string().nullable().optional(),
+  lud06: z.string().trim().nullable().optional(),
+  lud16: z.string().trim().nullable().optional(),
 })
 
 function decodeLnurl(lnurl: string): string | undefined {

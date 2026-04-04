@@ -1,4 +1,4 @@
-import type z from 'zod'
+import type * as z from 'zod'
 import type { NostrQueryContext } from '@/lib/nostr/query-helpers'
 import { useRouteContext } from '@tanstack/react-router'
 import { firstValueFrom } from 'rxjs'

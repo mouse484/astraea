@@ -1,12 +1,12 @@
-import z from 'zod'
+import * as z from 'zod'
 
-export const stringToNumber = z.codec(z.string().regex(z.regexes.number), z.number(), {
+export const stringToNumber = z.codec(z.string().trim().regex(z.regexes.number), z.number(), {
   decode: string_ => Number.parseFloat(string_),
   encode: number_ => number_.toString(),
 })
 
 export function jsonCodec<T extends z.core.$ZodType>(schema: T) {
-  return z.codec(z.string(), schema, {
+  return z.codec(z.string().trim(), schema, {
     decode: (jsonString, context) => {
       try {
         // eslint-disable-next-line ts/no-unsafe-return

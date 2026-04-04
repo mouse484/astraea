@@ -1,4 +1,4 @@
-import type { z } from 'zod'
+import type * as z from 'zod'
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { Repeat2 } from 'lucide-react'
 import { useState } from 'react'

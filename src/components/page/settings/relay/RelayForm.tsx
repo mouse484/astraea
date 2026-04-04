@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 import { useAppForm } from '@/lib/form'
 import { RelayUrlSchema } from '@/lib/nostr/schemas/common'
 

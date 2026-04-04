@@ -1,4 +1,4 @@
-import type { z } from 'zod'
+import type * as z from 'zod'
 import type { Pubkey } from '../schemas/common'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ZapRequestEventSchema } from '../kinds/9734'
