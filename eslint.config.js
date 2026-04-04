@@ -1,6 +1,7 @@
 import mouse, { GLOB_TSX } from '@mouse_484/eslint-config'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 import pluginRouter from '@tanstack/eslint-plugin-router'
+import eslintPluginZod from 'eslint-plugin-zod'
 
 export default mouse(
   {
@@ -44,4 +45,5 @@ export default mouse(
   },
   pluginQuery.configs['flat/recommended'],
   pluginRouter.configs['flat/recommended'],
+  eslintPluginZod.configs.recommended,
 )
