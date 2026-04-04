@@ -1,0 +1,17 @@
+{
+  "name": "Astraea",
+  "short_name": "astraea",
+  "description": "A nostr client",
+  "theme_color": "#f0b100",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "purpose": "any",
+      "sizes": "144x144 1080x1080"
+    }
+  ]
+}

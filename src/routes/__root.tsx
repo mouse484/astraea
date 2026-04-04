@@ -10,6 +10,28 @@ import { Toaster } from '@/shadcn-ui/components/ui/sonner'
 import '../globals.css'
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  head: () => ({
+    links: [
+      {
+        rel: 'icon',
+        href: '/icon.png',
+      },
+      {
+        rel: 'manifest',
+        href: '/manifest.webmanifest',
+      },
+    ],
+    meta: [
+      {
+        name: 'theme-color',
+        content: '#f0b100',
+      },
+      {
+        name: 'mobile-web-app-capable',
+        content: 'yes',
+      },
+    ],
+  }),
   component: () => (
     <>
       <HeadContent />

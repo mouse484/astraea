@@ -1,13 +1,25 @@
+import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
-import { VitePWA } from 'vite-plugin-pwa'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(import.meta.dirname, 'index.html'),
+        sw: path.resolve(import.meta.dirname, 'src/service-worker.ts'),
+      },
+      output: {
+        entryFileNames: chunk =>
+          chunk.name === 'sw' ? '[name].js' : 'assets/[name]-[hash].js',
+      },
+    },
+  },
   plugins: [
     tsconfigPaths(),
     tanstackRouter({
@@ -18,26 +30,5 @@ export default defineConfig({
     devtools(),
     react(),
     tailwindcss(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['icon.png'],
-      manifest: {
-        name: 'Astraea',
-        short_name: 'astraea',
-        description: 'A description of your app',
-        theme_color: '#f0b100',
-        background_color: '#ffffff',
-        display: 'standalone',
-        start_url: '/',
-        icons: [
-          {
-            src: 'icon.png',
-            type: 'image/png',
-            purpose: 'any',
-            sizes: '144x144 1080x1080',
-          },
-        ],
-      },
-    }),
   ],
 })
