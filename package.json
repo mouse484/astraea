@@ -45,8 +45,10 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
     "@eslint-react/eslint-plugin": "2.13.0",
     "@mouse_484/eslint-config": "5.10.11",
+    "@rolldown/plugin-babel": "^0.2.2",
     "@tanstack/devtools-vite": "0.6.0",
     "@tanstack/eslint-plugin-query": "5.96.0",
     "@tanstack/eslint-plugin-router": "1.161.6",
@@ -55,10 +57,12 @@
     "@tanstack/react-query-devtools": "5.96.0",
     "@tanstack/react-router-devtools": "1.166.11",
     "@tanstack/router-plugin": "1.167.12",
+    "@types/babel__core": "^7.20.5",
     "@types/node": "24.12.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "9.39.4",
     "eslint-plugin-react-hooks": "7.0.1",
     "eslint-plugin-react-refresh": "0.5.2",
