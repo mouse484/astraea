@@ -91,25 +91,17 @@ export function useNostrEvents<
     setItems(newItems)
   }, [getLatestItems])
 
-  const latestHandleUpdateRef = useRef(handleUpdate)
-
-  useEffect(() => {
-    latestHandleUpdateRef.current = handleUpdate
-  }, [handleUpdate])
-
-  const throttledUpdateRef = useRef(createThrottle(() => {
-    latestHandleUpdateRef.current()
-  }, 100))
-
   useEffect(() => {
     if (!enabled) {
       return
     }
 
-    throttledUpdateRef.current = createThrottle(() => {
-      latestHandleUpdateRef.current()
+    const throttledUpdate = createThrottle(() => {
+      handleUpdate()
     }, 100)
-    latestHandleUpdateRef.current()
+    queueMicrotask(() => {
+      handleUpdate()
+    })
 
     const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
       if (
@@ -118,13 +110,13 @@ export function useNostrEvents<
         && event.query.queryKey[0] === queryKey[0]
         && (event.type === 'added' || event.type === 'updated')
       ) {
-        throttledUpdateRef.current.run()
+        throttledUpdate.run()
       }
     })
 
     return () => {
       unsubscribe()
-      throttledUpdateRef.current.cancel()
+      throttledUpdate.cancel()
     }
   }, [queryClient, queryKey, enabled, eventFilter, handleUpdate])
 

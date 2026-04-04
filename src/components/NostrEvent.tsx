@@ -17,11 +17,12 @@ export default function NostrEvent<T extends z.infer<z.ZodObject<any>>>({
   const { queryContext } = useNostr()
   const [id, setQueryKeyFunction, options] = queryOptions
 
-  const context: NostrQueryContext = queryContext
-
-  if (options?.relays) {
-    context.relays = options.relays
-  }
+  const context: NostrQueryContext = options?.relays
+    ? {
+        ...queryContext,
+        relays: options.relays,
+      }
+    : queryContext
 
   const option = queryFunction(context, id, setQueryKeyFunction)
 

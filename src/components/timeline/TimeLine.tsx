@@ -9,9 +9,11 @@ interface Props {
 }
 
 export default function TimeLine({ pubkeys }: Props) {
+  'use no memo'
   const parentRef = useRef<HTMLDivElement>(null)
   const [isPaused, setIsPaused] = useState(false)
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: 9999,
     getScrollElement: () => parentRef.current,
