@@ -26,6 +26,7 @@ export function DataTable<TData>({
   data,
   isLoading = false,
 }: DataTableProps<TData>) {
+  'use no memo'
   const tableData = useMemo(
     () =>
       isLoading
@@ -45,6 +46,7 @@ export function DataTable<TData>({
     [isLoading, columns],
   )
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable<TData>({
     data: tableData,
     columns: tableColumns,

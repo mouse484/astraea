@@ -1,15 +1,18 @@
 import path from 'node:path'
+import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import react from '@vitejs/plugin-react-swc'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    tsconfigPaths: true,
+  },
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         main: path.resolve(import.meta.dirname, 'index.html'),
         sw: path.resolve(import.meta.dirname, 'src/service-worker.ts'),
@@ -21,7 +24,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    tsconfigPaths(),
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
@@ -29,6 +31,9 @@ export default defineConfig({
     }),
     devtools(),
     react(),
+    babel({
+      presets: [reactCompilerPreset()],
+    }),
     tailwindcss(),
   ],
 })

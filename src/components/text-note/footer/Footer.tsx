@@ -4,7 +4,7 @@ import type { ReactionEvent } from '@/lib/nostr/kinds/7'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
 import { Heart } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
@@ -53,25 +53,21 @@ export default function Footer({ event, setTimelinePaused }: Props) {
     },
   })
 
-  const { likeReactions, otherReactions } = useMemo(() => {
-    const likes: typeof reactions = []
-    const others = new Map<string, typeof reactions>()
+  const likeReactions: typeof reactions = []
+  const otherReactions = new Map<string, typeof reactions>()
 
-    for (const reaction of reactions) {
-      if (!reaction.content?.trim()) {
-        continue
-      }
-
-      if (reaction.content === '+') {
-        likes.push(reaction)
-      } else {
-        const existingReactions = others.get(reaction.content) ?? []
-        others.set(reaction.content, [...existingReactions, reaction])
-      }
+  for (const reaction of reactions) {
+    if (!reaction.content?.trim()) {
+      continue
     }
 
-    return { likeReactions: likes, otherReactions: others }
-  }, [reactions])
+    if (reaction.content === '+') {
+      likeReactions.push(reaction)
+    } else {
+      const existingReactions = otherReactions.get(reaction.content) ?? []
+      otherReactions.set(reaction.content, [...existingReactions, reaction])
+    }
+  }
 
   return (
     <div className="relative w-full space-y-4">

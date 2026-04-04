@@ -1,14 +1,13 @@
 import type { z } from 'zod'
 import type { Pubkey } from '../schemas/common'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
 import { ZapRequestEventSchema } from '../kinds/9734'
 import { LnurlPayInvoiceResponseSchema } from '../luds/06'
 import { getLightningLnurl, LnurlPayResponseWithNIP57Schema } from '../nips/57'
 import { signEvent } from '../utils/sign-event'
 
 export function useZap(metadata: { lud06?: string | null, lud16?: string | null }) {
-  const lnurl = useMemo(() => getLightningLnurl(metadata), [metadata])
+  const lnurl = getLightningLnurl(metadata)
 
   const query = useQuery<{
     isEnabled: boolean
