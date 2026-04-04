@@ -1,8 +1,8 @@
-import type { QueryKey } from '@tanstack/react-query'
+import type { QueryClient, QueryKey } from '@tanstack/react-query'
 import type { NostrEvent } from '../nips/01'
 import type { QueryKeyList } from '@/lib/query-key'
 import { useRouteContext } from '@tanstack/react-router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import queryKeyList from '@/lib/query-key'
 
 /**
@@ -42,6 +42,31 @@ function createThrottle(function_: () => void, delayMs: number) {
   return { run, cancel }
 }
 
+function getLatestItemsFromCache<Event extends NostrEvent>(
+  queryClient: QueryClient,
+  queryKey: QueryKey,
+  eventFilter?: (event: Event) => boolean,
+) {
+  if (queryKey.length <= 0) {
+    return []
+  }
+
+  const events = new Set<Event>()
+  const queries = queryClient.getQueryCache().findAll({ queryKey })
+
+  for (const query of queries) {
+    const data = query.state.data
+    if (data === undefined || data === null) continue
+
+    const event = data as Event
+    if (eventFilter && !eventFilter(event)) continue
+
+    events.add(event)
+  }
+
+  return [...events].toSorted((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0))
+}
+
 export function useNostrEvents<
   Event extends NostrEvent,
 >(
@@ -53,47 +78,30 @@ export function useNostrEvents<
 
   const queryKey = setQueryKey(queryKeyList)
 
-  const getLatestItems = useCallback(() => {
-    if (queryKey.length <= 0) {
-      return []
-    }
-
-    const events = new Set<Event>()
-    const queries = queryClient.getQueryCache().findAll({ queryKey })
-
-    for (const query of queries) {
-      const data = query.state.data
-      if (data === undefined || data === null) continue
-
-      const event = data as Event
-      if (eventFilter && !eventFilter(event)) continue
-
-      events.add(event)
-    }
-
-    return [...events].toSorted((a, b) => (b.created_at ?? 0) - (a.created_at ?? 0))
-  }, [eventFilter, queryClient, queryKey])
-
-  const [items, setItems] = useState<Event[]>(() => getLatestItems())
+  const [items, setItems] = useState<Event[]>(() => getLatestItemsFromCache(
+    queryClient,
+    queryKey,
+    eventFilter,
+  ))
   const previousItemsRef = useRef<Event[]> (items)
-
-  const handleUpdate = useCallback(() => {
-    const newItems = getLatestItems()
-
-    if (
-      previousItemsRef.current.length === newItems.length
-      && previousItemsRef.current.every((item, index) => item.id === newItems[index].id)
-    ) {
-      return
-    }
-
-    previousItemsRef.current = newItems
-    setItems(newItems)
-  }, [getLatestItems])
 
   useEffect(() => {
     if (!enabled) {
       return
+    }
+
+    const handleUpdate = () => {
+      const newItems = getLatestItemsFromCache(queryClient, queryKey, eventFilter)
+
+      if (
+        previousItemsRef.current.length === newItems.length
+        && previousItemsRef.current.every((item, index) => item.id === newItems[index].id)
+      ) {
+        return
+      }
+
+      previousItemsRef.current = newItems
+      setItems(newItems)
     }
 
     const throttledUpdate = createThrottle(() => {
@@ -118,7 +126,7 @@ export function useNostrEvents<
       unsubscribe()
       throttledUpdate.cancel()
     }
-  }, [queryClient, queryKey, enabled, eventFilter, handleUpdate])
+  }, [queryClient, queryKey, enabled, eventFilter])
 
   return items
 }

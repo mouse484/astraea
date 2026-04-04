@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import { Ellipsis, Eye } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { MetadataQuery } from '@/lib/nostr/kinds/0'
 import { createEvent, createPubkey } from '@/lib/nostr/nip19'
@@ -56,17 +56,11 @@ export default function TextNote({
     ?? metadata?.content.name
     ?? pubkey.encoded.slice(0, 8)
 
-  const contentWarning = useMemo(
-    () => event.tags.find(tag => tag[0] === 'content-warning'),
-    [event.tags],
-  )
+  const contentWarning = event.tags.find(tag => tag[0] === 'content-warning')
 
   const [isContentWarningOverridden, setIsContentWarningOverridden] = useState(false)
 
-  const shouldShowContentWarning = useMemo(() => {
-    if (isContentWarningOverridden) return false
-    return !!contentWarning
-  }, [contentWarning, isContentWarningOverridden])
+  const shouldShowContentWarning = !isContentWarningOverridden && !!contentWarning
 
   return (
     <>
