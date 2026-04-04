@@ -9,7 +9,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 // https://vite.dev/config/
 export default defineConfig({
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       input: {
         main: path.resolve(import.meta.dirname, 'index.html'),
         sw: path.resolve(import.meta.dirname, 'src/service-worker.ts'),
