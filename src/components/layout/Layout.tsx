@@ -12,7 +12,7 @@ export function Layout({ children }: Props) {
     <div className="max-w-svw overflow-x-hidden">
       <SidebarProvider>
         <Sidebar />
-        <main className="h-svh w-full p-4">
+        <main className="min-h-svh w-full p-4">
           {isMobile && (
             <SidebarTrigger className="mb-4" />
           )}

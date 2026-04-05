@@ -19,7 +19,7 @@ export const Route = createFileRoute({
 function RouteComponent() {
   const { tags: pubkeys } = Route.useLoaderData()
   return (
-    <div className="grid h-full grid-rows-[auto_1fr] gap-4">
+    <div className="flex flex-col gap-4">
       <TextNoteForm />
       <TimeLine pubkeys={pubkeys} />
     </div>

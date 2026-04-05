@@ -1,6 +1,7 @@
+import type { WindowVirtualizerHandle } from 'virtua'
 import type { TextNoteEvent } from '@/lib/nostr/kinds/1'
-import { useState } from 'react'
-import { Virtualizer } from 'virtua'
+import { useCallback, useRef, useState } from 'react'
+import { WindowVirtualizer } from 'virtua'
 import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
 import TextNote from '../text-note/TextNote'
 
@@ -9,10 +10,23 @@ interface Props {
 }
 
 export default function TimeLine({ pubkeys }: Props) {
+  const virtualizerRef = useRef<WindowVirtualizerHandle>(null)
   const [isPaused, setIsPaused] = useState(false)
-  const [scrollOffset, setScrollOffset] = useState(0)
+  const [isTop, setIsTop] = useState(() => {
+    if (globalThis.window === undefined) {
+      return true
+    }
 
-  const isTop = scrollOffset <= 100
+    return globalThis.window.scrollY <= 100
+  })
+
+  const handleScroll = useCallback(() => {
+    const offset = virtualizerRef.current?.scrollOffset ?? globalThis.window.scrollY
+    const nextIsTop = offset <= 100
+
+    setIsTop(previous => (previous === nextIsTop ? previous : nextIsTop))
+  }, [])
+
   // スクロールが上部かつダイアログが開いていないときだけ自動更新
   const items = useNostrEvents<TextNoteEvent>(
     _ => _.textnote(),
@@ -21,17 +35,12 @@ export default function TimeLine({ pubkeys }: Props) {
   )
 
   return (
-    <div className="size-full overflow-y-auto">
-      <Virtualizer
-        data={items}
-        onScroll={setScrollOffset}
-      >
-        {(item, index) => (
-          <div key={item.id} data-index={index} className="w-full">
-            <TextNote event={item} setTimelinePaused={setIsPaused} />
-          </div>
-        )}
-      </Virtualizer>
-    </div>
+    <WindowVirtualizer ref={virtualizerRef} data={items} onScroll={handleScroll}>
+      {(item, index) => (
+        <div key={item.id} data-index={index} className="w-full">
+          <TextNote event={item} setTimelinePaused={setIsPaused} />
+        </div>
+      )}
+    </WindowVirtualizer>
   )
 }
