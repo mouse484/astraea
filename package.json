@@ -22,7 +22,6 @@
     "@tanstack/react-query-persist-client": "^5.96.1",
     "@tanstack/react-router": "^1.168.10",
     "@tanstack/react-table": "^8.21.3",
-    "@tanstack/react-virtual": "^3.13.23",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.20",
@@ -43,6 +42,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.2",
+    "virtua": "^0.49.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

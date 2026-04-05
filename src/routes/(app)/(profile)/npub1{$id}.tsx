@@ -30,10 +30,7 @@ function RouteComponent() {
   return (
     <div>
       <Profile metadata={metadata} />
-
-      <div className="h-screen">
-        <TimeLine pubkeys={[metadata.pubkey]} />
-      </div>
+      <TimeLine pubkeys={[metadata.pubkey]} />
     </div>
   )
 }
