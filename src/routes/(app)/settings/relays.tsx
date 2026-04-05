@@ -67,14 +67,12 @@ function RouteComponent() {
     <div className="space-y-8">
       <RelayForm onAddRelay={handleAddRelay} />
 
-      {relays.length > 0 && (
-        <RelayTable
-          relays={relays}
-          isLoading={isLoading}
-          onDeleteRelay={handleDeleteRelay}
-          onUpdateRelay={handleUpdateRelay}
-        />
-      )}
+      <RelayTable
+        relays={relays}
+        isLoading={isLoading}
+        onDeleteRelay={handleDeleteRelay}
+        onUpdateRelay={handleUpdateRelay}
+      />
 
       <div className="mt-4 flex justify-end gap-4">
         <Button
