@@ -63,10 +63,14 @@ export function createQuery<
 
       return queryOptions({
         queryKey,
-        queryFn: async (context) => {
+        queryFn: async () => {
           const signal = AbortSignal.any([
-            context.signal,
-            AbortSignal.timeout(ms('30s')),
+            /**
+             * QueryFn signal + Tanstack Routerのローダー相性が悪い?ので一旦コメントアウト
+             * @see https://github.com/TanStack/router/issues/4476
+             */
+            // context.signal,
+            AbortSignal.timeout(ms('5s')),
           ])
           return new Promise<z.infer<Schema>>((resolve, reject) => {
             if (signal.aborted) {
