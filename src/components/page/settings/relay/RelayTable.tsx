@@ -74,6 +74,7 @@ export function RelayTable({
                   </TableCell>
                   <TableCell>
                     <Button
+                      aria-label={`Delete relay ${relay.url}`}
                       size="icon"
                       variant="outline"
                       onClick={() => onDeleteRelay(index)}
