@@ -3,7 +3,6 @@ import { QueryClient } from '@tanstack/react-query'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import dayjs from 'dayjs'
-import { ms } from 'enhanced-ms'
 import { kinds } from 'nostr-tools'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
@@ -23,8 +22,8 @@ import { routeTree } from './routeTree.gen'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: ms('5m'),
-      gcTime: ms('1h'),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 1 * 60 * 60 * 1000, // 1 hour
       retry: 1,
     },
   },
