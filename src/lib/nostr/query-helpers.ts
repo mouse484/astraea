@@ -4,7 +4,6 @@ import type * as z from 'zod'
 import type { QueryKeyList, QueryKeyListName } from '../query-key'
 import type { RouterContext } from '@/main'
 import { QueryObserver, queryOptions } from '@tanstack/react-query'
-import ms from 'enhanced-ms'
 import queryKeyList from '../query-key'
 
 export interface NostrQueryContext
@@ -70,7 +69,7 @@ export function createQuery<
              * @see https://github.com/TanStack/router/issues/4476
              */
             // context.signal,
-            AbortSignal.timeout(ms('5s')),
+            AbortSignal.timeout(5 * 1000), // 5 seconds
           ])
           return new Promise<z.infer<Schema>>((resolve, reject) => {
             if (signal.aborted) {
