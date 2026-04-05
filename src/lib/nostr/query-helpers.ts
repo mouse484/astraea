@@ -70,7 +70,7 @@ export function createQuery<
              * @see https://github.com/TanStack/router/issues/4476
              */
             // context.signal,
-            AbortSignal.timeout(ms('30s')),
+            AbortSignal.timeout(ms('5s')),
           ])
           return new Promise<z.infer<Schema>>((resolve, reject) => {
             if (signal.aborted) {
