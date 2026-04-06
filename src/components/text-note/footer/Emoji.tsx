@@ -1,14 +1,11 @@
 import type { UseMutationResult } from '@tanstack/react-query'
 import type { Event } from 'nostr-typedef'
 import { SmilePlus } from 'lucide-react'
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { Button } from '@/shadcn-ui/components/ui/button'
-import {
-  EmojiPicker,
-  EmojiPickerContent,
-  EmojiPickerSearch,
-} from '@/shadcn-ui/components/ui/emoji-picker'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn-ui/components/ui/popover'
+
+const EmojiPickerPanel = lazy(async () => import('./EmojiPickerPanel.tsx'))
 
 interface Props {
   mutation: UseMutationResult<Event, Error, string, unknown>
@@ -34,15 +31,17 @@ export default function Emoji({ mutation: { mutate }, setTimelinePaused }: Props
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <EmojiPicker
-          className="h-[350px]"
-          onEmojiSelect={({ emoji }) => {
-            mutate(emoji)
-          }}
-        >
-          <EmojiPickerSearch />
-          <EmojiPickerContent />
-        </EmojiPicker>
+        {open
+          ? (
+              <Suspense>
+                <EmojiPickerPanel
+                  onEmojiSelect={(emoji: string) => {
+                    mutate(emoji)
+                  }}
+                />
+              </Suspense>
+            )
+          : undefined}
       </PopoverContent>
     </Popover>
   )

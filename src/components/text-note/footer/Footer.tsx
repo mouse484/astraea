@@ -4,18 +4,19 @@ import type { ReactionEvent } from '@/lib/nostr/kinds/7'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
 import { Heart } from 'lucide-react'
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
 import { ReactionEventSchema } from '@/lib/nostr/kinds/7'
 import queryKeyList from '@/lib/query-key'
-import TextNoteForm from '../form/TextNoteForm'
 import Emoji from './Emoji'
 import Reaction from './Reaction'
 import Reply from './Reply'
 import Repost from './Repost'
 import Share from './Share'
 import Zap from './Zap'
+
+const TextNoteForm = lazy(async () => import('../form/TextNoteForm'))
 
 interface Props {
   event: z.infer<typeof TextNoteEventSchema>
@@ -116,12 +117,14 @@ export default function Footer({ event, setTimelinePaused }: Props) {
           <div className="mb-3 text-sm font-medium text-muted-foreground">
             {openForm === 'reply' ? 'Reply' : 'Repost'}
           </div>
-          <TextNoteForm
-            {...(openForm === 'reply' ? { reply: event } : { repost: event })}
-            onSuccess={() => {
-              setOpenForm(undefined)
-            }}
-          />
+          <Suspense>
+            <TextNoteForm
+              {...(openForm === 'reply' ? { reply: event } : { repost: event })}
+              onSuccess={() => {
+                setOpenForm(undefined)
+              }}
+            />
+          </Suspense>
         </div>
       )}
     </div>

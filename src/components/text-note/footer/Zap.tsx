@@ -1,8 +1,7 @@
 import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import { useQuery } from '@tanstack/react-query'
-import { CopyIcon, ZapIcon } from 'lucide-react'
-import { useState } from 'react'
-import QRCode from 'react-qr-code'
+import { ZapIcon } from 'lucide-react'
+import { lazy, Suspense, useState } from 'react'
 import { toast } from 'sonner'
 import * as z from 'zod'
 import { useAppForm } from '@/lib/form'
@@ -19,8 +18,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/shadcn-ui/components/ui/dialog'
-import { Input } from '@/shadcn-ui/components/ui/input'
 import { cn } from '@/shadcn-ui/lib/utils'
+
+const ZapInvoice = lazy(async () => import('./ZapInvoice.tsx'))
 
 interface Props {
   event: z.infer<typeof TextNoteEventSchema>
@@ -29,12 +29,16 @@ interface Props {
 
 export default function Zap({ event, setTimelinePaused }: Props) {
   const { queryContext, relays } = useNostr()
+  const [open, setOpen] = useState(false)
   const pubkey = createPubkey(event.pubkey)
-  const { data: metadata } = useQuery(MetadataQuery(
-    queryContext,
-    pubkey.decoded,
-    ({ setKey, id }) => setKey(id),
-  ))
+  const { data: metadata } = useQuery({
+    ...MetadataQuery(
+      queryContext,
+      pubkey.decoded,
+      ({ setKey, id }) => setKey(id),
+    ),
+    enabled: open,
+  })
   const [invoice, setInvoice] = useState<string>()
   const zap = useZap(metadata?.content ?? {})
   const commentAllowed = zap.data?.lnurlResponse?.commentAllowed ?? 0
@@ -76,7 +80,6 @@ export default function Zap({ event, setTimelinePaused }: Props) {
     },
   })
 
-  const [open, setOpen] = useState(false)
   return (
     <Dialog
       open={open}
@@ -131,36 +134,9 @@ export default function Zap({ event, setTimelinePaused }: Props) {
               </form.AppForm>
             )
           : (
-              <div className="grid w-full place-items-center gap-3">
-                <QRCode
-                  className="rounded-sm bg-white p-2"
-                  value={invoice}
-                />
-                <div className="relative grid w-full max-w-full">
-                  <Input
-                    aria-label="Lightning invoice"
-                    className="cursor-pointer truncate pr-10 text-xs select-all"
-                    readOnly
-                    title={invoice}
-                    type="text"
-                    value={invoice}
-                  />
-                  <Button
-                    aria-label="Copy"
-                    className="absolute top-1/2 right-1 size-7 -translate-y-1/2"
-                    size="icon"
-                    type="button"
-                    variant="ghost"
-                    onClick={() => {
-                      navigator.clipboard.writeText(invoice)
-                        .then(() => toast.success('Invoice copied!'))
-                        .catch(() => toast.error('Failed to copy invoice'))
-                    }}
-                  >
-                    <CopyIcon className="size-4" />
-                  </Button>
-                </div>
-              </div>
+              <Suspense>
+                <ZapInvoice invoice={invoice} />
+              </Suspense>
             )}
       </DialogContent>
     </Dialog>
