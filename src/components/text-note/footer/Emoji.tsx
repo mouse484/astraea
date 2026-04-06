@@ -5,7 +5,7 @@ import { lazy, Suspense, useState } from 'react'
 import { Button } from '@/shadcn-ui/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn-ui/components/ui/popover'
 
-const EmojiPickerPanel = lazy(async () => import('./EmojiPickerPanel.tsx'))
+const EmojiPickerPanel = lazy(async () => import('./EmojiPickerPanel'))
 
 interface Props {
   mutation: UseMutationResult<Event, Error, string, unknown>
