@@ -52,7 +52,7 @@
     "@tanstack/devtools-vite": "0.6.0",
     "@tanstack/eslint-plugin-query": "5.96.2",
     "@tanstack/eslint-plugin-router": "1.161.6",
-    "@tanstack/react-devtools": "0.10.1",
+    "@tanstack/react-devtools": "0.10.2",
     "@tanstack/react-form-devtools": "0.2.20",
     "@tanstack/react-query-devtools": "5.96.2",
     "@tanstack/react-router-devtools": "1.166.11",
