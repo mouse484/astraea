@@ -9,7 +9,7 @@ interface Props {
   pubkeys?: string[] | readonly string[]
 }
 
-export default function TimeLine({ pubkeys }: Props) {
+export default function Timeline({ pubkeys }: Props) {
   const virtualizerRef = useRef<WindowVirtualizerHandle>(null)
   const [isPaused, setIsPaused] = useState(false)
   const [isTop, setIsTop] = useState(() => {

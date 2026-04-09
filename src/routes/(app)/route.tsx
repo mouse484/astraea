@@ -1,14 +1,10 @@
 import { Outlet, redirect } from '@tanstack/react-router'
 import { AlertCircle } from 'lucide-react'
 import { Layout } from '@/components/layout/Layout'
+import { defaultRelays } from '@/lib/nostr/const'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
 import { Alert, AlertDescription, AlertTitle } from '@/shadcn-ui/components/ui/alert'
-
-const defaultRelays = [
-  'wss://nos.lol',
-  'wss://relay.damus.io',
-]
 
 export const Route = createFileRoute({
   component: RouteComponent,
