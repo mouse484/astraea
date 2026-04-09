@@ -7,7 +7,9 @@ import { signEvent } from '../utils/sign-event'
 
 // TODO: このフックがいるかから検討する
 export default function useNostr() {
-  const { relays, rxBackwardReq, queryClient, rxNostr } = useRouteContext({ from: '/(app)' })
+  const { rxBackwardReq, queryClient, rxNostr } = useRouteContext({ from: '/' })
+
+  const relays = Object.values(rxNostr.getDefaultRelays())
 
   return {
     publishEvent: async <S extends z.ZodObject<any>>(
@@ -34,6 +36,9 @@ export default function useNostr() {
       queryClient,
       rxBackwardReq,
     } satisfies NostrQueryContext,
-    relays,
+    relays: {
+      read: relays.flatMap(relay => relay.read ? [relay.url] : []),
+      write: relays.flatMap(relay => relay.write ? [relay.url] : []),
+    },
   }
 }

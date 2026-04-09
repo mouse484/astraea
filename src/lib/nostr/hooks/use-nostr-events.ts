@@ -74,7 +74,7 @@ export function useNostrEvents<
   eventFilter?: (event: Event) => boolean,
   enabled: boolean = true,
 ) {
-  const { queryClient } = useRouteContext({ from: '/(app)' })
+  const { queryClient } = useRouteContext({ from: '/' })
 
   const queryKey = setQueryKey(queryKeyList)
 

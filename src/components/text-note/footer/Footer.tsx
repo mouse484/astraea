@@ -28,7 +28,7 @@ export default function Footer({ event, setTimelinePaused }: Props) {
   const reactions = useNostrEvents<ReactionEvent>(
     _ => _.reaction(event.id),
   )
-  const { queryClient } = useRouteContext({ from: '/(app)' })
+  const { queryClient } = useRouteContext({ from: '/' })
   const { publishEvent } = useNostr()
 
   const reactionMutation = useMutation({
