@@ -1,5 +1,5 @@
 import Profile from '@/components/profile/Profile'
-import TimeLine from '@/components/timeline/TimeLine'
+import Timeline from '@/components/timeline/Timeline'
 import { MetadataQuery } from '@/lib/nostr/kinds/0'
 import { createPubkey } from '@/lib/nostr/nip19'
 import { setTitle } from '@/lib/set-title'
@@ -30,7 +30,7 @@ function RouteComponent() {
   return (
     <div>
       <Profile metadata={metadata} />
-      <TimeLine pubkeys={[metadata.pubkey]} />
+      <Timeline pubkeys={[metadata.pubkey]} />
     </div>
   )
 }

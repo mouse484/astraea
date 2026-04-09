@@ -1,5 +1,5 @@
 import TextNoteForm from '@/components/text-note/form/TextNoteForm'
-import TimeLine from '@/components/timeline/TimeLine'
+import Timeline from '@/components/timeline/Timeline'
 import { FollowListQuery } from '@/lib/nostr/kinds/3'
 
 export const Route = createFileRoute({
@@ -21,7 +21,7 @@ function RouteComponent() {
   return (
     <div className="flex flex-col gap-4">
       <TextNoteForm />
-      <TimeLine pubkeys={pubkeys} />
+      <Timeline pubkeys={pubkeys} />
     </div>
   )
 }

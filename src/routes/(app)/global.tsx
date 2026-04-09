@@ -1,9 +1,9 @@
-import TimeLine from '@/components/timeline/TimeLine'
+import Timeline from '@/components/timeline/Timeline'
 
 export const Route = createFileRoute({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <TimeLine />
+  return <Timeline />
 }
