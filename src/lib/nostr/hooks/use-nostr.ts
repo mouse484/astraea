@@ -7,7 +7,7 @@ import { signEvent } from '../utils/sign-event'
 
 // TODO: このフックがいるかから検討する
 export default function useNostr() {
-  const { rxBackwardReq, queryClient, rxNostr } = useRouteContext({ from: '/' })
+  const { rxBackwardReq, queryClient, rxNostr } = useRouteContext({ from: '__root__' })
 
   const relays = Object.values(rxNostr.getDefaultRelays())
 
