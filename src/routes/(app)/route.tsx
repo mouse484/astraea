@@ -1,4 +1,4 @@
-import { Outlet, redirect } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { AlertCircle } from 'lucide-react'
 import { Layout } from '@/components/layout/Layout'
 import { defaultRelays } from '@/lib/nostr/const'
@@ -6,7 +6,7 @@ import { createPubkey } from '@/lib/nostr/nip19'
 import { readStore } from '@/lib/store'
 import { Alert, AlertDescription, AlertTitle } from '@/shadcn-ui/components/ui/alert'
 
-export const Route = createFileRoute({
+export const Route = createFileRoute('/(app)')({
   component: RouteComponent,
   beforeLoad: ({ context: { rxNostr } }) => {
     const pubkeyHex = readStore('pubkey')
