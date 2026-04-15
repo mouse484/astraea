@@ -1,7 +1,8 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { useTheme } from 'next-themes'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
-export const Route = createFileRoute({
+export const Route = createFileRoute('/(app)/settings/general')({
   component: RouteComponent,
 })
 

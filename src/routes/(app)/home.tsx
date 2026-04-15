@@ -1,8 +1,9 @@
+import { createFileRoute } from '@tanstack/react-router'
 import TextNoteForm from '@/components/text-note/form/TextNoteForm'
 import Timeline from '@/components/timeline/Timeline'
 import { FollowListQuery } from '@/lib/nostr/kinds/3'
 
-export const Route = createFileRoute({
+export const Route = createFileRoute('/(app)/home')({
   component: RouteComponent,
   async  loader({ context: { queryClient, rxBackwardReq, pubkey } }) {
     return queryClient.ensureQueryData(FollowListQuery(

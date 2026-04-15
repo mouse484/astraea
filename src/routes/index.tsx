@@ -1,4 +1,4 @@
-import { redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { toast } from 'sonner'
 import PreviewTimeline from '@/components/timeline/PreviewTimeline'
 import { defaultRelays } from '@/lib/nostr/const'
@@ -6,7 +6,7 @@ import { PubkeySchema } from '@/lib/nostr/schemas/common'
 import { readStore, writeStore } from '@/lib/store'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
-export const Route = createFileRoute({
+export const Route = createFileRoute('/')({
   component: RouteComponent,
   beforeLoad: ({ context: { rxNostr } }) => {
     if (readStore('pubkey') !== undefined) {

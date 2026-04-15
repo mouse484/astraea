@@ -1,11 +1,11 @@
-import { Link } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { MessageSquareReply } from 'lucide-react'
 import TextNote from '@/components/text-note/TextNote'
 import { TextNoteQuery } from '@/lib/nostr/kinds/1'
 import { createEvent } from '@/lib/nostr/nip19'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
-export const Route = createFileRoute({
+export const Route = createFileRoute('/(app)/(textnote)/nevent1{$id}')({
   component: RouteComponent,
   loader: async ({ params: { id }, context: { queryClient, rxBackwardReq } }) => {
     const nevent = createEvent(`nevent1${id}`)

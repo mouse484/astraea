@@ -8,8 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import type { CreateFileRoute, FileRoutesByPath } from '@tanstack/react-router'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -225,97 +223,6 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof appRouteRoute
     }
   }
-}
-
-declare module './routes/index' {
-  const createFileRoute: CreateFileRoute<
-    '/',
-    FileRoutesByPath['/']['parentRoute'],
-    FileRoutesByPath['/']['id'],
-    FileRoutesByPath['/']['path'],
-    FileRoutesByPath['/']['fullPath']
-  >
-}
-declare module './routes/(app)/route' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)',
-    FileRoutesByPath['/(app)']['parentRoute'],
-    FileRoutesByPath['/(app)']['id'],
-    FileRoutesByPath['/(app)']['path'],
-    FileRoutesByPath['/(app)']['fullPath']
-  >
-}
-declare module './routes/(app)/about' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)/about',
-    FileRoutesByPath['/(app)/about']['parentRoute'],
-    FileRoutesByPath['/(app)/about']['id'],
-    FileRoutesByPath['/(app)/about']['path'],
-    FileRoutesByPath['/(app)/about']['fullPath']
-  >
-}
-declare module './routes/(app)/global' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)/global',
-    FileRoutesByPath['/(app)/global']['parentRoute'],
-    FileRoutesByPath['/(app)/global']['id'],
-    FileRoutesByPath['/(app)/global']['path'],
-    FileRoutesByPath['/(app)/global']['fullPath']
-  >
-}
-declare module './routes/(app)/home' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)/home',
-    FileRoutesByPath['/(app)/home']['parentRoute'],
-    FileRoutesByPath['/(app)/home']['id'],
-    FileRoutesByPath['/(app)/home']['path'],
-    FileRoutesByPath['/(app)/home']['fullPath']
-  >
-}
-declare module './routes/(app)/(profile)/npub1{$id}' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)/(profile)/npub1{$id}',
-    FileRoutesByPath['/(app)/(profile)/npub1{$id}']['parentRoute'],
-    FileRoutesByPath['/(app)/(profile)/npub1{$id}']['id'],
-    FileRoutesByPath['/(app)/(profile)/npub1{$id}']['path'],
-    FileRoutesByPath['/(app)/(profile)/npub1{$id}']['fullPath']
-  >
-}
-declare module './routes/(app)/(textnote)/nevent1{$id}' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)/(textnote)/nevent1{$id}',
-    FileRoutesByPath['/(app)/(textnote)/nevent1{$id}']['parentRoute'],
-    FileRoutesByPath['/(app)/(textnote)/nevent1{$id}']['id'],
-    FileRoutesByPath['/(app)/(textnote)/nevent1{$id}']['path'],
-    FileRoutesByPath['/(app)/(textnote)/nevent1{$id}']['fullPath']
-  >
-}
-declare module './routes/(app)/(textnote)/note1{$id}' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)/(textnote)/note1{$id}',
-    FileRoutesByPath['/(app)/(textnote)/note1{$id}']['parentRoute'],
-    FileRoutesByPath['/(app)/(textnote)/note1{$id}']['id'],
-    FileRoutesByPath['/(app)/(textnote)/note1{$id}']['path'],
-    FileRoutesByPath['/(app)/(textnote)/note1{$id}']['fullPath']
-  >
-}
-declare module './routes/(app)/settings/general' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)/settings/general',
-    FileRoutesByPath['/(app)/settings/general']['parentRoute'],
-    FileRoutesByPath['/(app)/settings/general']['id'],
-    FileRoutesByPath['/(app)/settings/general']['path'],
-    FileRoutesByPath['/(app)/settings/general']['fullPath']
-  >
-}
-declare module './routes/(app)/settings/relays' {
-  const createFileRoute: CreateFileRoute<
-    '/(app)/settings/relays',
-    FileRoutesByPath['/(app)/settings/relays']['parentRoute'],
-    FileRoutesByPath['/(app)/settings/relays']['id'],
-    FileRoutesByPath['/(app)/settings/relays']['path'],
-    FileRoutesByPath['/(app)/settings/relays']['fullPath']
-  >
 }
 
 interface appRouteRouteChildren {

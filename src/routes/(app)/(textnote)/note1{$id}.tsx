@@ -1,8 +1,8 @@
-import { redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { nip19 } from 'nostr-tools'
 import { createNoteId } from '@/lib/nostr/nip19'
 
-export const Route = createFileRoute({
+export const Route = createFileRoute('/(app)/(textnote)/note1{$id}')({
   loader: async ({ params: { id } }) => {
     const noteID = createNoteId(`note1${id}`)
 

@@ -1,9 +1,9 @@
-import { Link } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { CircleDot, Code } from 'lucide-react'
 import { Badge } from '@/shadcn-ui/components/ui/badge'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
-export const Route = createFileRoute({
+export const Route = createFileRoute('/(app)/about')({
   component: RouteComponent,
 })
 

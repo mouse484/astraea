@@ -1,4 +1,5 @@
 import type { StoreValue } from '@/lib/store/schema'
+import { createFileRoute } from '@tanstack/react-router'
 import { CloudDownload, CloudUpload } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { RelayForm } from '@/components/page/settings/relay/RelayForm'
@@ -8,7 +9,7 @@ import { RelayListEventSchema, RelayListQuery } from '@/lib/nostr/kinds/10002'
 import { readStore, writeStore } from '@/lib/store'
 import { Button } from '@/shadcn-ui/components/ui/button'
 
-export const Route = createFileRoute({
+export const Route = createFileRoute('/(app)/settings/relays')({
   component: RouteComponent,
 })
 
