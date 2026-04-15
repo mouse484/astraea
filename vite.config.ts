@@ -28,7 +28,6 @@ export default defineConfig(({ mode }) => ({
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
-      verboseFileRoutes: false,
     }),
     devtools(),
     react(),
