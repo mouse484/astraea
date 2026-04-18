@@ -35,27 +35,23 @@ function RouteComponent() {
   const hasRoot = (event.tags.find((tag) => {
     return tag[0] === 'e' && tag[3] === 'root'
   }) ?? [])[1]
+  const rootEvent = hasRoot ? createEvent({ id: hasRoot }) : undefined
+
   return (
     <>
-      {hasRoot !== undefined && (() => {
-        const nevent = createEvent({
-          id: hasRoot,
-        })
-        return (
-          <Button className="mb-4" asChild variant="outline">
-            <Link
-              params={{
-                id: nevent.routeId,
-              }}
-              to="/nevent1{$id}"
-            >
-              <MessageSquareReply />
-              Go to thread root
-            </Link>
-          </Button>
-
-        )
-      })()}
+      {rootEvent && (
+        <Button className="mb-4" asChild variant="outline">
+          <Link
+            params={{
+              id: rootEvent.routeId,
+            }}
+            to="/nevent1{$id}"
+          >
+            <MessageSquareReply />
+            Go to thread root
+          </Link>
+        </Button>
+      )}
       <TextNote event={event} withReplies={true} />
     </>
   )

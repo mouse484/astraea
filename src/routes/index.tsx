@@ -20,6 +20,21 @@ export const Route = createFileRoute('/')({
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
+
+  async function handleSignIn() {
+    const _pubkey = await (globalThis.nostr!.getPublicKey()).catch(console.error)
+    const pubkey = await PubkeySchema.parseAsync(_pubkey).catch(console.error)
+    if (pubkey) {
+      writeStore('pubkey', pubkey)
+      void navigate({
+        to: '/settings/relays',
+      })
+      toast.success('Successfully signed in with NIP-07 extension')
+    } else {
+      toast.error('Failed to sign in with NIP-07 extension')
+    }
+  }
+
   return (
     <div className="
       grid h-svh w-svw grid-cols-1 grid-rows-3
@@ -34,19 +49,7 @@ function RouteComponent() {
           className="mt-8"
           disabled={!globalThis.nostr}
           onClick={() => {
-            void (async () => {
-              const _pubkey = await (globalThis.nostr!.getPublicKey()).catch(console.error)
-              const pubkey = await PubkeySchema.parseAsync(_pubkey).catch(console.error)
-              if (pubkey) {
-                writeStore('pubkey', pubkey)
-                void navigate({
-                  to: '/settings/relays',
-                })
-                toast.success('Successfully signed in with NIP-07 extension')
-              } else {
-                toast.error('Failed to sign in with NIP-07 extension')
-              }
-            })()
+            void handleSignIn()
           }}
         >
           Sign in with NIP-07 extension
@@ -56,6 +59,7 @@ function RouteComponent() {
         row-span-2 p-4
         sm:row-span-1
       "
+
       >
         <h3 className="mb-4 font-bold">Timeline Preview</h3>
         <PreviewTimeline />
