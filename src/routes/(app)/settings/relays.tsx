@@ -64,6 +64,46 @@ function RouteComponent() {
     })
   }
 
+  async function handleLoadRelays() {
+    setIsLoading(true)
+    try {
+      const query = RelayListQuery(
+        {
+          queryClient,
+          rxBackwardReq,
+        },
+        pubkey.decoded,
+        ({ setKey, id }) => setKey(id),
+      )
+
+      await queryClient.invalidateQueries(query)
+      const data = await queryClient.fetchQuery(query)
+      setRelays(data.tags)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleSaveRelays() {
+    setIsLoading(true)
+    try {
+      await publishEvent(
+        RelayListEventSchema,
+        {
+          kind: 10_002,
+          tags: relays,
+          content: '',
+        },
+        {
+          success: 'Relays saved successfully.',
+          error: 'Failed to save relays.',
+        },
+      )
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-8">
       <RelayForm onAddRelay={handleAddRelay} />
@@ -79,26 +119,7 @@ function RouteComponent() {
         <Button
           disabled={isLoading}
           onClick={() => {
-            // TODO: useMutation使うほうがいいかも
-            void (async () => {
-              setIsLoading(true)
-              try {
-                const query = RelayListQuery(
-                  {
-                    queryClient,
-                    rxBackwardReq,
-                  },
-                  pubkey.decoded,
-                  ({ setKey, id }) => setKey(id),
-                )
-
-                await queryClient.invalidateQueries(query)
-                const data = await queryClient.fetchQuery(query)
-                setRelays(data.tags)
-              } finally {
-                setIsLoading(false)
-              }
-            })()
+            void handleLoadRelays()
           }}
         >
           <CloudDownload />
@@ -107,25 +128,7 @@ function RouteComponent() {
         <Button
           disabled={isLoading}
           onClick={() => {
-            void (async () => {
-              setIsLoading(true)
-              try {
-                await publishEvent(
-                  RelayListEventSchema,
-                  {
-                    kind: 10_002,
-                    tags: relays,
-                    content: '',
-                  },
-                  {
-                    success: 'Relays saved successfully.',
-                    error: 'Failed to save relays.',
-                  },
-                )
-              } finally {
-                setIsLoading(false)
-              }
-            })()
+            void handleSaveRelays()
           }}
         >
           <CloudUpload />
