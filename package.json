@@ -14,7 +14,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@rx-nostr/crypto": "^0.0.0",
+    "@rx-nostr/crypto": "^3.1.6",
     "@scure/base": "^2.0.0",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/query-async-storage-persister": "^5.99.2",
