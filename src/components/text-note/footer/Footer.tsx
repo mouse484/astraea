@@ -3,7 +3,6 @@ import type { TextNoteEventSchema } from '@/lib/nostr/kinds/1'
 import type { ReactionEvent } from '@/lib/nostr/kinds/7'
 import { useMutation } from '@tanstack/react-query'
 import { useRouteContext } from '@tanstack/react-router'
-import { Heart } from 'lucide-react'
 import { lazy, Suspense, useState } from 'react'
 import useNostr from '@/lib/nostr/hooks/use-nostr'
 import { useNostrEvents } from '@/lib/nostr/hooks/use-nostr-events'
@@ -90,9 +89,7 @@ export default function Footer({ event, setTimelinePaused }: Props) {
           content="+"
           mutation={reactionMutation}
           reactions={likeReactions}
-        >
-          <Heart />
-        </Reaction>
+        />
         <Emoji mutation={reactionMutation} setTimelinePaused={setTimelinePaused} />
         <Zap event={event} setTimelinePaused={setTimelinePaused} />
         <Share event={event} />
@@ -105,9 +102,7 @@ export default function Footer({ event, setTimelinePaused }: Props) {
             content={content}
             mutation={reactionMutation}
             reactions={reactionList}
-          >
-            {content}
-          </Reaction>
+          />
         ))}
       </div>
       {openForm && (
