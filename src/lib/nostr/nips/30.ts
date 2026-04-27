@@ -9,5 +9,5 @@ export const CustomEmojiTagSchema = tupleWithOptional(
     ImageURISchema,
   ],
   // TODO: emoji-set-address
-  z.string().trim().brand<'emoji-set-address'>(),
+  z.string().trim().regex(/^[\w-]+$/).brand<'shortcode'>(),
 )
