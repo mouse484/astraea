@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { TagSchema } from '../nips/01'
 
 export const stringToNumber = z.codec(z.string().trim().regex(z.regexes.number), z.number(), {
   decode: string_ => Number.parseFloat(string_),
@@ -42,4 +43,13 @@ export function tupleWithOptional<
       (_, index) => z.tuple([...defaultValues, ...optionalValues.slice(0, index + 1)]),
     ),
   ])
+}
+
+export function createTagSchema<
+  Schemas extends [z.core.SomeType, ...z.core.SomeType[]],
+>(...schemas: Schemas) {
+  return z.array(z.union([
+    TagSchema,
+    ...schemas,
+  ]))
 }
