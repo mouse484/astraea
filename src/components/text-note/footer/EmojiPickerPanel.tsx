@@ -15,7 +15,9 @@ export default function EmojiPickerPanel({ onEmojiSelect }: Props) {
     if (!element) return
 
     const handleEmojiClick = (event: EmojiClickEvent) => {
-      onEmojiSelect(event.detail.unicode ?? '')
+      const unicode = event.detail.unicode
+      if (unicode === undefined) return
+      onEmojiSelect(unicode)
     }
 
     element.addEventListener('emoji-click', handleEmojiClick)
