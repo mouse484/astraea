@@ -35,22 +35,16 @@ export default function Reaction({
     }
 
     const shortcode = content.slice(1, -1)
-    let image: string | undefined
 
     for (const event of reactions) {
       for (const tag of event.tags) {
         if (tag[0] === 'emoji' && tag[1] === shortcode && typeof tag[2] === 'string') {
-          image = tag[2]
-          break
+          return <img className="size-4" alt={shortcode} src={tag[2]} />
         }
       }
     }
 
-    if (typeof image !== 'string' || image.length === 0) {
-      return content
-    }
-
-    return <img className="size-4" alt={shortcode} src={image} />
+    return content
   }
 
   return (
