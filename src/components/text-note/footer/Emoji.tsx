@@ -37,6 +37,7 @@ export default function Emoji({ mutation: { mutate }, setTimelinePaused }: Props
                 <EmojiPickerPanel
                   onEmojiSelect={(emoji: string) => {
                     mutate(emoji)
+                    setOpen(false)
                   }}
                 />
               </Suspense>
