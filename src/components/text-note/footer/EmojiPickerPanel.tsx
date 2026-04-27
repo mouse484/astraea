@@ -1,23 +1,37 @@
-import {
-  EmojiPicker,
-  EmojiPickerContent,
-  EmojiPickerSearch,
-} from '@/shadcn-ui/components/ui/emoji-picker'
+import type { Picker } from 'emoji-picker-element'
+import type { EmojiClickEvent } from 'emoji-picker-element/shared'
+import { useEffect, useRef } from 'react'
+import 'emoji-picker-element'
 
 interface Props {
   onEmojiSelect: (emoji: string) => void
 }
 
 export default function EmojiPickerPanel({ onEmojiSelect }: Props) {
+  const emojiPickerRef = useRef<Picker>(null)
+
+  useEffect(() => {
+    const element = emojiPickerRef.current
+    if (!element) return
+
+    const handleEmojiClick = (event: EmojiClickEvent) => {
+      onEmojiSelect(event.detail.unicode ?? '')
+    }
+
+    element.addEventListener('emoji-click', handleEmojiClick)
+
+    return () => {
+      element.removeEventListener('emoji-click', handleEmojiClick)
+    }
+  }, [onEmojiSelect])
+
   return (
-    <EmojiPicker
-      className="h-87.5"
-      onEmojiSelect={({ emoji }) => {
-        onEmojiSelect(emoji)
+    <emoji-picker
+      ref={emojiPickerRef}
+      class="[--background:transparent] [--border-size:0]"
+      onClick={(event) => {
+        event.stopPropagation()
       }}
-    >
-      <EmojiPickerSearch />
-      <EmojiPickerContent />
-    </EmojiPicker>
+    />
   )
 }

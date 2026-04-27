@@ -30,7 +30,7 @@ export default function Emoji({ mutation: { mutate }, setTimelinePaused }: Props
           <SmilePlus />
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className="w-full">
         {open
           ? (
               <Suspense>
