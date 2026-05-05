@@ -42,7 +42,7 @@
     "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.4",
     "virtua": "^0.49.1",
-    "zod": "^4.4.1"
+    "zod": "^4.4.2"
   },
   "devDependencies": {
     "@babel/core": "7.29.0",
