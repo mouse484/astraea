@@ -12,7 +12,6 @@ interface Props {
 }
 
 export default function Repost({
-  event: _event,
   isOpen = false,
   onToggle,
   setTimelinePaused,

@@ -83,7 +83,7 @@ export function createQuery<
 
             const observer = new QueryObserver<z.infer<Schema>>(queryClient, { queryKey })
 
-            const onAbort = (_event?: globalThis.Event) => {
+            const onAbort = () => {
               if (settled) return
               settled = true
               signal.removeEventListener('abort', onAbort)
