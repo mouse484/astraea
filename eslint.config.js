@@ -1,4 +1,4 @@
-import mouse, { GLOB_TSX } from '@mouse_484/eslint-config'
+import mouse, { GLOB_TS, GLOB_TSX } from '@mouse_484/eslint-config'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 import pluginRouter from '@tanstack/eslint-plugin-router'
 import eslintPluginZod from 'eslint-plugin-zod'
@@ -41,6 +41,14 @@ export default mouse(
     files: ['src/vite-env.d.ts'],
     rules: {
       'unicorn/prevent-abbreviations': 'off',
+    },
+  },
+  {
+    // TODO: github.com/antfu/eslint-config/issues/803
+    files: [GLOB_TS, GLOB_TSX],
+    rules: {
+      'unused-imports/no-unused-vars': 'off',
+      'ts/no-unused-vars': 'error',
     },
   },
   pluginQuery.configs['flat/recommended'],

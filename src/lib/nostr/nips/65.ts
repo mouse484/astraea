@@ -22,7 +22,7 @@ export const RelayListSchema = z.codec(
       return tags
         .filter(tag => Array.isArray(tag) && tag[0] === 'r')
         .map((tag) => {
-          const [_, url, permission] = tag
+          const [, url, permission] = tag
           return {
             url,
             read: permission === 'read' || permission === undefined,
