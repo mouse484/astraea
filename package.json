@@ -58,7 +58,7 @@
     "@tanstack/react-router-devtools": "1.167.0",
     "@tanstack/router-plugin": "1.168.14",
     "@types/babel__core": "7.20.5",
-    "@types/node": "24.13.0",
+    "@types/node": "24.13.1",
     "@types/react": "19.2.16",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
