@@ -45,7 +45,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@babel/core": "7.29.7",
+    "@babel/core": "8.0.1",
     "@eslint-react/eslint-plugin": "5.9.5",
     "@mouse_484/eslint-config": "5.10.37",
     "@rolldown/plugin-babel": "0.2.3",
