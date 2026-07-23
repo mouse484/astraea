@@ -29,7 +29,7 @@
     "lucide-react": "^1.25.0",
     "next-themes": "^0.4.6",
     "normalize-url": "^9.0.1",
-    "nostr-tools": "^2.23.12",
+    "nostr-tools": "^2.24.0",
     "nostr-typedef": "^0.13.0",
     "radix-ui": "^1.6.4",
     "react": "^19.2.7",
