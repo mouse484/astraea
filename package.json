@@ -31,7 +31,7 @@
     "normalize-url": "^9.0.1",
     "nostr-tools": "^2.24.1",
     "nostr-typedef": "^0.13.0",
-    "radix-ui": "^1.6.4",
+    "radix-ui": "^1.6.5",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-qr-code": "^2.2.0",
