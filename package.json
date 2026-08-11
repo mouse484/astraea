@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@rx-nostr/crypto": "^3.1.6",
-    "@scure/base": "^2.2.0",
+    "@scure/base": "^2.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/query-async-storage-persister": "^5.101.4",
     "@tanstack/react-form": "^1.33.3",
