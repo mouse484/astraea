@@ -48,7 +48,7 @@
     "@babel/core": "8.0.1",
     "@eslint-react/eslint-plugin": "5.19.0",
     "@mouse_484/eslint-config": "5.10.38",
-    "@rolldown/plugin-babel": "0.2.3",
+    "@rolldown/plugin-babel": "0.2.4",
     "@tanstack/devtools-vite": "0.8.5",
     "@tanstack/eslint-plugin-query": "5.102.8",
     "@tanstack/eslint-plugin-router": "1.162.0",
