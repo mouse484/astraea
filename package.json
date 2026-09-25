@@ -41,7 +41,7 @@
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.7.0",
     "tailwindcss": "^4.3.3",
-    "virtua": "^0.52.1",
+    "virtua": "^0.52.7",
     "zod": "^4.6.5"
   },
   "devDependencies": {
