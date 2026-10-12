@@ -1,8 +1,0 @@
-{
-  "name": "astraea",
-  "compatibility_date": "2025-06-11",
-  "assets": {
-    "directory": "./dist",
-    "not_found_handling": "single-page-application"
-  }
-}
