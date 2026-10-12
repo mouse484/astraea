@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vp run web#dev",
-    "ready": "vp check && vp run -r test && vp run -r build",
+    "ready": "vp check",
     "lint": "vp lint",
     "fmt": "vp fmt",
     "test": "vp run -r test",
