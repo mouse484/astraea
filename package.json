@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/core": "8.1.2",
     "@eslint-react/eslint-plugin": "5.30.2",
-    "@mouse_484/eslint-config": "5.10.38",
+    "@mouse_484/eslint-config": "5.11.41",
     "@rolldown/plugin-babel": "0.2.4",
     "@tanstack/devtools-vite": "0.8.6",
     "@tanstack/eslint-plugin-query": "5.105.0",
